@@ -13,6 +13,8 @@
   },
   "dependencies": {
     "pinia": "^2.1.7",
+    "tdesign-icons-vue-next": "^0.2.4",
+    "tdesign-vue-next": "^1.9.8",
     "vue": "^3.4.29",
     "vue-router": "^4.3.3"
   },
@@ -25,6 +27,7 @@
     "@vue/tsconfig": "^0.5.1",
     "eslint": "^8.57.0",
     "eslint-plugin-vue": "^9.23.0",
+    "less": "^4.2.0",
     "npm-run-all2": "^6.2.0",
     "sass": "^1.77.8",
     "typescript": "~5.4.0",
