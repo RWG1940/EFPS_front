@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import homePage from "@/views/homePage.vue"
 import userManage from '@/views/userManage.vue'
+import deptManage from '@/views/deptManage.vue'
 const router = createRouter({
   
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -18,8 +19,9 @@ const router = createRouter({
         {
           path: 'system-management/dept-manage',
           name: 'deptManage',
-          component: userManage,
+          component: deptManage,
         },
+        
         
       ],
     },

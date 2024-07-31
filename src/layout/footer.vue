@@ -15,7 +15,11 @@ export default {
 .rwg {
   display: flex;
   justify-content: center;
-  height: 100%;
+  height: 60px;
+  padding: 0;
+}
+.rwg p {
+   margin-top: 50px;
 }
 
 </style>

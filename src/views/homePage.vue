@@ -1,11 +1,13 @@
 <template>
-  <t-layout class="tl1">
+  <t-layout class="t-layout1">
     <rheader />
-    <t-layout class="tl2">
+    <t-layout class="t-layout2">
       <sideBar />
       <t-layout>
-        <content/>
-        <rfooter/>
+        <el-scrollbar height="600px">
+          <content />
+          <rfooter />
+        </el-scrollbar>
       </t-layout>
     </t-layout>
   </t-layout>
@@ -17,19 +19,14 @@ import rheader from "@/layout/header.vue";
 import content from "@/layout/content.vue";
 import rfooter from "@/layout/footer.vue"
 </script>
-<style lang="scss" scoped>
-
-.tl1 {
+<style scoped>
+.t-layout1 {
   height: 100vh;
   width: 100%;
 }
-.tl2 {
+
+.t-layout2 {
   display: flex;
   flex-direction: row;
 }
-
-
-
-
-
 </style>

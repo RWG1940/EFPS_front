@@ -9,12 +9,11 @@ import { RouterLink, RouterView } from 'vue-router'
 
 <style>
 body {
-   
    background-size:cover;
    width: 100%;
    padding: 0;
    margin: 0;
-   box-sizing: border-box;  
+
 }
 </style>
 
