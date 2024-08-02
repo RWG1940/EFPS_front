@@ -13,15 +13,17 @@
       <t-input-adornment prepend="手机号">
         <t-input v-model="userData.ePhone" showClearIconOnEmpty placeholder="必填" />
       </t-input-adornment>
-      <t-button @click="submitButton" style="margin-bottom: 20px;">提交</t-button>
+      <t-button @click="submitButton" style="margin-bottom: 20px;width: 100%;">提交</t-button>
     </t-space>
 </div>
 </template>
 <script lang="ts" setup>
 import { ref } from "vue";
 import { MessagePlugin } from 'tdesign-vue-next';
-import { addUser } from "@/api/user-api";
+import { regUser } from "@/api/reg-api";
+import {useRouter} from 'vue-router'
 
+const router = useRouter()
 const userData = ref<UserData>({});
 
 interface UserData {
@@ -46,9 +48,15 @@ const submitButton = async () => {
     const msg = MessagePlugin.loading('注册中')
   try {
     await new Promise(resolve => setTimeout(resolve, 200));
-    await addUser(userData.value);
+    const response = await regUser(userData.value);
+    if (response.code === 1) {
     MessagePlugin.close(msg)
     MessagePlugin.success('注册成功');
+    localStorage.setItem('token', response.data);
+    router.push('/home')
+    }else {
+      MessagePlugin.error(response.msg || '登录失败');
+    }
   } catch (error) {
     MessagePlugin.error('注册失败');
   }
