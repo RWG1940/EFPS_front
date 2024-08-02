@@ -1,38 +1,37 @@
 <template>
-    <t-space>
-      <t-dropdown :options="options" trigger="click" @click="clickHandler">
-        <t-space>
-          <t-button variant="text">
-            搜索条件
-            <template #suffix> <t-icon name="chevron-down" size="16" /></template>
-          </t-button>
-        </t-space>
-      </t-dropdown>
-    </t-space>
-  </template>
-  <script lang="ts" setup>
-  import type{  DropdownProps } from 'tdesign-vue-next';
-  import { MessagePlugin } from 'tdesign-vue-next';
-  const options: DropdownProps['options'] = [
-    {
-      content: 'id',
-      value: 1,
-    },
-    {
-      content: '操作二',
-      value: 2,
-    },
-    {
-      content: '操作三',
-      value: 3,
-    },
-    {
-      content: '操作四',
-      value: 4,
-    },
-  ];
-  const clickHandler: DropdownProps['onClick'] = (data) => {
-    MessagePlugin.success(`选中【${data.content}】`);
-  };
-  </script>
-  
+  <t-space>
+    <t-dropdown :options="options" trigger="click" @click="clickHandler">
+      <t-space>
+        <t-button variant="text">
+          {{ condition }}
+          <template #suffix> <t-icon name="chevron-down" size="16" /></template>
+        </t-button>
+      </t-space>
+    </t-dropdown>
+  </t-space>
+</template>
+
+<script lang="ts" setup>
+import type { DropdownProps } from 'tdesign-vue-next';
+import { MessagePlugin } from 'tdesign-vue-next';
+import { defineEmits } from 'vue';
+import { ref } from 'vue'
+
+const options: DropdownProps['options'] = [
+  { content:'所有',value:'all'},
+  { content: 'id', value: 'id' },
+  { content: '姓名', value: 'eName' },
+  { content: '账号', value: 'eUsername' },
+  { content: '手机号', value: 'ePhone' },
+];
+// 设置默认选项
+const condition = ref(options[0].content);
+
+const emit = defineEmits(['updateSearchCondition']);
+
+const clickHandler: DropdownProps['onClick'] = (data) => {
+  MessagePlugin.success(`选中【${data.content}】`);
+  condition.value = data.content;
+  emit('updateSearchCondition', data.value);
+};
+</script>

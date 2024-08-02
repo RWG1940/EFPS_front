@@ -1,142 +1,95 @@
 <template>
-  <el-table :data="tableData" style="width: 170vh">
+  <el-table :data="tableData" stripe border style="width: 170vh" max-height="60vh"
+    @selection-change="handleSelectionChange">
     <el-table-column type="selection" width="55" />
     <el-table-column fixed prop="eAvatarpath" label="头像" width="80" />
-    <el-table-column fixed prop="id" label="ID" width="80" />
-    <el-table-column fixed prop="eName" label="姓名" width="80" />
-    <el-table-column prop="eUsername" label="账号" width="120" />
-    <el-table-column prop="ePassword" label="密码" width="120" />
-    <el-table-column prop="eId" label="证件号" width="120" />
-    <el-table-column prop="ePhone" label="手机号" width="120" />
-    <el-table-column prop="eAge" label="年龄" width="120" />
+    <el-table-column
+    fixed prop="id"
+      label="ID"
+      sortable
+      width="60"
+      column-key="id"
+      :filters="idFilters"
+      :filter-method="filterHandler"
+    />
+    <el-table-column fixed prop="eName" label="姓名" width="100" show-overflow-tooltip>
+      <template #default="scope"><el-tag>{{ scope.row.eName }}</el-tag></template>
+    </el-table-column>
+    <el-table-column prop="eUsername" label="账号" width="120" show-overflow-tooltip>
+    </el-table-column>
+    <el-table-column prop="ePassword" label="密码" width="80" show-overflow-tooltip>
+      <template #default="scope">
+        <el-popover trigger="hover" placement="top-start" v-model:visible="showPasswordState[scope.row.id]" width="auto">
+          <template #reference>
+            <div style="display: flex; align-items: center">
+
+              <span style="margin-left: 10px">{{ showPasswordState[scope.row.id] ? scope.row.ePassword : maskedPassword
+              }}</span>
+            </div>
+          </template>
+          <div>{{ scope.row.ePassword }}</div>
+        </el-popover>
+      </template>
+    </el-table-column>
+    <el-table-column prop="eIsenabled" label="帐号状态" width="100">
+      <template #default="scope"><el-tag :type="scope.row.eIsenabled == '0' ? 'success' : 'danger'">{{
+        scope.row.eIsenabled == '0' ? '正常' : '禁用'
+      }}</el-tag></template>
+    </el-table-column>
+    <el-table-column prop="ePhone" label="手机号" width="120" show-overflow-tooltip>
+      <template #default="scope">
+        <div style="display: flex; align-items: center">
+          <el-icon>
+            <Iphone color="green" />
+          </el-icon>
+          <span style="margin-left: 10px">{{ scope.row.ePhone }}</span>
+        </div>
+      </template>
+    </el-table-column>
+    <el-table-column prop="eId" label="证件号" width="120" show-overflow-tooltip />
+    <el-table-column prop="eRole" label="职位" width="120">
+      <template #default="scope"><el-tag :type="scope.row.eRole === '管理员' ? 'warning' : 'info'">{{ scope.row.eRole
+      }}</el-tag></template>
+    </el-table-column>
     <el-table-column prop="eDeptid" label="部门" width="120" />
-    <el-table-column prop="eRole" label="职位" width="120" />
+    <el-table-column prop="eAge" label="年龄" width="120" />
     <el-table-column prop="eGender" label="性别" width="120" />
-    <el-table-column prop="eCreatetime" label="入职日期" width="120" />
-    <el-table-column prop="eUpdatetime" label="更新日期" width="120" />
-    <el-table-column prop="eIsenabled" label="帐号状态" width="120" />
+    <el-table-column prop="eCreatetime" label="入职日期" width="120" show-overflow-tooltip />
+    <el-table-column prop="eUpdatetime" label="更新日期" width="120" show-overflow-tooltip />
     <el-table-column fixed="right" label="操作" min-width="120">
       <template #default="{ row }">
         <div style="display: flex;">
-          <userEdit />
           <t-button theme="default" shape="round" @click="handleEditClick(row)">修改</t-button>
           <t-button theme="danger" shape="round" @click="handleDeleteClick(row.id)">删除</t-button>
         </div>
       </template>
     </el-table-column>
   </el-table>
-  <!-- 修改用户信息 -->
-  <userEdit v-model:visible="editVisible" header="用户资料修改">
+  <userDataEdit :visible="editVisible" @update:visible="handleEditVisibleChange" :userData="userData"
+    @userEdited="handleloadUserData" />
+  <userDataAdd :visible="addVisible" @update:visible="handleAddVisibleChange" @userAdded="handleloadUserData" />
+  <!-- 确认面板 -->
+  <userEdit v-model:visible="confirmVisible" header="确认删除？" top="250px" theme="warning">
     <template #main>
-      <div style="display: flex;">
-        <p style="margin-right: 10px;">头像</p>
-        <t-upload ref="uploadRef1" v-model="file1" :image-viewer-props="imageViewerProps" :size-limit="sizeLimit"
-          :action=avatarUrl theme="image"
-          tips="上传头像大小不超过500KB" accept="image/*" :disabled="disabled" :auto-upload="autoUpload"
-          :show-image-file-name="showImageFileName" :upload-all-files-in-one-request="uploadAllFilesInOneRequest" :locale="{
-            triggerUploadText: {
-              image: '请选择图片',
-            },
-          }" @fail="handleFail">
-        </t-upload>
-      </div>
-      <t-input-adornment prepend="姓名">
-        <t-input v-model="userData.eName" showClearIconOnEmpty placeholder="请输入内容" />
-      </t-input-adornment>
-      <t-input-adornment prepend="账号">
-        <t-input v-model="userData.eUsername" disabled showClearIconOnEmpty placeholder="请输入内容" />
-      </t-input-adornment>
-      <t-input-adornment prepend="密码">
-        <t-input v-model="userData.ePassword" showClearIconOnEmpty placeholder="请输入内容" />
-      </t-input-adornment>
-      <t-input-adornment prepend="证件号">
-        <t-input v-model="userData.eId" showClearIconOnEmpty placeholder="请输入内容" />
-      </t-input-adornment>
-      <t-input-adornment prepend="手机号">
-        <t-input v-model="userData.ePhone" showClearIconOnEmpty placeholder="请输入内容" />
-      </t-input-adornment>
-      <t-input-adornment prepend="年龄">
-        <t-input v-model="userData.eAge" showClearIconOnEmpty placeholder="请输入内容" />
-      </t-input-adornment>
-      <t-input-adornment prepend="部门">
-        <t-input v-model="userData.eDeptid" showClearIconOnEmpty placeholder="请输入内容" />
-      </t-input-adornment>
-      <t-input-adornment prepend="职位">
-        <t-input v-model="userData.eRole" showClearIconOnEmpty placeholder="请输入内容" />
-      </t-input-adornment>
-      <t-input-adornment prepend="性别">
-        <t-input v-model="userData.eGender" showClearIconOnEmpty placeholder="请输入内容" />
-      </t-input-adornment>
-      <t-input-adornment prepend="状态">
-        <t-input v-model="userData.eIsenabled" showClearIconOnEmpty placeholder="请输入内容" />
-      </t-input-adornment>
-      
+      <p style="margin-left: 50px; text-shadow: 1px 1px 10px rgb(255, 0, 0); ">此操作将不可逆</p>
     </template>
     <template #footer>
-      <t-button theme="default" @click="cancelButton">取消</t-button>
-      <t-button @click="saveButton">保存</t-button>
-    </template>
-  </userEdit>
-  <!-- 新增用户信息 -->
-  <userEdit :visible="addVisible" header="添加用户" @update:visible="handleAddVisibleChange">
-    <template #main>
-      <div style="display: flex;">
-        <p style="margin-right: 10px;">头像</p>
-        <t-upload ref="uploadRef1" v-model="file1" :image-viewer-props="imageViewerProps" :size-limit="sizeLimit"
-          :action=avatarUrl theme="image"
-          tips="上传头像大小不超过500KB" accept="image/*" :disabled="disabled" :auto-upload="autoUpload"
-          :show-image-file-name="showImageFileName" :upload-all-files-in-one-request="uploadAllFilesInOneRequest" :locale="{
-            triggerUploadText: {
-              image: '请选择图片',
-            },
-          }" @fail="handleFail">
-        </t-upload>
-      </div>
-      <t-input-adornment prepend="姓名">
-        <t-input v-model="userData.eName" showClearIconOnEmpty placeholder="请输入内容" />
-      </t-input-adornment>
-      <t-input-adornment prepend="账号">
-        <t-input v-model="userData.eUsername" showClearIconOnEmpty placeholder="请输入内容" />
-      </t-input-adornment>
-      <t-input-adornment prepend="密码">
-        <t-input v-model="userData.ePassword" showClearIconOnEmpty placeholder="请输入内容" />
-      </t-input-adornment>
-      <t-input-adornment prepend="证件号">
-        <t-input v-model="userData.eId" showClearIconOnEmpty placeholder="请输入内容" />
-      </t-input-adornment>
-      <t-input-adornment prepend="手机号">
-        <t-input v-model="userData.ePhone" showClearIconOnEmpty placeholder="请输入内容" />
-      </t-input-adornment>
-      <t-input-adornment prepend="年龄">
-        <t-input v-model="userData.eAge" showClearIconOnEmpty placeholder="请输入内容" />
-      </t-input-adornment>
-      <t-input-adornment prepend="部门">
-        <t-input v-model="userData.eDeptid" showClearIconOnEmpty placeholder="请输入内容" />
-      </t-input-adornment>
-      <t-input-adornment prepend="职位">
-        <t-input v-model="userData.eRole" showClearIconOnEmpty placeholder="请输入内容" />
-      </t-input-adornment>
-      <t-input-adornment prepend="性别">
-        <t-input v-model="userData.eGender" showClearIconOnEmpty placeholder="请输入内容" />
-      </t-input-adornment>
-    </template>
-    <template #footer>
-      <t-button theme="default" @click="cancelButton1">取消</t-button>
-      <t-button @click="submitButton">提交</t-button>
-    </template>
-  </userEdit>
 
-  <pagination class="pag" />
+      <t-button @click="handleCancel" theme="default">取消</t-button>
+      <t-button @click="handleDelete(delId)">确认</t-button>
+    </template>
+  </userEdit>
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue';
-import pagination from "../userManage/pagination.vue";
-import { fetchUserData, updateUser, deleteUser,addUser } from "@/api/user-api";
-import {BASE_URL} from "@/api/user-api";
-import userEdit from '@/components/userManage/userEdit.vue'
-import type { UploadProps } from 'tdesign-vue-next';
+import { watch, ref,computed } from 'vue';
+import { deleteUser } from "@/api/user-api";
+import { BASE_URL } from "@/api/user-api";
+import userDataEdit from './userDataEdit.vue';
+import userDataAdd from './userDataAdd.vue';
 import { MessagePlugin } from 'tdesign-vue-next';
+import userEdit from './userEdit.vue';
+import type { TableColumnCtx, TableInstance } from 'element-plus'
 
 interface UserData {
   id?: number;
@@ -154,36 +107,70 @@ interface UserData {
   eUpdatetime?: string;
   eIsenabled?: boolean;
 }
+const delId = ref()
+const confirmVisible = ref(false)
+// 定义密码显示状态对象
+const showPasswordState = ref<{ [key: number]: boolean }>({});
+
+// 掩码密码的字符串
+const maskedPassword = '••••••';
+
+// 父组件传来的值 代理 这里是用来控制 添加用户面板
 const props = defineProps<{
-  addVisible:boolean;
+  addVisible: boolean;
+  tableData: UserData[]
 }>();
-const emit = defineEmits(['update:addVisible']);
-const avatarUrl = ref()
+
 const userData = ref<UserData>({});
-const autoUpload = ref(true);
-const showImageFileName = ref(true);
-const disabled = ref(false);
-const uploadAllFilesInOneRequest = ref(false);
-const file1 = ref<UploadProps['value']>([]);
-const tableData =  ref<UserData[]>([]);
+const tableData = ref<UserData[]>([...props.tableData]);
+const emit = defineEmits(['update:addVisible', 'update:tableData', 'selection-change']);
+
+// 监听 props.tableData 的变化，并更新到本地的 tableData
+watch(() => props.tableData, (newTableData) => {
+  tableData.value = [...newTableData];
+}, { immediate: true });
+
+// 修改面板控制值
 const editVisible = ref(false);
+
+const avatarUrl = ref()
 const url = BASE_URL
 
+const filterHandler = (
+  value: string,
+  row: UserData,
+  column: TableColumnCtx<UserData>
+) => {
+  const property = column['property'] as keyof UserData; // 使用 keyof UserData
+  return row[property] === value;
+}
+
+const idFilters = computed(() => {
+  return tableData.value.map(item => ({
+    text: item.id?.toString() || '',
+    value: item.id
+  }));
+});
+
+const handleDeleteClick = (id: number) => {
+  confirmVisible.value = true
+  delId.value = id
+}
+
+const handleCancel = () => {
+  confirmVisible.value = false
+}
+
+
+const handleloadUserData = () => {
+  emit('update:tableData');
+}
 const handleAddVisibleChange = () => {
   emit('update:addVisible');
 };
-// 头像上传失败回调
-const handleFail: UploadProps['onFail'] = ({ file }) => {
-  MessagePlugin.error(`文件 ${file.name} 上传失败`);
-};
-const imageViewerProps = ref<UploadProps['imageViewerProps']>({
-  closeOnEscKeydown: false,
-});
-// 头像大小限制
-const sizeLimit = ref<UploadProps['sizeLimit']>({
-  size: 500,
-  unit: 'KB',
-});
+const handleEditVisibleChange = () => {
+  editVisible.value = false;
+}
 // 修改按钮回调
 const handleEditClick = (row: any) => {
   console.log('edit', row);
@@ -192,68 +179,32 @@ const handleEditClick = (row: any) => {
   // 动态设置上传文件的URL
   avatarUrl.value = `${url}/avatar/${userData.value.eAvatarpath}`;
 };
-const cancelButton = () => {
-  editVisible.value = false;
-}
-const cancelButton1 = () => {
-  emit('update:addVisible')
-}
-// 保存按钮回调
-const saveButton = async () => {
-  try {
-    await updateUser(userData.value);
-    MessagePlugin.success('用户信息更新成功');
-    editVisible.value = false;
-    // 重新加载用户数据
-    loadUserData();
-  } catch (error) {
-    MessagePlugin.error('更新用户信息失败');
-  }
-}
-// 提交用户数据
-const submitButton = async () => {
-  try {
-    await addUser(userData.value);
-    MessagePlugin.success('添加用户成功');
-    // 重新加载用户数据
-    loadUserData();
-  } catch (error) {
-    MessagePlugin.error('添加用户失败');
-  }
-}
+
 // 删除按钮回调
-const handleDeleteClick = async (id: number) => {
+const handleDelete = async (id: number) => {
+  const msg = MessagePlugin.info('删除中');
   try {
+    await new Promise(resolve => setTimeout(resolve, 200));
     await deleteUser(id);
+    MessagePlugin.close(msg);
     MessagePlugin.success('用户删除成功');
     // 重新加载用户数据
-    loadUserData();
+    handleloadUserData();
+    confirmVisible.value = false;
   } catch (error) {
     MessagePlugin.error('删除用户失败');
   }
 };
-// 获取用户列表
-const loadUserData = async () => {
-  try {
-    const response = await fetchUserData();
-    console.log('Fetched user data:', response);
-    if (response && response.data && Array.isArray(response.data)) {
-      tableData.value = response.data;
-    } else {
-      console.error('Unexpected data format:', response);
-    }
-  } catch (error) {
-    console.error('Failed to load user data:', error);
-  }
+
+
+// 选择变化回调
+const handleSelectionChange = (selection: UserData[]) => {
+  const selectedIds = selection.map(item => item.id!);
+  emit('selection-change', selectedIds);
 };
-// 组件挂载后加载
-onMounted(() => {
-  loadUserData();
-});
+
+
+
 </script>
 
-<style scoped>
-.pag {
-  margin-top: 20px;
-}
-</style>
+<style scoped></style>
