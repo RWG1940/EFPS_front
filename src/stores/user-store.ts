@@ -6,7 +6,8 @@ import { userLogin, userLoginBytoken } from '@/api/login-api';
 import { regUser } from '@/api/reg-api';
 import { fetchUserDataBySearch, fetchUserDataPages, deleteUsers, deleteUser, updateUser, addUser } from '@/api/user-api'
 import { MessagePlugin } from 'tdesign-vue-next';
-import type { DropdownProps, UploadProps, FormProps } from 'tdesign-vue-next';
+import type { UploadInstanceFunctions,DropdownProps, UploadProps, FormProps } from 'tdesign-vue-next';
+import { BASE_URL } from "@/api/user-api";
 import { useRouter } from 'vue-router';
 
 // 定义用户数据类型
@@ -59,7 +60,8 @@ export const useUserStore = defineStore('user', () => {
   const disabled = ref(false);
   const uploadAllFilesInOneRequest = ref(false);
   const file1 = ref<UploadProps['value']>([]);
-  const avatarUrl = ref()
+  const avatarUrl = ref(`${BASE_URL}/upload`);
+  const uploadRef = ref<UploadInstanceFunctions>();
   // 登陆表单
   const LOGIN_FORM_RULES = { account: [{ required: true, message: '账户必填' }], password: [{ required: true, message: '密码必填' }] };
   const loginFormData: FormProps['data'] = reactive({
@@ -165,12 +167,23 @@ export const useUserStore = defineStore('user', () => {
   const handleFail: UploadProps['onFail'] = ({ file }) => {
     MessagePlugin.error(`文件 ${file.name} 上传失败`);
   };
+  const handleSuccess = (response: any, file: File) => {
+    // 确保响应格式符合预期
+    if (response.response.code === 1) {
+      userData.value.eAvatarpath = response.response.data;
+      console.log('头像上传成功:', response.response.data);
+    } else {
+      console.error('Unexpected upload response format:', response.response);
+      MessagePlugin.error('头像上传失败: 响应格式不正确');
+    }
+  };
+
   const imageViewerProps = ref<UploadProps['imageViewerProps']>({
     closeOnEscKeydown: false,
   });
   // 头像大小限制
   const sizeLimit = ref<UploadProps['sizeLimit']>({
-    size: 500,
+    size: 5500,
     unit: 'KB',
   });
   // 修改用户保存按钮
@@ -304,7 +317,7 @@ export const useUserStore = defineStore('user', () => {
     LOGIN_FORM_RULES,
     regFormData,
     REG_FORM_RULES,
-
+    uploadRef,
 
 
     searchUser,
@@ -322,5 +335,6 @@ export const useUserStore = defineStore('user', () => {
     loginOnSubmit,
     regOnSubmit,
     logout,
+    handleSuccess,
   };
 });

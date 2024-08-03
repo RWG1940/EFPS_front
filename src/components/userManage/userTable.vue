@@ -2,7 +2,11 @@
   <el-table :data="store.tableData" stripe border style="width: 170vh" max-height="60vh"
     @selection-change="store.handleSelectionChange">
     <el-table-column type="selection" width="55" />
-    <el-table-column fixed prop="eAvatarpath" label="头像" width="80" />
+    <el-table-column fixed prop="eAvatarpath" label="头像" width="80">
+      <template #default="scope">
+        <t-avatar :image="scope.row.eAvatarpath" size="50px" />
+      </template>
+    </el-table-column>
     <el-table-column fixed prop="id" label="ID" sortable width="60" column-key="id" :filters="store.idFilters"
       :filter-method="store.filterHandler" />
     <el-table-column fixed prop="eName" label="姓名" width="100" show-overflow-tooltip>
@@ -121,7 +125,7 @@ const handleEditClick = (row: any) => {
   console.log('edit', row);
   store.userData = { ...row };
   editVisible.value = true;
-  
+
 };
 
 // 删除按钮回调

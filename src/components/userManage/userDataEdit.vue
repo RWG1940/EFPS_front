@@ -4,14 +4,14 @@
     <template #main>
       <div style="display: flex;">
         <p style="margin-right: 10px;">头像</p>
-        <t-upload ref="uploadRef1" v-model="store.file1" :image-viewer-props="store.imageViewerProps" :size-limit="store.sizeLimit"
-          :action=store.avatarUrl theme="image" tips="上传头像大小不超过500KB" accept="image/*" :disabled="store.disabled"
+        <t-upload ref="store.uploadRef" v-model="store.file1" :image-viewer-props="store.imageViewerProps" :size-limit="store.sizeLimit"
+          :action="store.avatarUrl" theme="image" tips="上传头像大小不超过5500KB" accept="image/*" :disabled="store.disabled"
           :auto-upload="store.autoUpload" :show-image-file-name="store.showImageFileName"
           :upload-all-files-in-one-request="store.uploadAllFilesInOneRequest" :locale="{
             triggerUploadText: {
               image: '请选择图片',
             },
-          }" @fail="store.handleFail">
+          }" @success="store.handleSuccess" @fail="store.handleFail">
         </t-upload>
       </div>
       <t-input-adornment prepend="姓名">
@@ -78,3 +78,4 @@ const cancelButton = () => {
 
 </script>
 <style scoped></style>
+
