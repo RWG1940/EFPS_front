@@ -46,5 +46,6 @@ const store = useUserStore()
     padding: 50px;
     width: 200px;
     height: 200px;
+    margin-bottom: 30px;
 }   
 </style>

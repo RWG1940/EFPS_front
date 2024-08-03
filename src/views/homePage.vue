@@ -17,7 +17,7 @@
 import sideBar from "@/layout/sideBar.vue";
 import rheader from "@/layout/header.vue";
 import content from "@/layout/content.vue";
-import rfooter from "@/layout/footer.vue"
+import rfooter from "@/layout/footer.vue";
 </script>
 <style scoped>
 .t-layout1 {

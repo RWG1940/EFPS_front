@@ -19,7 +19,7 @@ export const useHomeStore = defineStore('home', () => {
   const name = ref<string | null>(null);
   const username = ref<string | null>(null);
   const avatar = ref<string | null>(null);
-  const option = ref()
+  const myInfoVisible = ref(false)
 
   const options: DropdownProps['options'] = [
     {
@@ -54,6 +54,6 @@ export const useHomeStore = defineStore('home', () => {
     avatar,
     getMyInfo,
     options, 
-    option,
+    myInfoVisible,
   };
 });

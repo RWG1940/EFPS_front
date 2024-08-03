@@ -16,6 +16,7 @@ import { useUserStore } from "@/stores/user-store";
 import type { DropdownProps } from 'tdesign-vue-next';
 import { MessagePlugin } from 'tdesign-vue-next';
 
+
 const userStore = useUserStore()
 const homeStore = useHomeStore()
 
@@ -24,7 +25,7 @@ const clickHandler: DropdownProps['onClick'] = (data) => {
     MessagePlugin.success('已退出登录');
     userStore.logout()
   } else if (data.value == 1){
-    
+    homeStore.myInfoVisible = true
   }
 };
 onMounted(() => {
