@@ -1,17 +1,10 @@
 <template>
-  <el-table :data="tableData" stripe border style="width: 170vh" max-height="60vh"
-    @selection-change="handleSelectionChange">
+  <el-table :data="store.tableData" stripe border style="width: 170vh" max-height="60vh"
+    @selection-change="store.handleSelectionChange">
     <el-table-column type="selection" width="55" />
     <el-table-column fixed prop="eAvatarpath" label="头像" width="80" />
-    <el-table-column
-    fixed prop="id"
-      label="ID"
-      sortable
-      width="60"
-      column-key="id"
-      :filters="idFilters"
-      :filter-method="filterHandler"
-    />
+    <el-table-column fixed prop="id" label="ID" sortable width="60" column-key="id" :filters="store.idFilters"
+      :filter-method="store.filterHandler" />
     <el-table-column fixed prop="eName" label="姓名" width="100" show-overflow-tooltip>
       <template #default="scope"><el-tag>{{ scope.row.eName }}</el-tag></template>
     </el-table-column>
@@ -65,9 +58,8 @@
       </template>
     </el-table-column>
   </el-table>
-  <userDataEdit :visible="editVisible" @update:visible="handleEditVisibleChange" :userData="userData"
-    @userEdited="handleloadUserData" />
-  <userDataAdd :visible="addVisible" @update:visible="handleAddVisibleChange" @userAdded="handleloadUserData" />
+  <userDataEdit :visible="editVisible" @update:visible="handleEditVisibleChange" />
+  <userDataAdd :visible="addVisible" @update:visible="handleAddVisibleChange" @userAdded="store.handlePageChange" />
   <!-- 确认面板 -->
   <userEdit v-model:visible="confirmVisible" header="确认删除？" top="250px" theme="warning">
     <template #main>
@@ -82,75 +74,31 @@
 </template>
 
 <script lang="ts" setup>
-import { watch, ref,computed } from 'vue';
-import { deleteUser } from "@/api/user-api";
+import { ref } from 'vue';
 import { BASE_URL } from "@/api/user-api";
 import userDataEdit from './userDataEdit.vue';
 import userDataAdd from './userDataAdd.vue';
-import { MessagePlugin } from 'tdesign-vue-next';
 import userEdit from './userEdit.vue';
-import type { TableColumnCtx, TableInstance } from 'element-plus'
+import { useUserStore } from "@/stores/user-store";
 
-interface UserData {
-  id?: number;
-  eAvatarpath?: string;
-  eName?: string;
-  eUsername?: string;
-  ePassword?: string;
-  eId?: string;
-  ePhone?: string;
-  eAge?: number;
-  eDeptid?: string;
-  eRole?: string;
-  eGender?: string;
-  eCreatetime?: string;
-  eUpdatetime?: string;
-  eIsenabled?: boolean;
-}
+const store = useUserStore()
+
 const delId = ref()
 const confirmVisible = ref(false)
 // 定义密码显示状态对象
 const showPasswordState = ref<{ [key: number]: boolean }>({});
-
 // 掩码密码的字符串
 const maskedPassword = '••••••';
 
 // 父组件传来的值 代理 这里是用来控制 添加用户面板
 const props = defineProps<{
   addVisible: boolean;
-  tableData: UserData[]
 }>();
 
-const userData = ref<UserData>({});
-const tableData = ref<UserData[]>([...props.tableData]);
-const emit = defineEmits(['update:addVisible', 'update:tableData', 'selection-change']);
-
-// 监听 props.tableData 的变化，并更新到本地的 tableData
-watch(() => props.tableData, (newTableData) => {
-  tableData.value = [...newTableData];
-}, { immediate: true });
+const emit = defineEmits(['update:addVisible']);
 
 // 修改面板控制值
 const editVisible = ref(false);
-
-const avatarUrl = ref()
-const url = BASE_URL
-
-const filterHandler = (
-  value: string,
-  row: UserData,
-  column: TableColumnCtx<UserData>
-) => {
-  const property = column['property'] as keyof UserData; // 使用 keyof UserData
-  return row[property] === value;
-}
-
-const idFilters = computed(() => {
-  return tableData.value.map(item => ({
-    text: item.id?.toString() || '',
-    value: item.id
-  }));
-});
 
 const handleDeleteClick = (id: number) => {
   confirmVisible.value = true
@@ -161,49 +109,26 @@ const handleCancel = () => {
   confirmVisible.value = false
 }
 
-
-const handleloadUserData = () => {
-  emit('update:tableData');
-}
 const handleAddVisibleChange = () => {
   emit('update:addVisible');
 };
 const handleEditVisibleChange = () => {
   editVisible.value = false;
 }
+
 // 修改按钮回调
 const handleEditClick = (row: any) => {
   console.log('edit', row);
-  userData.value = { ...row };
+  store.userData = { ...row };
   editVisible.value = true;
-  // 动态设置上传文件的URL
-  avatarUrl.value = `${url}/avatar/${userData.value.eAvatarpath}`;
+  
 };
 
 // 删除按钮回调
 const handleDelete = async (id: number) => {
-  const msg = MessagePlugin.info('删除中');
-  try {
-    await new Promise(resolve => setTimeout(resolve, 200));
-    await deleteUser(id);
-    MessagePlugin.close(msg);
-    MessagePlugin.success('用户删除成功');
-    // 重新加载用户数据
-    handleloadUserData();
-    confirmVisible.value = false;
-  } catch (error) {
-    MessagePlugin.error('删除用户失败');
-  }
+  store.handleDelete(id)
+  confirmVisible.value = false;
 };
-
-
-// 选择变化回调
-const handleSelectionChange = (selection: UserData[]) => {
-  const selectedIds = selection.map(item => item.id!);
-  emit('selection-change', selectedIds);
-};
-
-
 
 </script>
 

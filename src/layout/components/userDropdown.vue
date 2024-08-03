@@ -1,30 +1,34 @@
 <template>
-    <t-space class="tdesign-demo-dropdown">
-      <t-dropdown :options="options" @click="clickHandler">
-        <t-button variant="text">
-          用户名
-          <template #suffix><chevron-down-icon size="16" /></template>
-        </t-button>
-      </t-dropdown>
-    </t-space>
-  </template>
-  <script lang="ts" setup>
-  import { MessagePlugin } from 'tdesign-vue-next';
-  import  type {DropdownProps } from 'tdesign-vue-next';
-  import { ChevronDownIcon } from 'tdesign-icons-vue-next';
-  const options: DropdownProps['options'] = [
-    {
-      content: '个人中心',
-      value: 1,
-    },
-    {
-      content: '退出登录',
-      value: 2,
-      theme: 'error',
-    },
-  ];
-  const clickHandler: DropdownProps['onClick'] = (data) => {
-    MessagePlugin.info(`【${data.content}】`);
-  };
-  </script>
+  <t-space class="dropdown">
+    <t-dropdown :options="homeStore.options" @click="clickHandler">
+      <t-button variant="text">
+        {{ homeStore.name }}
+        <template #suffix><chevron-down-icon size="16" /></template>
+      </t-button>
+    </t-dropdown>
+  </t-space>
+</template>
+<script lang="ts" setup>
+import { onMounted } from "vue";
+import { useHomeStore } from "@/stores/home-store";
+import { ChevronDownIcon } from 'tdesign-icons-vue-next';
+import { useUserStore } from "@/stores/user-store";
+import type { DropdownProps } from 'tdesign-vue-next';
+import { MessagePlugin } from 'tdesign-vue-next';
+
+const userStore = useUserStore()
+const homeStore = useHomeStore()
+
+const clickHandler: DropdownProps['onClick'] = (data) => {
+  if (data.value == 2) {
+    MessagePlugin.success('已退出登录');
+    userStore.logout()
+  } else if (data.value == 1){
+    
+  }
+};
+onMounted(() => {
+  homeStore.getMyInfo()
+})
+</script>
   

@@ -1,52 +1,25 @@
 <template>
-    <t-pagination
-      v-model="current"
-      v-model:pageSize="pageSize"
-      :total="total"
-      show-jumper
-      @change="onChange"
-      @page-size-change="onPageSizeChange"
-      @current-change="onCurrentChange"
-    />
-  </template>
+  <t-pagination v-model="store.current" v-model:pageSize="store.pageSize" :total="store.total" show-jumper
+    @change="onChange" @page-size-change="onPageSizeChange" @current-change="onCurrentChange" />
+</template>
   
-  <script setup lang="ts">
- import { ref, watch } from 'vue';
-import { defineProps, defineEmits } from 'vue';
-  import { MessagePlugin } from 'tdesign-vue-next';
-  
-  const props = defineProps({
-  current: Number,
-  pageSize: Number,
-  total: Number,
-});
+<script setup lang="ts">
+import { useUserStore } from '@/stores/user-store'
 
-const emit = defineEmits(['pageChange','eleChange']);
-const current = ref(props.current);
-const pageSize = ref(props.pageSize);
-  
+const store = useUserStore()
+
 const onPageSizeChange = (size: number) => {
-  console.log('page-size:', size);
-  MessagePlugin.success(`pageSize变化为${size}`);
-  emit('pageChange', current.value,pageSize.value);
+  store.pageSize = size
+  store.handlePageChange()
 };
 
 const onCurrentChange = (index: number) => {
-  MessagePlugin.success(`转到第${index}页`);
-  emit('pageChange', index,pageSize.value);
-  emit('eleChange',index,pageSize.value)
+  store.current = index
+  store.handlePageChange()
 };
 
 const onChange = (pageInfo: any) => {
   console.log(pageInfo);
 };
-
-watch(() => props.current, (newValue) => {
-  current.value = newValue;
-});
-
-watch(() => props.pageSize, (newValue) => {
-  pageSize.value = newValue;
-});
-  </script>
+</script>
   

@@ -1,66 +1,45 @@
 <template>
     <div class="reg">
-    <t-space direction="vertical">
-      <t-input-adornment prepend="账号">
-        <t-input v-model="userData.eUsername" showClearIconOnEmpty placeholder="必填" />
-      </t-input-adornment>
-      <t-input-adornment prepend="密码">
-        <t-input v-model="userData.ePassword" showClearIconOnEmpty placeholder="必填" />
-      </t-input-adornment>
-      <t-input-adornment prepend="证件号">
-        <t-input v-model="userData.eId" showClearIconOnEmpty placeholder="必填" />
-      </t-input-adornment>
-      <t-input-adornment prepend="手机号">
-        <t-input v-model="userData.ePhone" showClearIconOnEmpty placeholder="必填" />
-      </t-input-adornment>
-      <t-button @click="submitButton" style="margin-bottom: 20px;width: 100%;">提交</t-button>
-    </t-space>
+    <t-form ref="form" :data="store.regFormData" :rules="store.REG_FORM_RULES" :label-width="0" @submit="store.regOnSubmit">
+            <t-form-item name="account">
+                <t-input v-model="store.regFormData.account" clearable placeholder="账号">
+                    <template #prefix-icon>
+                        <user-icon />
+                    </template>
+                </t-input>
+            </t-form-item>
+            <t-form-item name="password">
+                <t-input v-model="store.regFormData.password" type="password" clearable placeholder="密码">
+                    <template #prefix-icon>
+                        <lock-on-icon />
+                    </template>
+                </t-input>
+            </t-form-item>
+            <t-form-item name="eid">
+                <t-input v-model="store.regFormData.eid" clearable placeholder="身份证号">
+                    <template #prefix-icon>
+                        <verify-icon />
+                    </template>
+                </t-input>
+            </t-form-item>
+            <t-form-item name="phone">
+                <t-input v-model="store.regFormData.phone" clearable placeholder="手机号">
+                    <template #prefix-icon>
+                        <call-icon />
+                    </template>
+                </t-input>
+            </t-form-item>
+            <t-form-item>
+                <t-button theme="primary" type="submit" block>注册</t-button>
+            </t-form-item>
+        </t-form>
 </div>
 </template>
 <script lang="ts" setup>
-import { ref } from "vue";
-import { MessagePlugin } from 'tdesign-vue-next';
-import { regUser } from "@/api/reg-api";
-import {useRouter} from 'vue-router'
+import { useUserStore } from '@/stores/user-store'
 
-const router = useRouter()
-const userData = ref<UserData>({});
+const store = useUserStore()
 
-interface UserData {
-  id?: number;
-  eAvatarpath?: string;
-  eName?: string;
-  eUsername?: string;
-  ePassword?: string;
-  eId?: string;
-  ePhone?: string;
-  eAge?: number;
-  eDeptid?: string;
-  eRole?: string;
-  eGender?: string;
-  eCreatetime?: string;
-  eUpdatetime?: string;
-  eIsenabled?: boolean;
-}
-
-// 提交用户数据
-const submitButton = async () => {
-    const msg = MessagePlugin.loading('注册中')
-  try {
-    await new Promise(resolve => setTimeout(resolve, 200));
-    const response = await regUser(userData.value);
-    if (response.code === 1) {
-    MessagePlugin.close(msg)
-    MessagePlugin.success('注册成功');
-    localStorage.setItem('token', response.data);
-    router.push('/home')
-    }else {
-      MessagePlugin.error(response.msg || '登录失败');
-    }
-  } catch (error) {
-    MessagePlugin.error('注册失败');
-  }
-}
 </script>
 <style scoped>
 .reg {
