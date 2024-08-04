@@ -10,7 +10,7 @@
     <el-table-column fixed prop="id" label="ID" sortable width="60" column-key="id" :filters="store.idFilters"
       :filter-method="store.filterHandler" />
     <el-table-column fixed prop="eName" label="姓名" width="100" show-overflow-tooltip>
-      <template #default="scope"><el-tag>{{ scope.row.eName }}</el-tag></template>
+      <template #default="scope"><el-tag effect="plain">{{ scope.row.eName }}</el-tag></template>
     </el-table-column>
     <el-table-column prop="eUsername" label="账号" width="120" show-overflow-tooltip>
     </el-table-column>
@@ -48,11 +48,27 @@
       <template #default="scope"><el-tag :type="scope.row.eRole === '管理员' ? 'warning' : 'info'">{{ scope.row.eRole
       }}</el-tag></template>
     </el-table-column>
-    <el-table-column prop="eDeptid" label="部门" width="120" />
+    <el-table-column prop="eDeptid" label="部门" width="120">
+      <template #default="scope">
+        {{ scope.row.eDeptid == '0' ? '管理部' : scope.row.eDeptid == '1' ? '区域管制部' : scope.row.eDeptid == '2' ?'塔台管制部':'其它' }}
+    </template>
+    </el-table-column>
     <el-table-column prop="eAge" label="年龄" width="120" />
-    <el-table-column prop="eGender" label="性别" width="120" />
-    <el-table-column prop="eCreatetime" label="入职日期" width="120" show-overflow-tooltip />
-    <el-table-column prop="eUpdatetime" label="更新日期" width="120" show-overflow-tooltip />
+    <el-table-column prop="eGender" label="性别" width="120">
+      <template #default="scope"><el-tag round :type="scope.row.eGender == '0' ? 'Primary' : 'danger'">{{
+        scope.row.eGender == '0' ? '♂' : '♀'
+      }}</el-tag></template>
+    </el-table-column>
+    <el-table-column prop="eCreatetime" label="入职日期" width="120" show-overflow-tooltip>
+      <template #default="scope">
+        {{ formatDate(scope.row.eCreatetime) }}
+      </template>
+    </el-table-column>
+    <el-table-column prop="eUpdatetime" label="更新日期" width="120" show-overflow-tooltip>
+      <template #default="scope">
+        {{ formatDate(scope.row.eUpdatetime) }}
+      </template>
+    </el-table-column>
     <el-table-column fixed="right" label="操作" min-width="120">
       <template #default="{ row }">
         <div style="display: flex;">
@@ -79,7 +95,7 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { BASE_URL } from "@/api/user-api";
+import { formatDate } from "@/utils/moment";
 import userDataEdit from './userDataEdit.vue';
 import userDataAdd from './userDataAdd.vue';
 import userEdit from './userEdit.vue';
@@ -136,4 +152,8 @@ const handleDelete = async (id: number) => {
 
 </script>
 
-<style scoped></style>
+<style scoped>
+.a {
+  color: #c09aff;
+}
+</style>

@@ -2,7 +2,7 @@
   <t-space class="dropdown">
     <t-dropdown :options="homeStore.options" @click="clickHandler">
       <t-button variant="text">
-        {{ homeStore.name }}
+        {{ userStore.myData.eName }}
         <template #suffix><chevron-down-icon size="16" /></template>
       </t-button>
     </t-dropdown>
@@ -30,6 +30,7 @@ const clickHandler: DropdownProps['onClick'] = (data) => {
 };
 onMounted(() => {
   homeStore.getMyInfo()
+  userStore.updateLoginUserData()
 })
 </script>
   

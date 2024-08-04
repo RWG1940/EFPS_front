@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia';
 import { getTokenClaims } from "@/utils/jwtUtil";
 import { ref } from 'vue';
-import { MessagePlugin } from 'tdesign-vue-next';
 import  type {DropdownProps } from 'tdesign-vue-next';
 
 interface Claims {
@@ -46,6 +45,7 @@ export const useHomeStore = defineStore('home', () => {
     }
     return null;
   }
+  
 
   return {
     id,

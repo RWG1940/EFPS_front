@@ -5,7 +5,7 @@
         <h1 style="color: blue;">EFPS system</h1>
       </template>
       <template #operations>
-        <t-avatar size="medium" style="margin-right: 5px;" image="https://tdesign.gtimg.com/site/avatar.jpg"></t-avatar>
+        <t-avatar size="medium" style="margin-right: 5px;" :image="store.myData.eAvatarpath"></t-avatar>
         <userDropdown/>
         <newsDrawer/>       
       </template>
@@ -16,6 +16,10 @@
 <script setup lang="ts">
 import userDropdown from "../layout/components/userDropdown.vue";
 import newsDrawer from "./components/newsDrawer.vue";
+import { useUserStore } from "@/stores/user-store";
+
+const store = useUserStore()
+
 
 </script>
 <style></style>

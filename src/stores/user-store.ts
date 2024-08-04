@@ -34,9 +34,12 @@ export const useUserStore = defineStore('user', () => {
   */
   // 用户登陆状态
   const token = ref(localStorage.getItem('token') || '');
-  // 用户数据体、集合
+  // 用户数据体、集合   这里用于管理面板的修改
   const userData = ref<UserData>({});
+  const emptyUserData = ref<UserData>({});
   const tableData = ref<UserData[]>([]);
+  // 用户数据体 这里用于登录的帐号 显示数据
+  const myData = ref<UserData>({});
   // 用户数据查询条件
   const options: DropdownProps['options'] = [
     { content: '所有', value: 'all' },
@@ -247,6 +250,7 @@ export const useUserStore = defineStore('user', () => {
         if (response.code === 1) {
           MessagePlugin.close(msg)
           MessagePlugin.success('登录成功');
+          myData.value = response.data
           router.push('/home');
         } else {
           MessagePlugin.error(response.msg || '登录失败');
@@ -254,6 +258,25 @@ export const useUserStore = defineStore('user', () => {
       } catch (error) {
         console.error('登录失败:', error);
         MessagePlugin.error('登录失败，请检查账号和密码');
+      }
+    }
+  }
+  // 登录用户数据刷新
+  const updateLoginUserData = async () => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const response = await userLoginBytoken(token);
+        if (response.code === 1) {
+          MessagePlugin.success('🎈🌼欢迎访问EFPS system！❤');
+          myData.value = response.data
+          router.push('/home');
+        } else {
+          MessagePlugin.error(response.msg || '获取用户信息失败');
+        }
+      } catch (error) {
+        console.error('登录出错:', error);
+        MessagePlugin.error('登录出错，请联系管理员');
       }
     }
   }
@@ -293,6 +316,32 @@ export const useUserStore = defineStore('user', () => {
     localStorage.removeItem('token');
     router.push('/login');
   };
+  // 修改个人信息保存按钮
+  const saveMyInfoButton = async () => {
+    try {
+      await updateUser(myData.value);
+      MessagePlugin.success('用户信息更新成功');
+      handlePageChange()
+    } catch (error) {
+      MessagePlugin.error('更新用户信息失败');
+    }
+  }
+  // 修改个人信息头像
+  const myInfoEditHandleSuccess = (response: any, file: File) => {
+    // 确保响应格式符合预期
+    if (response.response.code === 1) {
+      myData.value.eAvatarpath = response.response.data;
+      console.log('头像上传成功:', response.response.data);
+    } else {
+      console.error('Unexpected upload response format:', response.response);
+      MessagePlugin.error('头像上传失败: 响应格式不正确');
+    }
+  };
+  // 清除用户信息缓存
+  const cleanUserData = () => {
+    userData.value = emptyUserData.value;
+  }
+  
 
   return {
     token,
@@ -318,6 +367,7 @@ export const useUserStore = defineStore('user', () => {
     regFormData,
     REG_FORM_RULES,
     uploadRef,
+    myData,
 
 
     searchUser,
@@ -336,5 +386,9 @@ export const useUserStore = defineStore('user', () => {
     regOnSubmit,
     logout,
     handleSuccess,
+    updateLoginUserData,
+    saveMyInfoButton,
+    myInfoEditHandleSuccess,
+    cleanUserData,
   };
 });

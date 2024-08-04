@@ -37,6 +37,7 @@ onMounted(() => {
 //新增用户面板的可视化以及回调
 const addVisible = ref(false)
 const addButton = () => {
+  store.cleanUserData();
   addVisible.value = true
 }
 const handleUpdateAddVisible = () => {
