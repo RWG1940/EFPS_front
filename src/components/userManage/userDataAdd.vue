@@ -33,13 +33,23 @@
         <t-input v-model="store.userData.eAge" showClearIconOnEmpty placeholder="请输入内容" />
       </t-input-adornment>
       <t-input-adornment prepend="部门">
-        <t-input v-model="store.userData.eDeptid" showClearIconOnEmpty placeholder="请输入内容" />
+        <t-select
+      v-model="value1"
+      :options="options1"
+      placeholder="请选择部门"
+      clearable
+    ></t-select>
       </t-input-adornment>
       <t-input-adornment prepend="职位">
         <t-input v-model="store.userData.eRole" showClearIconOnEmpty placeholder="请输入内容" />
       </t-input-adornment>
       <t-input-adornment prepend="性别">
-        <t-input v-model="store.userData.eGender" showClearIconOnEmpty placeholder="请输入内容" />
+        <t-select
+      v-model="value2"
+      :options="options2"
+      placeholder="请选择性别"
+      clearable
+    ></t-select>
       </t-input-adornment>
     </template>
     <template #footer>

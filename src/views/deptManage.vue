@@ -31,7 +31,7 @@
   
   // 组件挂载后加载
   onMounted(() => {
-    store.handlePageChange()
+    store.autoGetDeptData()
   });
   
   //新增用户面板的可视化以及回调

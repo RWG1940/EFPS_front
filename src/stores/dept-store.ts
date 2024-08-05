@@ -12,7 +12,7 @@ export interface DeptData {
   id?: number;
   dAvatarpath?: string;
   dName?: string;
-  dId?: string;
+  dTotal?: string;
   dCreatetime?: string;
   dUpdatetime?: string;
 }
@@ -29,7 +29,6 @@ export const useDeptStore = defineStore('dept', () => {
     { content: '所有', value: 'all' },
     { content: 'id', value: 'id' },
     { content: '部门名', value: 'dName' },
-    { content: '部门编号', value: 'dId' },
   ];
   const condition = ref(options[0].content);
   const searchCondition = ref<string>('id');

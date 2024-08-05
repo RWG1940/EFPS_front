@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { getTokenClaims } from "@/utils/jwtUtil";
 import { ref } from 'vue';
-import  type {DropdownProps } from 'tdesign-vue-next';
+import type { DropdownProps } from 'tdesign-vue-next';
 
 interface Claims {
   id: number;
@@ -14,6 +14,7 @@ export const useHomeStore = defineStore('home', () => {
   /*
    *状态
    */
+  // home页暂存的用户数据
   const id = ref<number | null>(null);
   const name = ref<string | null>(null);
   const username = ref<string | null>(null);
@@ -32,9 +33,9 @@ export const useHomeStore = defineStore('home', () => {
     },
   ];
 
-  
 
-  // 获取个人信息
+
+  // 获取个人信息By token
   const getMyInfo = (): Claims | null => {
     const claims = getTokenClaims();
     if (claims != null) {
@@ -45,7 +46,7 @@ export const useHomeStore = defineStore('home', () => {
     }
     return null;
   }
-  
+
 
   return {
     id,
@@ -53,7 +54,7 @@ export const useHomeStore = defineStore('home', () => {
     username,
     avatar,
     getMyInfo,
-    options, 
+    options,
     myInfoVisible,
   };
 });

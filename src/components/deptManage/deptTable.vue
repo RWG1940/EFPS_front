@@ -12,7 +12,7 @@
     <el-table-column fixed prop="dName" label="部门" width="150" show-overflow-tooltip>
       <template #default="scope"><el-tag effect="plain">{{ scope.row.dName }}</el-tag></template>
     </el-table-column>
-    <el-table-column prop="dId" label="部门编号" width="120" show-overflow-tooltip />
+    <el-table-column prop="dTotal" label="部门人数" width="120" show-overflow-tooltip />
     <el-table-column prop="dCreatetime" label="创建日期" width="170" show-overflow-tooltip>
       <template #default="scope">
         {{ formatDate(scope.row.dCreatetime) }}

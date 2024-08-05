@@ -55,7 +55,7 @@
     </el-table-column>
     <el-table-column prop="eAge" label="年龄" width="120" />
     <el-table-column prop="eGender" label="性别" width="120">
-      <template #default="scope"><el-tag round :type="scope.row.eGender == '0' ? 'Primary' : 'danger'">{{
+      <template #default="scope"><el-tag round :type="scope.row.eGender == '0' ? 'primary' : 'danger'">{{
         scope.row.eGender == '0' ? '♂' : '♀'
       }}</el-tag></template>
     </el-table-column>
@@ -153,7 +153,4 @@ const handleDelete = async (id: number) => {
 </script>
 
 <style scoped>
-.a {
-  color: #c09aff;
-}
 </style>

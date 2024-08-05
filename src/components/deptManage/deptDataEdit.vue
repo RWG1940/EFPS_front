@@ -17,9 +17,6 @@
       <t-input-adornment prepend="部门名">
         <t-input v-model="store.deptData.dName" showClearIconOnEmpty placeholder="请输入内容" />
       </t-input-adornment>
-      <t-input-adornment prepend="部门编号">
-        <t-input v-model="store.deptData.dId" showClearIconOnEmpty placeholder="请输入内容" />
-      </t-input-adornment>
 
     </template>
     <template #footer>

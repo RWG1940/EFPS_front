@@ -59,10 +59,10 @@ export const deleteDepts = async (ids: number[]) => {
     throw error;
   }
 };
-
+// 自动获取部门数据
 export const getDpetDataBytoken = async( token: string ) =>{
     try {
-        const response = await axios.post(`${BASE_URL}/dept/auto-depts`,token,{params: { token }});
+        const response = await axios.post(`${BASE_URL}/depts/auto-depts`,token,{params: { token }});
         return response.data;
       } catch (error) {
         console.error('Error fetching dept data:', error);
