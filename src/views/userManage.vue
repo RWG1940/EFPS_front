@@ -1,7 +1,7 @@
 <template>
   <div class="wrap">
     <div class="search">
-      <userSort/>
+      <userSort />
       <t-input placeholder="搜索用户" v-model:="store.searchInput" clearable style="width: 15%;"></t-input>
       <t-button theme="default" @click="store.searchUser();"><template #icon><search-icon /></template>
       </t-button>
@@ -29,7 +29,7 @@ import { useUserStore } from "@/stores/user-store";
 
 const store = useUserStore()
 
-// 组件挂载后加载
+// 组件挂载后加载用胡数据ByToken
 onMounted(() => {
   store.handlePageChange()
 });

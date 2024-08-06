@@ -39,7 +39,7 @@
           <t-input v-model="store.myData.eRole" disabled showClearIconOnEmpty placeholder="请输入内容" />
         </t-input-adornment>
         <t-input-adornment prepend="性别">
-          <t-input v-model="store.myData.eGender" showClearIconOnEmpty placeholder="请输入内容" />
+          <t-select v-model="store.myData.eGender" :options="store.options2" placeholder="请选择性别" clearable></t-select>
         </t-input-adornment>
         <t-input-adornment prepend="状态">
           <t-input v-model="store.myData.eIsenabled" disabled showClearIconOnEmpty placeholder="请输入内容" />

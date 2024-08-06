@@ -6,9 +6,6 @@
 </template>
 <script lang="ts" setup>
 import myInfo from "@/layout/components/myInfo.vue";
-import { useHomeStore } from "@/stores/home-store";
-
-const store = useHomeStore()
 
 </script>
 <style>

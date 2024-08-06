@@ -3,9 +3,10 @@ import { ref } from 'vue';
 import type { TableColumnCtx } from 'element-plus'
 import { computed } from 'vue';
 import { MessagePlugin } from 'tdesign-vue-next';
-import type { UploadInstanceFunctions,DropdownProps, UploadProps } from 'tdesign-vue-next';
+import type { UploadInstanceFunctions, DropdownProps, UploadProps } from 'tdesign-vue-next';
 import { BASE_URL } from "@/api/user-api";
-import { fetchDeptDataBySearch, fetchDeptDataPages, deleteDepts, deleteDept, addDept, updateDept,getDpetDataBytoken } from '@/api/dept-api';
+import { fetchDeptDataBySearch, fetchDeptDataPages, deleteDepts, deleteDept, addDept, updateDept } from '@/api/dept-api';
+
 
 // 定义部门数据类型
 export interface DeptData {
@@ -20,11 +21,11 @@ export const useDeptStore = defineStore('dept', () => {
   /*
   *状态
   */
-  // 用户数据体、集合   这里用于管理面板的修改
+  // 部门单条数据及集合，用于管理面板的修改
   const deptData = ref<DeptData>({});
   const emptyDeptData = ref<DeptData>({});
   const tableData = ref<DeptData[]>([]);
-  // 用户数据查询条件
+  // 数据下拉条件
   const options: DropdownProps['options'] = [
     { content: '所有', value: 'all' },
     { content: 'id', value: 'id' },
@@ -48,7 +49,7 @@ export const useDeptStore = defineStore('dept', () => {
   const file2 = ref<UploadProps['value']>([]);
   const avatarUrl = ref(`${BASE_URL}/upload`);
   const uploadRef = ref<UploadInstanceFunctions>();
-  
+
   /*
   *动作
   */
@@ -58,29 +59,34 @@ export const useDeptStore = defineStore('dept', () => {
       const response = await fetchDeptDataBySearch({
         [searchCondition.value]: searchInput.value,
       });
-      if (response && response.data && Array.isArray(response.data)) {
+      if (response.code == 1) {
         tableData.value = response.data;
       } else {
-        console.error('Unexpected data format:', response);
+        console.error(response.msg);
       }
     } catch (error) {
-      console.error('Failed to search user data:', error);
+      console.error('查找用户数据失败');
     }
   };
   // 部门分页数据获取
   const handlePageChange = async () => {
-    try {
-      const response = await fetchDeptDataPages(current.value, pageSize.value);
-      console.log('Fetched dept dataPages:', response);
-      if (response && response.data && Array.isArray(response.data.rows)) {
-        tableData.value = response.data.rows;
-        total.value = response.data.total;
-      } else {
-        console.error('Unexpected data format:', response);
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const response = await fetchDeptDataPages(current.value, pageSize.value, token);
+        if (response.code == 1) {
+          tableData.value = response.data.rows;
+          total.value = response.data.total;
+        } else {
+          console.error(response.msg);
+        }
+      } catch (error) {
+        console.error('加载部门数据出错');
       }
-    } catch (error) {
-      console.error('Failed to load dept data:', error);
+    } else {
+      MessagePlugin.error('token不存在')
     }
+
   };
   // 批量删除部门
   const handleBatchDelete = async () => {
@@ -91,10 +97,14 @@ export const useDeptStore = defineStore('dept', () => {
     const msg = MessagePlugin.loading('批量删除中')
     try {
       await new Promise(resolve => setTimeout(resolve, 500));
-      await deleteDepts(selectedIds.value);
-      MessagePlugin.close(msg);
-      MessagePlugin.success('批量删除成功');
-      handlePageChange();
+      const response = await deleteDepts(selectedIds.value);
+      if (response.code == 1) {
+        MessagePlugin.close(msg);
+        MessagePlugin.success('批量删除成功');
+        handlePageChange();
+      } else {
+        MessagePlugin.close(response.msg);
+      }
     } catch (error) {
       MessagePlugin.error('批量删除失败');
     }
@@ -104,10 +114,14 @@ export const useDeptStore = defineStore('dept', () => {
     const msg = MessagePlugin.info('删除中');
     try {
       await new Promise(resolve => setTimeout(resolve, 200));
-      await deleteDept(id);
-      MessagePlugin.close(msg);
-      MessagePlugin.success('部门删除成功');
-      handlePageChange();
+      const response = await deleteDept(id);
+      if (response.code == 1) {
+        MessagePlugin.close(msg);
+        MessagePlugin.success('部门删除成功');
+        handlePageChange();
+      } else {
+        MessagePlugin.close(response.msg);
+      }
     } catch (error) {
       MessagePlugin.error('删除部门失败');
     }
@@ -161,9 +175,13 @@ export const useDeptStore = defineStore('dept', () => {
   // 修改部门保存按钮
   const saveButton = async () => {
     try {
-      await updateDept(deptData.value);
-      MessagePlugin.success('部门信息更新成功');
-      handlePageChange()
+      const response = await updateDept(deptData.value);
+      if (response.code == 1) {
+        MessagePlugin.success('部门信息更新成功');
+        handlePageChange()
+      }else{
+        MessagePlugin.error(response.msg);
+      }
     } catch (error) {
       MessagePlugin.error('更新部门信息失败');
     }
@@ -171,36 +189,22 @@ export const useDeptStore = defineStore('dept', () => {
   // 添加部门添加按钮
   const submitButton = async () => {
     try {
-      await addDept(deptData.value);
-      MessagePlugin.success('添加部门成功');
-      handlePageChange()
+      const response = await addDept(deptData.value);
+      if (response.code == 1) {
+        MessagePlugin.success('添加部门成功');
+        handlePageChange()
+      } else {
+        MessagePlugin.error('添加部门失败');
+      }
     } catch (error) {
       MessagePlugin.error('添加部门失败');
     }
   }
-  
-  // 通过token获得部门数据
-  const autoGetDeptData = async () => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      try {
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        const response = await getDpetDataBytoken(token);
-        if (response.code === 1) {
-          tableData.value = response.data
-        } else {
-          MessagePlugin.error(response.msg || '获取部门信息失败');
-        }
-      } catch (error) {
-        console.error('获取部门信息失败:', error);
-        MessagePlugin.error('登获取部门信息失败');
-      }
-    }
-  }
+
+  // 清除暂存的部门数据
   const cleanDeptData = () => {
     deptData.value = emptyDeptData.value;
     file1.value = file2.value
-
   }
 
 
@@ -237,7 +241,6 @@ export const useDeptStore = defineStore('dept', () => {
     saveButton,
     submitButton,
     handleSuccess,
-    autoGetDeptData,
     cleanDeptData,
   };
 });

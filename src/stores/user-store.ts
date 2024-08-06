@@ -27,6 +27,7 @@ export interface UserData {
   eUpdatetime?: string;
   eIsenabled?: boolean;
 }
+// 该模块用于管理用户管理页的用户数据
 export const useUserStore = defineStore('user', () => {
   const router = useRouter();
   /*
@@ -34,7 +35,7 @@ export const useUserStore = defineStore('user', () => {
   */
   // 用户登陆状态
   const token = ref(localStorage.getItem('token') || '');
-  // 用户数据体、集合   这里用于管理面板的修改
+  // 单条用户数据及集合用于管理面板的修改
   const userData = ref<UserData>({});
   const emptyUserData = ref<UserData>({});
   const tableData = ref<UserData[]>([]);
@@ -51,6 +52,16 @@ export const useUserStore = defineStore('user', () => {
   const condition = ref(options[0].content);
   const searchCondition = ref<string>('id');
   const searchInput = ref<string>('');
+  // 用户修改及添加的一些状态
+  const options1 = ref([
+    { label: '管理部', value: '0' },
+    { label: '区域管制部', value: '1' },
+    { label: '塔台管制部', value: '2' },
+  ])
+  const options2 = ref([
+    { label: '男', value: '0' },
+    { label: '女', value: '1' },
+  ])
   // 分页数据
   const current = ref<number>(1);
   const pageSize = ref<number>(10);
@@ -166,12 +177,11 @@ export const useUserStore = defineStore('user', () => {
       value: item.id
     }));
   });
-  // 头像上传失败回调
+  // 头像上传回调
   const handleFail: UploadProps['onFail'] = ({ file }) => {
     MessagePlugin.error(`文件 ${file.name} 上传失败`);
   };
   const handleSuccess = (response: any, file: File) => {
-    // 确保响应格式符合预期
     if (response.response.code === 1) {
       userData.value.eAvatarpath = response.response.data;
       console.log('头像上传成功:', response.response.data);
@@ -273,9 +283,11 @@ export const useUserStore = defineStore('user', () => {
           router.push('/home');
         } else {
           MessagePlugin.error(response.msg || '获取用户信息失败');
+          router.push('/login');
         }
       } catch (error) {
         console.error('登录出错:', error);
+        router.push('/login');
         MessagePlugin.error('登录出错，请联系管理员');
       }
     }
@@ -311,6 +323,7 @@ export const useUserStore = defineStore('user', () => {
       }
     }
   };
+  // 登出
   const logout = () => {
     token.value = '';
     localStorage.removeItem('token');
@@ -344,6 +357,7 @@ export const useUserStore = defineStore('user', () => {
   
 
   return {
+    // 状态
     token,
     userData,
     tableData,
@@ -368,8 +382,10 @@ export const useUserStore = defineStore('user', () => {
     REG_FORM_RULES,
     uploadRef,
     myData,
+    options1,
+    options2,
 
-
+    // 方法
     searchUser,
     handlePageChange,
     handleBatchDelete,

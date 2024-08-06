@@ -30,7 +30,6 @@
         </div>
         </t-drawer>
         <myInfoEdit  :visible="editVisible" @update:visible="handleEditVisibleChange" />
-        <myInfoEdit  :visible="editVisible" @update:visible="handleEditVisibleChange" />
     </div>
   </template>
   
@@ -47,9 +46,11 @@
   const mode = ref('push');
   const editVisible = ref(false)
   
+  // myInfoEdit保存按钮的回调
   const handleEditVisibleChange = ()=> {
     editVisible.value = false;
   }
+  // 编辑按钮事件
   const handleEditClick = ()=> {
     editVisible.value = true;
   }

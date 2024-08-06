@@ -4,9 +4,9 @@
     <template #main>
       <div style="display: flex;">
         <p style="margin-right: 10px;">头像</p>
-        <t-upload ref="store.uploadRef" v-model="store.file1" :image-viewer-props="store.imageViewerProps" :size-limit="store.sizeLimit"
-          :action="store.avatarUrl" theme="image" tips="上传头像大小不超过5500KB" accept="image/*" :disabled="store.disabled"
-          :auto-upload="store.autoUpload" :show-image-file-name="store.showImageFileName"
+        <t-upload ref="store.uploadRef" v-model="store.file1" :image-viewer-props="store.imageViewerProps"
+          :size-limit="store.sizeLimit" :action="store.avatarUrl" theme="image" tips="上传头像大小不超过5500KB" accept="image/*"
+          :disabled="store.disabled" :auto-upload="store.autoUpload" :show-image-file-name="store.showImageFileName"
           :upload-all-files-in-one-request="store.uploadAllFilesInOneRequest" :locale="{
             triggerUploadText: {
               image: '请选择图片',
@@ -33,13 +33,13 @@
         <t-input v-model="store.userData.eAge" showClearIconOnEmpty placeholder="请输入内容" />
       </t-input-adornment>
       <t-input-adornment prepend="部门">
-        <t-input v-model="store.userData.eDeptid" showClearIconOnEmpty placeholder="请输入内容" />
+        <t-select v-model="store.userData.eDeptid" :options="store.options1" placeholder="请选择部门" clearable></t-select>
       </t-input-adornment>
       <t-input-adornment prepend="职位">
         <t-input v-model="store.userData.eRole" showClearIconOnEmpty placeholder="请输入内容" />
       </t-input-adornment>
       <t-input-adornment prepend="性别">
-        <t-input v-model="store.userData.eGender" showClearIconOnEmpty placeholder="请输入内容" />
+        <t-select v-model="store.userData.eGender" :options="store.options2" placeholder="请选择性别" clearable></t-select>
       </t-input-adornment>
       <t-input-adornment prepend="状态">
         <t-input v-model="store.userData.eIsenabled" showClearIconOnEmpty placeholder="请输入内容" />
@@ -59,7 +59,7 @@ import { useUserStore } from "@/stores/user-store";
 const store = useUserStore()
 
 const props = defineProps<{
-  visible:boolean;
+  visible: boolean;
 }>();
 const emit = defineEmits(['update:visible']);
 

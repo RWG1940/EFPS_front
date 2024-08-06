@@ -24,14 +24,14 @@
   import deptSort from '../components/deptManage/deptSortDropdown.vue'
   import deptTable from '../components/deptManage/deptTable.vue'
   import { ref, onMounted } from "vue";
-  import pagination from "@/components/userManage/pagination.vue";
+  import pagination from "@/components/deptManage/pagination.vue";
   import { useDeptStore } from "@/stores/dept-store";
   
   const store = useDeptStore()
   
-  // 组件挂载后加载
+  // 组件挂载后加载部门数据ByToken
   onMounted(() => {
-    store.autoGetDeptData()
+    store.handlePageChange()
   });
   
   //新增用户面板的可视化以及回调

@@ -2,14 +2,14 @@ import { defineStore } from 'pinia';
 import { getTokenClaims } from "@/utils/jwtUtil";
 import { ref } from 'vue';
 import type { DropdownProps } from 'tdesign-vue-next';
-
+// 定义用户数据类型
 interface Claims {
   id: number;
   name: string;
   username: string;
   avatar: string;
 }
-
+// 该模块用于管理home页用户数据
 export const useHomeStore = defineStore('home', () => {
   /*
    *状态
@@ -20,7 +20,7 @@ export const useHomeStore = defineStore('home', () => {
   const username = ref<string | null>(null);
   const avatar = ref<string | null>(null);
   const myInfoVisible = ref(false)
-
+  // 下拉菜单
   const options: DropdownProps['options'] = [
     {
       content: '个人中心',
@@ -33,9 +33,7 @@ export const useHomeStore = defineStore('home', () => {
     },
   ];
 
-
-
-  // 获取个人信息By token
+  // 从token获取用户信息
   const getMyInfo = (): Claims | null => {
     const claims = getTokenClaims();
     if (claims != null) {
@@ -46,7 +44,6 @@ export const useHomeStore = defineStore('home', () => {
     }
     return null;
   }
-
 
   return {
     id,
