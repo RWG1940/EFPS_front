@@ -11,7 +11,7 @@
               triggerUploadText: {
                 image: '请选择图片',
               },
-            }" @success="store.handleSuccess" @fail="store.handleFail">
+            }" @success="store.myInfoEditHandleSuccess" @fail="store.handleFail">
           </t-upload>
         </div>
         <t-input-adornment prepend="姓名">

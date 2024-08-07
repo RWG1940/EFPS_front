@@ -55,34 +55,26 @@ export const useDeptStore = defineStore('dept', () => {
   */
   // 部门数据查找
   const searchDept = async () => {
-    try {
       const response = await fetchDeptDataBySearch({
         [searchCondition.value]: searchInput.value,
       });
       if (response.code == 1) {
-        tableData.value = response.data;
+        tableData.value = response.result;
       } else {
         console.error(response.msg);
-      }
-    } catch (error) {
-      console.error('查找用户数据失败');
-    }
+      } 
   };
   // 部门分页数据获取
   const handlePageChange = async () => {
     const token = localStorage.getItem('token');
     if (token) {
-      try {
         const response = await fetchDeptDataPages(current.value, pageSize.value, token);
         if (response.code == 1) {
-          tableData.value = response.data.rows;
-          total.value = response.data.total;
+          tableData.value = response.result.rows;
+          total.value = response.result.total;
         } else {
           console.error(response.msg);
         }
-      } catch (error) {
-        console.error('加载部门数据出错');
-      }
     } else {
       MessagePlugin.error('token不存在')
     }
@@ -95,7 +87,6 @@ export const useDeptStore = defineStore('dept', () => {
       return;
     }
     const msg = MessagePlugin.loading('批量删除中')
-    try {
       await new Promise(resolve => setTimeout(resolve, 500));
       const response = await deleteDepts(selectedIds.value);
       if (response.code == 1) {
@@ -105,14 +96,10 @@ export const useDeptStore = defineStore('dept', () => {
       } else {
         MessagePlugin.close(response.msg);
       }
-    } catch (error) {
-      MessagePlugin.error('批量删除失败');
-    }
   };
   // 删除单条部门BY id
   const handleDelete = async (id: number) => {
     const msg = MessagePlugin.info('删除中');
-    try {
       await new Promise(resolve => setTimeout(resolve, 200));
       const response = await deleteDept(id);
       if (response.code == 1) {
@@ -122,9 +109,6 @@ export const useDeptStore = defineStore('dept', () => {
       } else {
         MessagePlugin.close(response.msg);
       }
-    } catch (error) {
-      MessagePlugin.error('删除部门失败');
-    }
   };
   // 查询条件修改
   const clickHandler = (data: { content: string, value: string }) => {
@@ -155,9 +139,9 @@ export const useDeptStore = defineStore('dept', () => {
     MessagePlugin.error(`图片 ${file.name} 上传失败`);
   };
   const handleSuccess = (response: any, file: File) => {
-    if (response.response.code === 1) {
-      deptData.value.dAvatarpath = response.response.data;
-      console.log('图片上传成功:', response.response.data);
+    if (response.response.code == 1) {
+      deptData.value.dAvatarpath = response.response.result;
+      console.log('图片上传成功:', response.response.result);
     } else {
       console.error('Unexpected upload response format:', response.response);
       MessagePlugin.error('图片上传失败: 响应格式不正确');
@@ -174,7 +158,6 @@ export const useDeptStore = defineStore('dept', () => {
   });
   // 修改部门保存按钮
   const saveButton = async () => {
-    try {
       const response = await updateDept(deptData.value);
       if (response.code == 1) {
         MessagePlugin.success('部门信息更新成功');
@@ -182,13 +165,9 @@ export const useDeptStore = defineStore('dept', () => {
       }else{
         MessagePlugin.error(response.msg);
       }
-    } catch (error) {
-      MessagePlugin.error('更新部门信息失败');
-    }
   }
   // 添加部门添加按钮
   const submitButton = async () => {
-    try {
       const response = await addDept(deptData.value);
       if (response.code == 1) {
         MessagePlugin.success('添加部门成功');
@@ -196,9 +175,6 @@ export const useDeptStore = defineStore('dept', () => {
       } else {
         MessagePlugin.error('添加部门失败');
       }
-    } catch (error) {
-      MessagePlugin.error('添加部门失败');
-    }
   }
 
   // 清除暂存的部门数据

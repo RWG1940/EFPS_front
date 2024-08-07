@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { handleRequest } from '@/utils/apiHelper';
+import {URL} from '@/config/config'
 
-export const BASE_URL = 'http://localhost:8080';
+export const BASE_URL = URL;
 // 获取所有部门数据
 export const fetchDeptData = async () => {
   return await handleRequest(() => axios.get(`${BASE_URL}/depts`));

@@ -6,7 +6,7 @@ import { userLogin, userLoginBytoken } from '@/api/login-api';
 import { regUser } from '@/api/reg-api';
 import { fetchUserDataBySearch, fetchUserDataPages, deleteUsers, deleteUser, updateUser, addUser } from '@/api/user-api'
 import { MessagePlugin } from 'tdesign-vue-next';
-import type { UploadInstanceFunctions,DropdownProps, UploadProps, FormProps } from 'tdesign-vue-next';
+import type { UploadInstanceFunctions, DropdownProps, UploadProps, FormProps } from 'tdesign-vue-next';
 import { BASE_URL } from "@/api/user-api";
 import { useRouter } from 'vue-router';
 
@@ -95,32 +95,23 @@ export const useUserStore = defineStore('user', () => {
   */
   // 用户数据查找
   const searchUser = async () => {
-    try {
-      const response = await fetchUserDataBySearch({
-        [searchCondition.value]: searchInput.value,
-      });
-      if (response && response.data && Array.isArray(response.data)) {
-        tableData.value = response.data;
-      } else {
-        console.error('Unexpected data format:', response);
-      }
-    } catch (error) {
-      console.error('Failed to search user data:', error);
+    const response = await fetchUserDataBySearch({
+      [searchCondition.value]: searchInput.value,
+    });
+    if (response.code == 1) {
+      tableData.value = response.result;
+    } else {
+      MessagePlugin.error(response.msg);
     }
   };
   // 用户分页数据获取
   const handlePageChange = async () => {
-    try {
-      const response = await fetchUserDataPages(current.value, pageSize.value);
-      console.log('Fetched user dataPages:', response);
-      if (response && response.data && Array.isArray(response.data.rows)) {
-        tableData.value = response.data.rows;
-        total.value = response.data.total;
-      } else {
-        console.error('Unexpected data format:', response);
-      }
-    } catch (error) {
-      console.error('Failed to load user data:', error);
+    const response = await fetchUserDataPages(current.value, pageSize.value);
+    if (response.code == 1) {
+      tableData.value = response.result.rows;
+      total.value = response.result.total;
+    } else {
+      MessagePlugin.error(response.msg);
     }
   };
   // 批量删除用户
@@ -130,27 +121,25 @@ export const useUserStore = defineStore('user', () => {
       return;
     }
     const msg = MessagePlugin.loading('批量删除中')
-    try {
-      await new Promise(resolve => setTimeout(resolve, 500));
-      await deleteUsers(selectedIds.value);
+    await new Promise(resolve => setTimeout(resolve, 500));
+    const response = await deleteUsers(selectedIds.value);
+    if (response.code == 1) {
       MessagePlugin.close(msg);
       MessagePlugin.success('批量删除成功');
       handlePageChange();
-    } catch (error) {
-      MessagePlugin.error('批量删除失败');
+    } else {
+      MessagePlugin.close(response.msg);
     }
   };
   // 删除单条用户BY id
   const handleDelete = async (id: number) => {
     const msg = MessagePlugin.info('删除中');
-    try {
-      await new Promise(resolve => setTimeout(resolve, 200));
-      await deleteUser(id);
+    await new Promise(resolve => setTimeout(resolve, 200));
+    const response = await deleteUser(id);
+    if (response.code == 1) {
       MessagePlugin.close(msg);
       MessagePlugin.success('用户删除成功');
       handlePageChange();
-    } catch (error) {
-      MessagePlugin.error('删除用户失败');
     }
   };
   // 查询条件修改
@@ -182,11 +171,9 @@ export const useUserStore = defineStore('user', () => {
     MessagePlugin.error(`文件 ${file.name} 上传失败`);
   };
   const handleSuccess = (response: any, file: File) => {
-    if (response.response.code === 1) {
-      userData.value.eAvatarpath = response.response.data;
-      console.log('头像上传成功:', response.response.data);
+    if (response.response.code == 1) {
+      userData.value.eAvatarpath = response.response.result;
     } else {
-      console.error('Unexpected upload response format:', response.response);
       MessagePlugin.error('头像上传失败: 响应格式不正确');
     }
   };
@@ -201,45 +188,43 @@ export const useUserStore = defineStore('user', () => {
   });
   // 修改用户保存按钮
   const saveButton = async () => {
-    try {
-      await updateUser(userData.value);
+
+    const response = await updateUser(userData.value);
+    if (response.code == 1) {
       MessagePlugin.success('用户信息更新成功');
       handlePageChange()
-    } catch (error) {
-      MessagePlugin.error('更新用户信息失败');
+    } else {
+      MessagePlugin.error(response.msg);
     }
+
+
   }
   // 添加用户添加按钮
   const submitButton = async () => {
-    try {
-      await addUser(userData.value);
-      MessagePlugin.success('添加用户成功');
-      handlePageChange()
-    } catch (error) {
-      MessagePlugin.error('添加用户失败');
-    }
+      const response = await addUser(userData.value);
+      if (response.code == 1) {
+        MessagePlugin.success('添加用户成功');
+        handlePageChange()
+      } else {
+        MessagePlugin.error('添加用户失败');
+      }
   }
   // 手动登录提交按钮
   const loginOnSubmit: FormProps['onSubmit'] = async ({ validateResult, firstError }) => {
     const msg = MessagePlugin.loading('登陆中')
     await new Promise(resolve => setTimeout(resolve, 200));
     if (validateResult === true) {
-      try {
         const user = { eUsername: loginFormData.account, ePassword: loginFormData.password };
         const response = await userLogin(user);
         MessagePlugin.close(msg)
-        if (response.code === 1) {
-          token.value = response.data
-          localStorage.setItem('token', response.data);
+        if (response.code == 1) {
+          token.value = response.result
+          localStorage.setItem('token', response.result);
           MessagePlugin.success('登录成功');
           router.push('/home');
         } else {
-          MessagePlugin.error(response.msg || '登录失败');
+          MessagePlugin.error(response.msg);
         }
-      } catch (error) {
-        console.error('登录失败:', error);
-        MessagePlugin.error('登录失败，请检查账号和密码');
-      }
     } else {
       console.log('Validate Errors: ', firstError, validateResult);
       if (firstError) {
@@ -253,43 +238,33 @@ export const useUserStore = defineStore('user', () => {
   const autoLogin = async () => {
     const token = localStorage.getItem('token');
     if (token) {
-      try {
         const msg = MessagePlugin.loading('自动登陆中')
         await new Promise(resolve => setTimeout(resolve, 1000));
         const response = await userLoginBytoken(token);
         if (response.code === 1) {
           MessagePlugin.close(msg)
           MessagePlugin.success('登录成功');
-          myData.value = response.data
+          myData.value = response.result
           router.push('/home');
         } else {
-          MessagePlugin.error(response.msg || '登录失败');
+          router.push('/login');
+          MessagePlugin.error(response.msg);
         }
-      } catch (error) {
-        console.error('登录失败:', error);
-        MessagePlugin.error('登录失败，请检查账号和密码');
-      }
     }
   }
   // 登录用户数据刷新
   const updateLoginUserData = async () => {
     const token = localStorage.getItem('token');
     if (token) {
-      try {
         const response = await userLoginBytoken(token);
-        if (response.code === 1) {
+        if (response.code == 1) {
           MessagePlugin.success('🎈🌼欢迎访问EFPS system！❤');
-          myData.value = response.data
+          myData.value = response.result
           router.push('/home');
         } else {
-          MessagePlugin.error(response.msg || '获取用户信息失败');
+          MessagePlugin.error(response.msg);
           router.push('/login');
         }
-      } catch (error) {
-        console.error('登录出错:', error);
-        router.push('/login');
-        MessagePlugin.error('登录出错，请联系管理员');
-      }
     }
   }
   // 注册提交按钮
@@ -297,23 +272,17 @@ export const useUserStore = defineStore('user', () => {
     const msg = MessagePlugin.loading('注册中');
     await new Promise(resolve => setTimeout(resolve, 200));
     if (validateResult === true) {
-      try {
         const user = { eUsername: regFormData.account, ePassword: regFormData.password, eId: regFormData.eid, ePhone: regFormData.phone };
         const response = await regUser(user);
         MessagePlugin.close(msg);
         if (response.code === 1) {
           MessagePlugin.success('注册成功');
-          token.value = response.data
-          localStorage.setItem('token', response.data);
+          token.value = response.result
+          localStorage.setItem('token', response.result);
           router.push('/home');
         } else {
-          MessagePlugin.error(response.msg || '注册失败');
+          MessagePlugin.error(response.msg);
         }
-      } catch (error) {
-        MessagePlugin.close(msg);
-        console.error('注册失败:', error);
-        MessagePlugin.error('注册失败，请重试');
-      }
     } else {
       console.log('Validate Errors: ', firstError, validateResult);
       if (firstError) {
@@ -331,20 +300,20 @@ export const useUserStore = defineStore('user', () => {
   };
   // 修改个人信息保存按钮
   const saveMyInfoButton = async () => {
-    try {
-      await updateUser(myData.value);
-      MessagePlugin.success('用户信息更新成功');
-      handlePageChange()
-    } catch (error) {
-      MessagePlugin.error('更新用户信息失败');
-    }
+      const response = await updateUser(myData.value);
+      if (response.code == 1) {
+        MessagePlugin.success('用户信息更新成功');
+        handlePageChange()
+      } else {
+        MessagePlugin.warning('用户信息更新失败');
+      }   
   }
   // 修改个人信息头像
   const myInfoEditHandleSuccess = (response: any, file: File) => {
     // 确保响应格式符合预期
-    if (response.response.code === 1) {
-      myData.value.eAvatarpath = response.response.data;
-      console.log('头像上传成功:', response.response.data);
+    if (response.response.code == 1) {
+      myData.value.eAvatarpath = response.response.result;
+      console.log('头像上传成功:', response.response.result);
     } else {
       console.error('Unexpected upload response format:', response.response);
       MessagePlugin.error('头像上传失败: 响应格式不正确');
@@ -354,7 +323,7 @@ export const useUserStore = defineStore('user', () => {
   const cleanUserData = () => {
     userData.value = emptyUserData.value;
   }
-  
+
 
   return {
     // 状态
