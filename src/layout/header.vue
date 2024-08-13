@@ -5,7 +5,7 @@
         <h1 style="color: blue;">EFPS system</h1>
       </template>
       <template #operations>
-        <t-avatar size="medium" style="margin-right: 5px;" :image="store.myData.eAvatarpath"></t-avatar>
+        <t-avatar size="medium" style="margin-right: 5px;" :image="store.myData.emp.eAvatarpath"></t-avatar>
         <userDropdown/>
         <newsDrawer/>       
       </template>

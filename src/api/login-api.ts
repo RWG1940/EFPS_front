@@ -11,6 +11,10 @@ export const userLogin = async (user: any) => {
 // token登录
 export const userLoginBytoken = async (token: string) => {
   return await handleRequest(() => 
-    axios.post(`${BASE_URL}/login/auto-login`, token, { params: { token } })
+    axios.post(`${BASE_URL}/login/auto-login`, null, {
+      headers: { 
+        Authorization: `Bearer ${token}`
+      }
+    })
   );
 };

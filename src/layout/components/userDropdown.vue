@@ -2,7 +2,7 @@
   <t-space class="dropdown">
     <t-dropdown :options="homeStore.options" @click="clickHandler">
       <t-button variant="text">
-        {{ userStore.myData.eName }}
+        {{ userStore.myData.emp.eName }}
         <template #suffix><chevron-down-icon size="16" /></template>
       </t-button>
     </t-dropdown>

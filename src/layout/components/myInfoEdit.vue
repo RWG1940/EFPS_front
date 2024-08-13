@@ -15,34 +15,31 @@
           </t-upload>
         </div>
         <t-input-adornment prepend="姓名">
-          <t-input v-model="store.myData.eName" showClearIconOnEmpty placeholder="请输入内容" />
+          <t-input v-model="store.myData.emp.eName" showClearIconOnEmpty placeholder="请输入内容" />
         </t-input-adornment>
         <t-input-adornment prepend="账号">
-          <t-input v-model="store.myData.eUsername" disabled showClearIconOnEmpty placeholder="请输入内容" />
+          <t-input v-model="store.myData.emp.eUsername" disabled showClearIconOnEmpty placeholder="请输入内容" />
         </t-input-adornment>
         <t-input-adornment prepend="密码">
-          <t-input v-model="store.myData.ePassword" showClearIconOnEmpty placeholder="请输入内容" />
+          <t-input v-model="store.myData.emp.ePassword" showClearIconOnEmpty placeholder="请输入内容" />
         </t-input-adornment>
         <t-input-adornment prepend="证件号">
-          <t-input v-model="store.myData.eId" showClearIconOnEmpty placeholder="请输入内容" />
+          <t-input v-model="store.myData.emp.eId" showClearIconOnEmpty placeholder="请输入内容" />
         </t-input-adornment>
         <t-input-adornment prepend="手机号">
-          <t-input v-model="store.myData.ePhone" showClearIconOnEmpty placeholder="请输入内容" />
+          <t-input v-model="store.myData.emp.ePhone" showClearIconOnEmpty placeholder="请输入内容" />
         </t-input-adornment>
         <t-input-adornment prepend="年龄">
-          <t-input v-model="store.myData.eAge" showClearIconOnEmpty placeholder="请输入内容" />
+          <t-input v-model="store.myData.emp.eAge" showClearIconOnEmpty placeholder="请输入内容" />
         </t-input-adornment>
         <t-input-adornment prepend="部门">
-          <t-input v-model="store.myData.eDeptid" disabled showClearIconOnEmpty placeholder="请输入内容" />
-        </t-input-adornment>
-        <t-input-adornment prepend="职位">
-          <t-input v-model="store.myData.eRole" disabled showClearIconOnEmpty placeholder="请输入内容" />
+          <t-input v-model="store.myData.emp.eDeptid" disabled showClearIconOnEmpty placeholder="请输入内容" />
         </t-input-adornment>
         <t-input-adornment prepend="性别">
-          <t-select v-model="store.myData.eGender" :options="store.options2" placeholder="请选择性别" clearable></t-select>
+          <t-select v-model="store.myData.emp.eGender" :options="store.options2" placeholder="请选择性别" clearable></t-select>
         </t-input-adornment>
         <t-input-adornment prepend="状态">
-          <t-input v-model="store.myData.eIsenabled" disabled showClearIconOnEmpty placeholder="请输入内容" />
+          <t-input v-model="store.myData.emp.eIsenabled" disabled showClearIconOnEmpty placeholder="请输入内容"></t-input>
         </t-input-adornment>
   
       </template>

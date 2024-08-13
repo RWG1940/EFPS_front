@@ -4,47 +4,87 @@
     <template #main>
       <div style="display: flex;">
         <p style="margin-right: 10px;">头像</p>
-        <t-upload ref="uploadRef1" v-model="store.file1" :image-viewer-props="store.imageViewerProps"
-          :size-limit="store.sizeLimit" :action=store.avatarUrl theme="image" tips="上传头像大小不超过500KB" accept="image/*"
+        <t-upload ref="store.uploadRef" v-model="store.file1" :image-viewer-props="store.imageViewerProps"
+          :size-limit="store.sizeLimit" :action="store.avatarUrl" theme="image" tips="上传头像大小不超过5500KB" accept="image/*"
           :disabled="store.disabled" :auto-upload="store.autoUpload" :show-image-file-name="store.showImageFileName"
           :upload-all-files-in-one-request="store.uploadAllFilesInOneRequest" :locale="{
             triggerUploadText: {
               image: '请选择图片',
             },
-          }" @fail="store.handleFail">
+          }" @success="store.handleSuccess" @fail="store.handleFail">
         </t-upload>
       </div>
-      <t-input-adornment prepend="姓名">
-        <t-input v-model="store.userData.eName" showClearIconOnEmpty placeholder="请输入内容" />
-      </t-input-adornment>
-      <t-input-adornment prepend="账号">
-        <t-input v-model="store.userData.eUsername" showClearIconOnEmpty placeholder="请输入内容" />
-      </t-input-adornment>
-      <t-input-adornment prepend="密码">
-        <t-input v-model="store.userData.ePassword" showClearIconOnEmpty placeholder="请输入内容" />
-      </t-input-adornment>
-      <t-input-adornment prepend="证件号">
-        <t-input v-model="store.userData.eId" showClearIconOnEmpty placeholder="请输入内容" />
-      </t-input-adornment>
-      <t-input-adornment prepend="手机号">
-        <t-input v-model="store.userData.ePhone" showClearIconOnEmpty placeholder="请输入内容" />
-      </t-input-adornment>
-      <t-input-adornment prepend="年龄">
-        <t-input v-model="store.userData.eAge" showClearIconOnEmpty placeholder="请输入内容" />
-      </t-input-adornment>
-      <t-input-adornment prepend="部门">
-        <t-select v-model="store.userData.eDeptid" :options="store.options1" placeholder="请选择部门" clearable></t-select>
-      </t-input-adornment>
-      <t-input-adornment prepend="职位">
-        <t-input v-model="store.userData.eRole" showClearIconOnEmpty placeholder="请输入内容" />
-      </t-input-adornment>
-      <t-input-adornment prepend="性别">
-        <t-select v-model="store.userData.eGender" :options="store.options2" placeholder="请选择性别" clearable></t-select>
-      </t-input-adornment>
+      <t-form ref="form" :data="store.userAddFormData" :rules="store.USERADD_FORM_RULES" :label-width="0" @submit="addButton">
+        
+        <t-form-item name="account">
+          <t-input-adornment prepend="账号" >
+            <t-input v-model="store.userAddFormData.emp.account" clearable />
+          </t-input-adornment>
+        </t-form-item>
+        
+        <t-form-item name="password">
+          <t-input-adornment prepend="密码">
+            <t-input v-model="store.userAddFormData.emp.password" type="password" />
+          </t-input-adornment>
+        </t-form-item>
+        
+        <t-form-item name="name">
+          <t-input-adornment prepend="姓名">
+            <t-input v-model="store.userAddFormData.emp.name" clearable />
+          </t-input-adornment>
+        </t-form-item>
+        
+        <t-form-item name="eid">
+          <t-input-adornment prepend="身份证号">
+            <t-input v-model="store.userAddFormData.emp.eid" clearable/>
+          </t-input-adornment>
+        </t-form-item>
+        
+        <t-form-item name="phone">
+          <t-input-adornment prepend="手机号">
+            <t-input v-model="store.userAddFormData.emp.phone" clearable />
+          </t-input-adornment>
+        </t-form-item>
+
+        <t-form-item name="role">
+          <t-input-adornment prepend="角色">
+            <t-select v-model="store.userAddFormData.role.rid" :options="store.options3" placeholder="请选择角色" clearable></t-select>
+          </t-input-adornment>
+        </t-form-item>
+
+        <t-form-item name="deptid">
+          <t-input-adornment prepend="部门">
+            <t-select v-model="store.userAddFormData.emp.deptid" :options="store.options1" placeholder="请选择部门" clearable></t-select>
+          </t-input-adornment>
+        </t-form-item>
+
+        <t-form-item name="isEnabled">
+          <t-input-adornment prepend="账号状态">
+            <t-select v-model="store.userAddFormData.emp.isEnabled" :options="store.options4" placeholder="请选择状态" clearable></t-select>
+          </t-input-adornment>
+        </t-form-item>
+
+        <t-form-item name="age">
+          <t-input-adornment prepend="年龄">
+            <t-input v-model="store.userAddFormData.emp.age" clearable  />
+          </t-input-adornment>
+        </t-form-item>
+
+        <t-form-item name="gender">
+          <t-input-adornment prepend="性别">
+            <t-select v-model="store.userAddFormData.emp.gender" :options="store.options2" placeholder="请选择性别" clearable></t-select>
+          </t-input-adornment>
+        </t-form-item>
+        
+        
+        <t-form-item>
+          <t-button theme="primary" type="submit" block>提交</t-button>
+          <t-button theme="default" @click="cancelButton" block style="margin-left: 10px;">取消</t-button>
+        </t-form-item>
+        
+      </t-form>
     </template>
     <template #footer>
-      <t-button theme="default" @click="cancelButton">取消</t-button>
-      <t-button @click="submitButton">提交</t-button>
     </template>
   </userEdit>
 </template>
@@ -64,10 +104,12 @@ const handleAddVisibleChange = () => {
   emit('update:visible');
 };
 const cancelButton = () => {
+  // 清空表单数据
+  store.userAddFormData = store.NulluserAddFormData
   emit('update:visible')
 }
 // 提交用户数据
-const submitButton = async () => {
+const addButton = async () => {
   store.submitButton()
   emit('update:visible');
 }

@@ -2,78 +2,76 @@
   <el-table :data="store.tableData" stripe border style="width: 170vh" max-height="60vh"
     @selection-change="store.handleSelectionChange">
     <el-table-column type="selection" width="55" />
-    <el-table-column fixed prop="eAvatarpath" label="头像" width="80">
+    <el-table-column fixed prop="emp.eAvatarpath" label="头像" width="80">
       <template #default="scope">
-        <t-avatar :image="scope.row.eAvatarpath" size="50px" />
+        <t-avatar :image="scope.row.emp.eAvatarpath" size="50px" />
       </template>
     </el-table-column>
-    <el-table-column fixed prop="id" label="ID" sortable width="60" column-key="id" :filters="store.idFilters"
+    <el-table-column fixed prop="emp.id" label="ID" sortable width="60" column-key="id" :filters="store.idFilters"
       :filter-method="store.filterHandler" />
-    <el-table-column fixed prop="eName" label="姓名" width="100" show-overflow-tooltip>
-      <template #default="scope"><el-tag effect="plain">{{ scope.row.eName }}</el-tag></template>
+    <el-table-column fixed prop="emp.eName" label="姓名" width="100" show-overflow-tooltip>
+      <template #default="scope"><el-tag effect="plain">{{ scope.row.emp.eName }}</el-tag></template>
     </el-table-column>
-    <el-table-column prop="eUsername" label="账号" width="120" show-overflow-tooltip>
+    <el-table-column prop="emp.eUsername" label="账号" width="120" show-overflow-tooltip>
     </el-table-column>
-    <el-table-column prop="ePassword" label="密码" width="80" show-overflow-tooltip>
+    <el-table-column prop="emp.ePassword" label="密码" width="80" show-overflow-tooltip>
       <template #default="scope">
-        <el-popover trigger="hover" placement="top-start" v-model:visible="showPasswordState[scope.row.id]" width="auto">
+        <el-popover trigger="hover" placement="top-start" v-model:visible="showPasswordState[scope.row.emp.id]"
+          width="auto">
           <template #reference>
             <div style="display: flex; align-items: center">
-
-              <span style="margin-left: 10px">{{ showPasswordState[scope.row.id] ? scope.row.ePassword : maskedPassword
+              <span style="margin-left: 10px">{{ showPasswordState[scope.row.emp.id] ? scope.row.emp.ePassword :
+                maskedPassword
               }}</span>
             </div>
           </template>
-          <div>{{ scope.row.ePassword }}</div>
+          <div>{{ scope.row.emp.ePassword }}</div>
         </el-popover>
       </template>
     </el-table-column>
-    <el-table-column prop="eIsenabled" label="帐号状态" width="100">
-      <template #default="scope"><el-tag :type="scope.row.eIsenabled == '0' ? 'success' : 'danger'">{{
-        scope.row.eIsenabled == '0' ? '正常' : '禁用'
+    <el-table-column prop="emp.eIsenabled" label="帐号状态" width="100">
+      <template #default="scope"><el-tag :type="scope.row.emp.eIsenabled == '0' ? 'success' : 'danger'">{{
+        scope.row.emp.eIsenabled == '0' ? '正常' : '禁用'
       }}</el-tag></template>
     </el-table-column>
-    <el-table-column prop="ePhone" label="手机号" width="120" show-overflow-tooltip>
+    <el-table-column prop="emp.ePhone" label="手机号" width="120" show-overflow-tooltip>
       <template #default="scope">
         <div style="display: flex; align-items: center">
           <el-icon>
             <Iphone color="green" />
           </el-icon>
-          <span style="margin-left: 10px">{{ scope.row.ePhone }}</span>
+          <span style="margin-left: 10px">{{ scope.row.emp.ePhone }}</span>
         </div>
       </template>
     </el-table-column>
-    <el-table-column prop="eId" label="证件号" width="120" show-overflow-tooltip />
-    <el-table-column prop="eRole" label="职位" width="120">
-      <template #default="scope"><el-tag :type="scope.row.eRole === '管理员' ? 'warning' : 'info'">{{ scope.row.eRole
+    <el-table-column prop="emp.eId" label="证件号" width="120" show-overflow-tooltip />
+    <el-table-column prop="role.rInfo" label="角色" width="120">
+      <template #default="scope"><el-tag :type="scope.row.role.rId == 3 ? 'info' : 'warning'">{{ scope.row.role.rInfo
       }}</el-tag></template>
     </el-table-column>
-    <el-table-column prop="eDeptid" label="部门" width="120">
-      <template #default="scope">
-        {{ scope.row.eDeptid == '0' ? '管理部' : scope.row.eDeptid == '1' ? '区域管制部' : scope.row.eDeptid == '2' ?'塔台管制部':'其它' }}
-    </template>
+    <el-table-column prop="dept.dName" label="部门" width="120">
     </el-table-column>
-    <el-table-column prop="eAge" label="年龄" width="120" />
-    <el-table-column prop="eGender" label="性别" width="120">
-      <template #default="scope"><el-tag round :type="scope.row.eGender == '0' ? 'primary' : 'danger'">{{
-        scope.row.eGender == '0' ? '♂' : '♀'
+    <el-table-column prop="emp.eAge" label="年龄" width="120" />
+    <el-table-column prop="emp.eGender" label="性别" width="120">
+      <template #default="scope"><el-tag round :type="scope.row.emp.eGender == '0' ? 'primary' : 'danger'">{{
+        scope.row.emp.eGender == '0' ? '♂' : '♀'
       }}</el-tag></template>
     </el-table-column>
-    <el-table-column prop="eCreatetime" label="入职日期" width="120" show-overflow-tooltip>
+    <el-table-column prop="emp.eCreatetime" label="入职日期" width="120" show-overflow-tooltip>
       <template #default="scope">
-        {{ formatDate(scope.row.eCreatetime) }}
+        {{ formatDate(scope.row.emp.eCreatetime) }}
       </template>
     </el-table-column>
-    <el-table-column prop="eUpdatetime" label="更新日期" width="120" show-overflow-tooltip>
+    <el-table-column prop="emp.eUpdatetime" label="更新日期" width="120" show-overflow-tooltip>
       <template #default="scope">
-        {{ formatDate(scope.row.eUpdatetime) }}
+        {{ formatDate(scope.row.emp.eUpdatetime) }}
       </template>
     </el-table-column>
     <el-table-column fixed="right" label="操作" min-width="120">
       <template #default="{ row }">
         <div style="display: flex;">
           <t-button theme="default" shape="round" @click="handleEditClick(row)">修改</t-button>
-          <t-button theme="danger" shape="round" @click="handleDeleteClick(row.id)">删除</t-button>
+          <t-button theme="danger" shape="round" @click="handleDeleteClick(row.emp.id)">删除</t-button>
         </div>
       </template>
     </el-table-column>
@@ -108,7 +106,7 @@ const confirmVisible = ref(false)
 // 定义密码显示状态对象
 const showPasswordState = ref<{ [key: number]: boolean }>({});
 // 掩码密码的字符串
-const maskedPassword = '••••••';
+const maskedPassword = '已加密';
 
 // 父组件传来的值 代理 这里是用来控制 添加用户面板
 const props = defineProps<{
@@ -152,5 +150,4 @@ const handleDelete = async (id: number) => {
 
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

@@ -14,44 +14,81 @@
           }" @success="store.handleSuccess" @fail="store.handleFail">
         </t-upload>
       </div>
-      <t-input-adornment prepend="姓名">
-        <t-input v-model="store.userData.eName" showClearIconOnEmpty placeholder="请输入内容" />
-      </t-input-adornment>
-      <t-input-adornment prepend="账号">
-        <t-input v-model="store.userData.eUsername" disabled showClearIconOnEmpty placeholder="请输入内容" />
-      </t-input-adornment>
-      <t-input-adornment prepend="密码">
-        <t-input v-model="store.userData.ePassword" showClearIconOnEmpty placeholder="请输入内容" />
-      </t-input-adornment>
-      <t-input-adornment prepend="证件号">
-        <t-input v-model="store.userData.eId" showClearIconOnEmpty placeholder="请输入内容" />
-      </t-input-adornment>
-      <t-input-adornment prepend="手机号">
-        <t-input v-model="store.userData.ePhone" showClearIconOnEmpty placeholder="请输入内容" />
-      </t-input-adornment>
-      <t-input-adornment prepend="年龄">
-        <t-input v-model="store.userData.eAge" showClearIconOnEmpty placeholder="请输入内容" />
-      </t-input-adornment>
-      <t-input-adornment prepend="部门">
-        <t-select v-model="store.userData.eDeptid" :options="store.options1" placeholder="请选择部门" clearable></t-select>
-      </t-input-adornment>
-      <t-input-adornment prepend="职位">
-        <t-input v-model="store.userData.eRole" showClearIconOnEmpty placeholder="请输入内容" />
-      </t-input-adornment>
-      <t-input-adornment prepend="性别">
-        <t-select v-model="store.userData.eGender" :options="store.options2" placeholder="请选择性别" clearable></t-select>
-      </t-input-adornment>
-      <t-input-adornment prepend="状态">
-        <t-input v-model="store.userData.eIsenabled" showClearIconOnEmpty placeholder="请输入内容" />
-      </t-input-adornment>
+      <t-form ref="form" :data="store.userDataFormData" :rules="store.USERDATA_FORM_RULES" :label-width="0" @submit="saveButton">
+        
+        <t-form-item name="account">
+          <t-input-adornment prepend="账号" >
+            <t-input v-model="store.userDataFormData.emp.account" disabled clearable :placeholder="store.userData.emp.eUsername" />
+          </t-input-adornment>
+        </t-form-item>
+        
+        <t-form-item name="password">
+          <t-input-adornment prepend="密码">
+            <t-input v-model="store.userDataFormData.emp.password" type="password" clearable :placeholder="store.userData.emp.ePassword" />
+          </t-input-adornment>
+        </t-form-item>
+        
+        <t-form-item name="name">
+          <t-input-adornment prepend="姓名">
+            <t-input v-model="store.userDataFormData.emp.name" clearable :placeholder="store.userData.emp.eName" />
+          </t-input-adornment>
+        </t-form-item>
+        
+        <t-form-item name="eid">
+          <t-input-adornment prepend="身份证号">
+            <t-input v-model="store.userDataFormData.emp.eid" clearable :placeholder="store.userData.emp.eId" />
+          </t-input-adornment>
+        </t-form-item>
+        
+        <t-form-item name="phone">
+          <t-input-adornment prepend="手机号">
+            <t-input v-model="store.userDataFormData.emp.phone" clearable :placeholder="store.userData.emp.ePhone" />
+          </t-input-adornment>
+        </t-form-item>
 
+        <t-form-item name="role">
+          <t-input-adornment prepend="角色">
+            <t-select v-model="store.userDataFormData.role.rid" :options="store.options3" placeholder="请选择角色" clearable></t-select>
+          </t-input-adornment>
+        </t-form-item>
+
+        <t-form-item name="deptid">
+          <t-input-adornment prepend="部门">
+            <t-select v-model="store.userDataFormData.emp.deptid" :options="store.options1" placeholder="请选择部门" clearable></t-select>
+          </t-input-adornment>
+        </t-form-item>
+
+        <t-form-item name="isEnabled">
+          <t-input-adornment prepend="账号状态">
+            <t-select v-model="store.userDataFormData.emp.isEnabled" :options="store.options4" placeholder="请选择状态" clearable></t-select>
+          </t-input-adornment>
+        </t-form-item>
+
+        <t-form-item name="age">
+          <t-input-adornment prepend="年龄">
+            <t-input v-model="store.userDataFormData.emp.age" clearable :placeholder="String(store.userData.emp.eAge)" />
+          </t-input-adornment>
+        </t-form-item>
+
+        <t-form-item name="gender">
+          <t-input-adornment prepend="性别">
+            <t-select v-model="store.userDataFormData.emp.gender" :options="store.options2" placeholder="请选择性别" clearable></t-select>
+          </t-input-adornment>
+        </t-form-item>
+        
+        
+        <t-form-item>
+          <t-button theme="primary" type="submit" block>提交</t-button>
+          <t-button theme="default" @click="cancelButton" block style="margin-left: 10px;">取消</t-button>
+        </t-form-item>
+        
+      </t-form>
     </template>
     <template #footer>
-      <t-button theme="default" @click="cancelButton">取消</t-button>
-      <t-button @click="saveButton">保存</t-button>
     </template>
   </userEdit>
 </template>
+
 <script lang="ts" setup>
 import userEdit from './userEdit.vue'
 import { useUserStore } from "@/stores/user-store";
@@ -73,9 +110,11 @@ const saveButton = () => {
 
 // 取消按钮回调
 const cancelButton = () => {
+  // 清空表单数据
+  store.userDataFormData = store.NulluserDataFormData
   emit('update:visible', false);
 }
 
 </script>
-<style scoped></style>
 
+<style scoped></style>
