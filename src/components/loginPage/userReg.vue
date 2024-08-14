@@ -43,7 +43,7 @@ const store = useUserStore()
 </script>
 <style scoped>
 .reg {
-    padding: 50px;
+    padding: 40px;
     width: 200px;
     height: 200px;
     margin-bottom: 30px;

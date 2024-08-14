@@ -38,8 +38,8 @@ onMounted(()=>{
 </script>
 <style scoped>
 .login {
-    padding: 50px;
+    padding: 40px;
     width: 200px;
-    height: 200px;
+    height: 220px;
 }
 </style>

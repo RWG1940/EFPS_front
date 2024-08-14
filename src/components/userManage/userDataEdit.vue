@@ -111,7 +111,7 @@ const saveButton = () => {
 // 取消按钮回调
 const cancelButton = () => {
   // 清空表单数据
-  store.userDataFormData = store.NulluserDataFormData
+  store.userDataFormData = JSON.parse(JSON.stringify(store.NulluserDataFormData));
   emit('update:visible', false);
 }
 

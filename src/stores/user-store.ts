@@ -128,40 +128,51 @@ export const useUserStore = defineStore('user', () => {
     phone: ''
   });
   // 用户添加表单规则
-  const USERADD_FORM_RULES = {};
+  const USERADD_FORM_RULES = {
+    emp: {
+      account: [{ required: true, message: '账户必填' }],
+      password: [{ required: true, message: '密码必填' }],
+      eid: [{ required: true, message: '身份证号必填' }],
+      phone: [{ required: true, message: '手机号必填' }],
+      deptid: [{ required: true, message: '部门必填' }],
+    },
+    role: {
+      rid: [{ required: true, message: '角色必填' }],
+    },
+  };
   // 用户添加表单
   const userAddFormData: FormProps['data'] = reactive({
     emp: {
       account: '',
       password: '',
-      name:'',
+      name: '',
       eid: '',
       phone: '',
-      deptid:'',
-      isEnabled:'',
+      deptid: '',
+      isEnabled: '',
       age: '',
       gender: '',
-    }, 
+    },
     role: {
-      rid:''
-    }, 
+      rid: ''
+    },
   });
   // 空的用户添加表单 用于清空表单输入
   const NulluserAddFormData = {
     emp: {
       account: '',
       password: '',
-      name:'',
+      name: '',
       eid: '',
       phone: '',
-      deptid:'',
-      isEnabled:'',
+      deptid: '',
+      isEnabled: '',
       age: '',
       gender: '',
-    }, 
+    },
     role: {
-      rid:''
-    }, 
+      rid: ''
+    },
   }
   // 用户修改表单规则
   const USERDATA_FORM_RULES = {};
@@ -170,17 +181,17 @@ export const useUserStore = defineStore('user', () => {
     emp: {
       account: null,
       password: null,
-      name:null,
+      name: null,
       eid: null,
       phone: null,
-      deptid:null,
-      isEnabled:null,
+      deptid: null,
+      isEnabled: null,
       age: null,
       gender: null,
-    }, 
+    },
     role: {
-      rid:null
-    }, 
+      rid: null
+    },
   });
   // 空的用户修改表单 用于清空表单输入
   const NulluserDataFormData = {
@@ -190,14 +201,40 @@ export const useUserStore = defineStore('user', () => {
       name: null,
       eid: null,
       phone: null,
-      deptid:null,
-      isEnabled:null,
+      deptid: null,
+      isEnabled: null,
       age: null,
       gender: null,
-    }, 
+    },
     role: {
-      rid:null
-    }, 
+      rid: null
+    },
+  }
+  // 个人信息修改
+  const MYDATA_FORM_RULES = {};
+  const myDataFormData: FormProps['data'] = reactive({
+    emp: {
+      account: null,
+      password: null,
+      name: null,
+      eid: null,
+      phone: null,
+      age: null,
+      gender: null,
+      avatar:null,
+    },
+  });
+  const NullmyDataFormData = {
+    emp: {
+      account: null,
+      password: null,
+      name: null,
+      eid: null,
+      phone: null,
+      age: null,
+      gender: null,
+      avatar:null,
+    },
   }
   /*
   *动作
@@ -297,27 +334,39 @@ export const useUserStore = defineStore('user', () => {
   });
 
   // 添加用户添加按钮
-  const submitButton = async () => {
-    const user = { emp:{ eUsername:userAddFormData.emp.account,ePassword: userAddFormData.emp.password, 
-      eId: userAddFormData.emp.eid, ePhone: userAddFormData.emp.phone, 
-      eName: userAddFormData.emp.name,eDeptid:userAddFormData.emp.deptid,
-      eIsenabled:userAddFormData.emp.isEnabled,eAge:userAddFormData.emp.age,
-      eGender:userAddFormData.emp.gender,
-      eAvatarpath:userData.value.emp.eAvatarpath,
-    },
-      role:{rId: userAddFormData.role.rid}};
-    const response = await addUser(user);
-    if (response.code == 1) {
-      MessagePlugin.success('添加用户成功');
-      userAddFormData.value = NulluserAddFormData
-      file1.value = Nullfile1.value;
-      handlePageChange()
+  const submitButton: FormProps['onSubmit'] = async ({ validateResult, firstError }) => {
+    if (validateResult === true) {
+      const user = {
+        emp: {
+          eUsername: userAddFormData.emp.account, ePassword: userAddFormData.emp.password,
+          eId: userAddFormData.emp.eid, ePhone: userAddFormData.emp.phone,
+          eName: userAddFormData.emp.name, eDeptid: userAddFormData.emp.deptid,
+          eIsenabled: userAddFormData.emp.isEnabled, eAge: userAddFormData.emp.age,
+          eGender: userAddFormData.emp.gender,
+          eAvatarpath: userData.value.emp.eAvatarpath,
+        },
+        role: { rId: userAddFormData.role.rid }
+      };
+      const response = await addUser(user);
+      if (response.code == 1) {
+        MessagePlugin.success('添加用户成功');
+        userAddFormData.value = JSON.parse(JSON.stringify(NulluserAddFormData));
+        file1.value = Nullfile1.value;
+        handlePageChange()
+      } else {
+        MessagePlugin.error('添加用户失败');
+        userAddFormData.value = JSON.parse(JSON.stringify(NulluserAddFormData));
+        file1.value = Nullfile1.value;
+      }
     } else {
-      MessagePlugin.error('添加用户失败');
-      userAddFormData.value = NulluserAddFormData
-      file1.value = Nullfile1.value;
+      console.log('Validate Errors: ', firstError, validateResult);
+      if (firstError) {
+        MessagePlugin.warning(firstError);
+      } else {
+        MessagePlugin.warning('验证失败');
+      }
     }
-  }
+  };
   // 手动登录提交按钮
   const loginOnSubmit: FormProps['onSubmit'] = async ({ validateResult, firstError }) => {
     const msg = MessagePlugin.loading('登陆中')
@@ -332,7 +381,7 @@ export const useUserStore = defineStore('user', () => {
         MessagePlugin.success('登录成功');
         router.push('/home');
       } else {
-        MessagePlugin.error(response.msg);
+        MessagePlugin.error(response.message);
       }
     } else {
       console.log('Validate Errors: ', firstError, validateResult);
@@ -357,7 +406,7 @@ export const useUserStore = defineStore('user', () => {
         router.push('/home');
       } else {
         router.push('/login');
-        MessagePlugin.error(response.msg);
+        MessagePlugin.error('登陆失败，token可能过期了');
       }
     }
   }
@@ -410,23 +459,26 @@ export const useUserStore = defineStore('user', () => {
   };
   // 修改用户提交按钮
   const saveButton = async () => {
-    const user = { emp:{ id:userData.value.emp.id,ePassword: userDataFormData.emp.password, 
-      eId: userDataFormData.emp.eid, ePhone: userDataFormData.emp.phone, 
-      eName: userDataFormData.emp.name,eDeptid:userDataFormData.emp.deptid,
-      eIsenabled:userDataFormData.emp.isEnabled,eAge:userDataFormData.emp.age,
-      eGender:userDataFormData.emp.gender,
-      eAvatarpath:userData.value.emp.eAvatarpath,
-    },
-      role:{rId: userDataFormData.role.rid}};
+    const user = {
+      emp: {
+        id: userData.value.emp.id, ePassword: userDataFormData.emp.password,
+        eId: userDataFormData.emp.eid, ePhone: userDataFormData.emp.phone,
+        eName: userDataFormData.emp.name, eDeptid: userDataFormData.emp.deptid,
+        eIsenabled: userDataFormData.emp.isEnabled, eAge: userDataFormData.emp.age,
+        eGender: userDataFormData.emp.gender,
+        eAvatarpath: userData.value.emp.eAvatarpath,
+      },
+      role: { rId: userDataFormData.role.rid }
+    };
     const response = await updateUser(user);
     if (response.code == 1) {
       MessagePlugin.success('用户信息更新成功');
-      userDataFormData.value = NulluserDataFormData
+      userDataFormData.value = JSON.parse(JSON.stringify(NulluserDataFormData));
       file1.value = Nullfile1.value;
       handlePageChange()
     } else {
       MessagePlugin.warning('用户信息更新失败');
-      userDataFormData.value = NulluserDataFormData
+      userDataFormData.value = JSON.parse(JSON.stringify(NulluserDataFormData));
       file1.value = Nullfile1.value;
     }
   }
@@ -434,7 +486,7 @@ export const useUserStore = defineStore('user', () => {
   const myInfoEditHandleSuccess = (response: any, file: File) => {
     // 确保响应格式符合预期
     if (response.response.code == 1) {
-      myData.value.emp.eAvatarpath = response.response.result;
+      myDataFormData.emp.eAvatarpath = response.response.result;
       console.log('头像上传成功:', response.response.result);
     } else {
       console.error('Unexpected upload response format:', response.response);
@@ -444,6 +496,27 @@ export const useUserStore = defineStore('user', () => {
   // 清除用户信息缓存
   const cleanUserData = () => {
     userData.value = emptyUserData.value;
+  }
+  // 修改个人信息
+  const saveMyInfoButton = async()=>{
+    const user = {
+      emp: {
+        id: myData.value.emp.id, ePassword: myDataFormData.emp.password,
+        eId: myDataFormData.emp.eid, ePhone: myDataFormData.emp.phone,
+        eName: myDataFormData.emp.name,eAge: myDataFormData.emp.age,
+        eGender: myDataFormData.emp.gender,
+        eAvatarpath: myDataFormData.emp.avatar,
+      },
+      role: { rId: myData.value.role.rId }
+    };
+    const response = await updateUser(user);
+    if (response.code == 1) {
+      MessagePlugin.success('用户信息更新成功');
+      autoLogin()
+      handlePageChange()
+    } else {
+      MessagePlugin.warning('用户信息更新失败');
+    }
   }
 
 
@@ -484,6 +557,9 @@ export const useUserStore = defineStore('user', () => {
     NulluserAddFormData,
     userAddFormData,
     USERADD_FORM_RULES,
+    myDataFormData,
+    MYDATA_FORM_RULES,
+    NullmyDataFormData,
 
     // 方法
     searchUser,
@@ -505,6 +581,7 @@ export const useUserStore = defineStore('user', () => {
     updateLoginUserData,
     myInfoEditHandleSuccess,
     cleanUserData,
-    
+    saveMyInfoButton,
+
   };
 });
