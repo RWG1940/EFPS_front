@@ -19,12 +19,16 @@
         </template>
         航班动态
       </t-menu-item>
-      <t-menu-item value="command-control" @click="handleMenuClick('command-control')">
+      <t-submenu value="command-control" mode="popup">
+        <template #title>
+          <span>指挥控制</span>
+        </template>
         <template #icon>
           <t-icon name="tower-3" />
         </template>
-        指挥控制
-      </t-menu-item>
+      <t-menu-item value="command-control/arrival-management" @click="handleMenuClick('command-control/arrival-management')">进港管理</t-menu-item>
+      <t-menu-item value="command-control/departure-management" @click="handleMenuClick('command-control/departure-management')">离港管理</t-menu-item>
+    </t-submenu>
       <t-menu-item value="weather-info" @click="handleMenuClick('weather-info')">
         <template #icon>
           <t-icon name="cloud" />
