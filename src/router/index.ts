@@ -4,6 +4,7 @@ import userManage from '@/views/userManage.vue'
 import deptManage from '@/views/deptManage.vue'
 import loginPage from '@/views/loginPage.vue'
 import settingsPage from '@/views/settingsPage.vue'
+import areaControlPage from '@/views/areaControlPage.vue'
 import { useUserStore } from "@/stores/user-store";
 
 const router = createRouter({
@@ -43,6 +44,12 @@ const router = createRouter({
     {
       path: '/',
       redirect: '/home',
+    },
+    {
+      path: '/command-control/area-management',
+      name: 'areaControlPage',
+      component: areaControlPage,
+      meta: { requiresAuth: true }, 
     },
   ]
 })

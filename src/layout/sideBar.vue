@@ -26,8 +26,9 @@
         <template #icon>
           <t-icon name="tower-3" />
         </template>
-      <t-menu-item value="command-control/arrival-management" @click="handleMenuClick('command-control/arrival-management')">进港管理</t-menu-item>
-      <t-menu-item value="command-control/departure-management" @click="handleMenuClick('command-control/departure-management')">离港管理</t-menu-item>
+      <t-menu-item value="command-control/area-management" @click="handleMenuClick('command-control/area-management')">区域管制</t-menu-item>
+      <t-menu-item value="command-control/tower-management" @click="handleMenuClick('command-control/tower-management')">塔台管制</t-menu-item>
+      <t-menu-item value="command-control/combined-ground-release-management" @click="handleMenuClick('command-control/combined-ground-release-management')">放行地面合并管制</t-menu-item>
     </t-submenu>
       <t-menu-item value="weather-info" @click="handleMenuClick('weather-info')">
         <template #icon>
