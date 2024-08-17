@@ -4,17 +4,30 @@
         <div class="content">
             <div class="left">
                 <el-scrollbar height="600px">
-                    <p style="margin-top: 0;text-decoration: underline blue 10px;font-weight: bold;">进港
-                        <t-button class="rround" theme="default" shape="circle" style="margin-left: 10px;"><t-icon name='refresh'></t-icon></t-button>
-                        <t-button class="rround" theme="default" shape="circle"><t-icon name='add'></t-icon></t-button>
-                    </p>
+                    <div style="display: flex;margin-bottom: -4px;">
+                        <p style="margin-top: 0;text-decoration: underline blue 10px;font-weight: bold;"><t-icon
+                                name="flight-landing"></t-icon>进港
+                            <t-button class="rround" theme="default" shape="circle" style="margin-left: 10px;"><t-icon
+                                    name='refresh'></t-icon></t-button>
+                            <t-button class="rround" theme="default" shape="circle"><t-icon name='add'></t-icon></t-button>
+                        </p>
+                        <div
+                            style="width:150px;background-color: aliceblue;border-radius: 25px;padding: 15px;height: 10px;">
+                            <p style="font-size: xx-small;margin: -6px;"><t-icon name="next"></t-icon>下一个进程单准备</p>
+                            <t-progress theme="line" :color="{ from: '#0052D9', to: '#00A870' }" :percentage="60"
+                                :status="'active'" style="font-size: xx-small;" />
+                        </div>
+                    </div>
                     <div class="arrival-fps-container">
                         <div class="arrival-prepare-container">
                             <el-table :data="prepareEfps" style="width: 100%" max-height="250">
                                 <el-table-column label="准备中的进程单" width="480" sortable>
                                     <template #default="scope">
                                         <div style="display: flex; align-items: center;flex-direction: column;">
-                                            <areaEfps :BackgroundColor="prepareBackgroundColor" />
+                                            <t-popconfirm theme="default" content="您想要处理该进程单吗" confirm-btn="确认"
+                                                cancel-btn="取消">
+                                                <areaEfps :BackgroundColor="prepareBackgroundColor" />
+                                            </t-popconfirm>
                                         </div>
                                     </template>
                                 </el-table-column>
@@ -32,17 +45,30 @@
                             </el-table>
                         </div>
                     </div>
-                    <p style="margin-top: 10px;text-decoration: underline blue 10px;font-weight: bold;">出港
-                        <t-button class="rround" theme="default" shape="circle" style="margin-left: 10px;"><t-icon name='refresh'></t-icon></t-button>
-                        <t-button class="rround" theme="default" shape="circle"><t-icon name='add'></t-icon></t-button>
-                    </p>
+                    <div style="display: flex;margin-top: 8px;margin-bottom:-13px;">
+                        <p style="margin-top: 0;text-decoration: underline blue 10px;font-weight: bold;"><t-icon
+                                name="flight-takeoff"></t-icon>出港
+                            <t-button class="rround" theme="default" shape="circle" style="margin-left: 10px;"><t-icon
+                                    name='refresh'></t-icon></t-button>
+                            <t-button class="rround" theme="default" shape="circle"><t-icon name='add'></t-icon></t-button>
+                        </p>
+                        <div
+                            style="width:150px;background-color: aliceblue;border-radius: 25px;padding: 15px;height: 10px;">
+                            <p style="font-size: xx-small;margin: -6px;"><t-icon name="next"></t-icon>下一个进程单准备</p>
+                            <t-progress theme="line" :color="{ from: '#0052D9', to: '#00A870' }" :percentage="60"
+                                :status="'active'" style="font-size: xx-small;" />
+                        </div>
+                    </div>
                     <div class="departure-fps-container">
                         <div class="departure-prepare-container">
                             <el-table :data="prepareEfps" style="width: 100%" max-height="250">
                                 <el-table-column label="准备中的进程单" width="480" sortable>
                                     <template #default="scope">
                                         <div style="display: flex; align-items: center;flex-direction: column;">
-                                            <areaEfps :BackgroundColor="prepareBackgroundColor" />
+                                            <t-popconfirm theme="default" content="您想要处理该进程单吗" confirm-btn="确认"
+                                                cancel-btn="取消">
+                                                <areaEfps :BackgroundColor="prepareBackgroundColor" />
+                                            </t-popconfirm>
                                         </div>
                                     </template>
                                 </el-table-column>
@@ -60,7 +86,8 @@
                             </el-table>
                         </div>
                     </div>
-                    <p style="margin-top: 10px;text-decoration: underline blue 10px;font-weight: bold;">信息
+                    <p style="margin-top: 10px;text-decoration: underline blue 10px;font-weight: bold;"><t-icon
+                            name="info-circle"></t-icon>信息
                         <t-button class="rround" theme="default" shape="circle"><t-icon name='refresh'></t-icon></t-button>
                     </p>
                     <msgTool />
@@ -120,10 +147,12 @@ const prepareEfps: User[] = [
 .rround {
     transition-duration: 0.3s;
 }
+
 .rround:hover {
     transition-duration: 0.3s;
     transform: rotate(180deg);
 }
+
 .arrival-fps-container {
     display: flex;
 }
