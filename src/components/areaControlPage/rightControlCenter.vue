@@ -2,7 +2,7 @@
     <div class="right">
         <div class="control-center">
             <p style="margin-top: 0px;margin-bottom: 2px;font-weight: bold;"><t-icon name="setting"></t-icon>控制中心</p>
-            <el-scrollbar height="300px">
+            <el-scrollbar height="270px">
                 <div class="processing">
                     <el-row>
                         <el-col :span="16">
@@ -35,9 +35,11 @@
                 </div>
                 <div class=" runway-overview">
                     <t-icon name="map"></t-icon>跑道概览
+                    <runway/>
                 </div>
                 <div class="area-overview">
                     <t-icon name="cloudy-day"></t-icon>空域概览
+                    <airspace/>
                 </div>
                 <div class="stop-overview">
                     <t-icon name="location-parking-place"></t-icon>停机位概览
@@ -45,7 +47,7 @@
             </el-scrollbar>
             <div class="operations">
                 <t-icon name="gesture-press"></t-icon>操作
-                <t-row style="margin: 10px;background-color:beige;padding: 5px;border-radius: 10px;">
+                <t-row style="margin: 10px;background-color:beige;padding: 10px;border-radius: 10px;">
                     <t-col>进程单修改：</t-col>
                     <t-col ><t-select size="small" placeholder="进程单区域" style="width: 120px;"></t-select></t-col>
                     <t-col ><t-select size="small" placeholder="数据项"  style="width: 80px;"></t-select></t-col>
@@ -53,14 +55,14 @@
                     <t-col ><t-button size="small">保存</t-button></t-col>
                     <t-row style="margin-top: 10px;" :gutter="5">
                         <t-col>指令区快捷操作：</t-col>
-                        <t-col><t-input size="small" placeholder="请输入高度" style="width: 120px;" clearable></t-input></t-col>
+                        <t-col><t-select size="small" placeholder="高度" style="width: 110px;" clearable></t-select></t-col>
                         <t-col><t-button size="small">保持</t-button></t-col>
                         <t-col><t-button size="small">上升</t-button></t-col>
                         <t-col><t-button size="small">下降</t-button></t-col>
                     </t-row>
                     <t-row style="margin-top: 10px;" :gutter="5">
                         <t-col>航路区快捷操作：</t-col>
-                        <t-col><t-input size="small" style="width: 120px;" clearable></t-input></t-col>
+                        <t-col><t-select size="small" style="width: 110px;" clearable placeholder="角度或距离"></t-select></t-col>
                         <t-col><t-button size="small">左转</t-button></t-col>
                         <t-col><t-button size="small">右转</t-button></t-col>
                         <t-col><t-button size="small">左偏</t-button></t-col>
@@ -77,7 +79,7 @@
                     
                 </t-row>
                 </t-row>
-                <t-row style="margin: 10px;background-color:beige;padding: 5px;border-radius: 10px;">
+                <t-row style="margin: 10px;background-color:beige;padding: 10px;border-radius: 10px;">
                     <t-col>飞行指令：</t-col>
                     <t-col>
                         <t-input size="small" style="width: 120px;" clearable></t-input>
@@ -88,7 +90,7 @@
                 <t-row :gutter="5" style="margin: 10px;">
                     <t-col><t-button theme="success" shape="round">测试</t-button></t-col>
                     <t-col><t-button shape="round">移交</t-button></t-col>
-                    <t-col><t-button theme="warning" shape="round">打印</t-button></t-col>
+                    <t-col><t-button theme="warning" shape="round">导出</t-button></t-col>
                 </t-row>
             </div>
         </div>
@@ -96,6 +98,8 @@
 </template>
 <script lang="ts" setup>
 import areaEfps from './areaEfps.vue';
+import runway from './runway.vue'
+import airspace from './airspace.vue'
 import { ref } from 'vue'
 
 const processingBackgroundColor = ref('lightskyblue')
