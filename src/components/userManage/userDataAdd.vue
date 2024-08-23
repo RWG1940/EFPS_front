@@ -2,6 +2,7 @@
   <!-- 新增用户信息 -->
   <userEdit :visible="visible" header="添加用户" @update:visible="handleAddVisibleChange">
     <template #main>
+      <el-scrollbar height="520px" style="margin-bottom: 10px;">
       <div style="display: flex;">
         <p style="margin-right: 10px;">头像</p>
         <t-upload ref="store.uploadRef" v-model="store.file1" :image-viewer-props="store.imageViewerProps"
@@ -76,13 +77,13 @@
           </t-input-adornment>
         </t-form-item>
         
-        
         <t-form-item>
           <t-button theme="primary" type="submit" @click="addButton" block>提交</t-button>
           <t-button theme="default" @click="cancelButton" block style="margin-left: 10px;">取消</t-button>
         </t-form-item>
         
       </t-form>
+    </el-scrollbar>
     </template>
     <template #footer>
     </template>

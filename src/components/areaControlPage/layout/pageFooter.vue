@@ -12,14 +12,13 @@
 <style lang="scss" scoped>
 .footer {
     background-color: white;
-    border-radius: 15px;
     display: flex;
     height: 25px;
     font-size: smaller;
     align-items: center;
+    border-top: solid 1px lightgrey;
 }
 .footer p {
     margin-left: 20px;
-    
 }    
 </style>

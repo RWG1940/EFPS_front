@@ -1,11 +1,14 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import homePage from "@/views/homePage.vue"
-import userManage from '@/views/userManage.vue'
-import deptManage from '@/views/deptManage.vue'
-import loginPage from '@/views/loginPage.vue'
-import settingsPage from '@/views/settingsPage.vue'
-import areaControlPage from '@/views/areaControlPage.vue'
+import { createRouter, createWebHistory } from 'vue-router';
+import homePage from "@/views/homePage.vue";
+import userManage from '@/views/userManage.vue';
+import deptManage from '@/views/deptManage.vue';
+import loginPage from '@/views/loginPage.vue';
+import settingsPage from '@/views/settingsPage.vue';
+import areaControlPage from '@/views/areaControlPage.vue';
 import { useUserStore } from "@/stores/user-store";
+import { userLoginBytoken} from "@/api/login-api";
+import axios from 'axios';
+import { MessagePlugin } from 'tdesign-vue-next';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -52,22 +55,41 @@ const router = createRouter({
       meta: { requiresAuth: true }, 
     },
   ]
-})
+});
 
 // 路由守卫
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const userStore = useUserStore();
-  const isAuthenticated = !!userStore.token;
+  const token = userStore.token;
 
   if (to.matched.some(record => record.meta.requiresAuth)) {
-    if (isAuthenticated) {
-      next();
+    if (token) {
+      try {
+        const response = await userLoginBytoken(token);
+        if (response.code == 1) {
+          if (to.name === 'areaControlPage' && response.result.dept.id !== 47) {
+            MessagePlugin.error('您无权访问此页面');
+            next('/home'); 
+          } else {
+            userStore.myData = response.result
+            next();
+          }
+        } else {
+          MessagePlugin.error('您无权访问');
+          userStore.logout();
+          next('/login');
+        }
+      } catch (error) {
+        userStore.logout();
+        next('/login');
+      }
     } else {
+      MessagePlugin.error('您还未登录');
       next('/login');
     }
   } else {
-    next();
+    next(); 
   }
 });
 
-export default router
+export default router;

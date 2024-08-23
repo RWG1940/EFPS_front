@@ -1,37 +1,64 @@
 <template>
-    <div class="tool">
-        <div class="msg">
-            消息组件
-        </div>
-        <div class="weather">
-            天气组件
-        </div>
-    </div>
+    <div class="msgTool">
+    <el-row >
+        <el-col :span="12">
+            <div class="right-msg" >
+                <t-icon name="chat-message"></t-icon> 重要通知
+                <importantMsg/>
+            </div>
+      </el-col>
+        <el-col :span="12" >
+            <div class="right-msg" >
+                <t-icon name="setting"></t-icon> 系统消息 
+                <sysMsg/>
+            </div>
+        </el-col>
+    </el-row>
+    <el-row style="margin-top: 10px;">
+      <el-col :span="12">
+            <div class="left-msg">
+                <t-icon name="error-triangle"></t-icon> 警报
+                <alertMsg/>
+            </div>
+      </el-col>
+        <el-col :span="12" >
+            <div class="right-msg" >
+                <t-icon name="cooperate"></t-icon> 协调信息
+                <cooperaMsg/>
+            </div>
+        </el-col>
+    </el-row>
+</div>
 </template>
 <script lang="ts" setup>
+import importantMsg from './msgTool/importantMsg.vue';
+import sysMsg from './msgTool/sysMsg.vue';
+import alertMsg from './msgTool/alertMsg.vue';
+import cooperaMsg from './msgTool/cooperaMsg.vue';
+
+
+
 
 </script>
 <style lang="scss" scoped>
-.tool {
-    display: flex;
-    margin-top: 10px;
+.msgTool {
+    margin-bottom: 40px;
 }
-
-.msg {
-    height: 150px;
-    width: 480px;
-    background-color: white;
-    border-radius: 15px;
-    padding: 5px;
-}
-
-.weather {
-    height: 150px;
-    width: 480px;
-    background-color: white;
-    border-radius: 15px;
+.left-msg {
     margin-left: 10px;
-    padding: 5px;
+    width: 480px;
+    height: 250px;
+    background-color: white;
+    border-radius: 15px;
+    padding: 8px;
+}
+.right-msg {
+    width: 480px;
+    height: 250px;
+    background-color: white;
+    border-radius: 15px;
+    padding: 8px;
+    margin-left: 10px
 }
     
 </style>

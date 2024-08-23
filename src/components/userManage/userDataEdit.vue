@@ -2,6 +2,7 @@
   <!-- 修改用户信息 -->
   <userEdit :visible="visible" header="用户资料修改" @update:visible="handleEditVisibleChange">
     <template #main>
+      <el-scrollbar height="520px" style="margin-bottom: 10px;">
       <div style="display: flex;">
         <p style="margin-right: 10px;">头像</p>
         <t-upload ref="store.uploadRef" v-model="store.file1" :image-viewer-props="store.imageViewerProps"
@@ -83,6 +84,7 @@
         </t-form-item>
         
       </t-form>
+    </el-scrollbar>
     </template>
     <template #footer>
     </template>

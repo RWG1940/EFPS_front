@@ -154,7 +154,6 @@ defineProps({
     box-shadow: 1px 1px 20px rgb(0, 0, 0);
     border-radius: 10px;
     cursor: pointer;
-
 }
 
 .areaEfps :active {
@@ -171,9 +170,9 @@ defineProps({
 }
 
 .wrap {
-    height: 100px;
-    max-height: 100px;
-    width: 480px;
+    height: 110px;
+    max-height: 110px;
+    width: 490px;
     transition-duration: 1s;
 }
 

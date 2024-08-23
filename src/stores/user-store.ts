@@ -455,6 +455,7 @@ export const useUserStore = defineStore('user', () => {
   const logout = () => {
     token.value = '';
     localStorage.removeItem('token');
+    MessagePlugin.info('已退出登录')
     router.push('/login');
   };
   // 修改用户提交按钮
