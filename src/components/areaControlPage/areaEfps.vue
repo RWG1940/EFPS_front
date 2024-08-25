@@ -3,97 +3,96 @@
         <el-row class="wrap">
             <t-popup content="标牌区" placement="top" show-arrow destroy-on-close>
                 <el-col :span="6" class="signage-area" :style="{ backgroundColor: BackgroundColor }">
-                    <t-popup content="航空器呼号" placement="top" show-arrow destroy-on-close>
-                        <el-row>1a</el-row>
-                    </t-popup>
+                    <t-tooltip :content="'航空器呼号: ' + efpsData.a1" placement="top" show-arrow destroy-on-close>
+                        <el-row style="font-weight: bolder;">{{ efpsData.a1 }}</el-row>
+                    </t-tooltip>
                     <el-row>
-                        <t-popup content="航空器机型" placement="top" show-arrow destroy-on-close>
-                            <el-col :span="8">1b</el-col>
-                        </t-popup>
-                        <t-popup content="尾流标志" placement="top" show-arrow destroy-on-close>
-                            <el-col :span="8">1c</el-col>
-                        </t-popup>
-                        <t-popup content="二次雷达应答机模式及编码" placement="top" show-arrow destroy-on-close>
-                            <el-col :span="8">1d</el-col>
-                        </t-popup>
+                        <t-tooltip :content="'航空器机型: ' + efpsData.b1" placement="top" show-arrow destroy-on-close>
+                            <el-col :span="8">{{ efpsData.b1 }}</el-col>
+                        </t-tooltip>
+                        <t-tooltip :content="'尾流标志: ' + efpsData.c1" placement="top" show-arrow destroy-on-close>
+                            <el-col :span="8">{{ efpsData.c1 }}</el-col>
+                        </t-tooltip>
+                        <t-tooltip :content="'二次雷达应答机模式及编码: ' + efpsData.d1" placement="top" show-arrow destroy-on-close>
+                            <el-col :span="8">{{ efpsData.d1 }}</el-col>
+                        </t-tooltip>
                     </el-row>
                     <el-row>
-                        <t-popup content="起飞机场" placement="bottom" show-arrow destroy-on-close>
-
-                            <el-col :span="8">1e</el-col>
-                        </t-popup>
-                        <t-popup content="预计起飞/降落时刻" placement="bottom" show-arrow destroy-on-close>
-                            <el-col :span="8">1f/g</el-col>
-                        </t-popup>
-                        <t-popup content="目的地机场" placement="bottom" show-arrow destroy-on-close>
-                            <el-col :span="8">1h</el-col>
-                        </t-popup>
+                        <t-tooltip :content="'起飞机场: ' + efpsData.e1" placement="bottom" show-arrow destroy-on-close>
+                            <el-col :span="8">{{ efpsData.e1 }}</el-col>
+                        </t-tooltip>
+                        <t-tooltip :content="'预计起飞/降落时刻: ' + efpsData.fg1" placement="bottom" show-arrow destroy-on-close>
+                            <el-col :span="8">{{ efpsData.fg1 }}</el-col>
+                        </t-tooltip>
+                        <t-tooltip :content="'目的地机场: ' + efpsData.h1" placement="bottom" show-arrow destroy-on-close>
+                            <el-col :span="8">{{ efpsData.h1 }}</el-col>
+                        </t-tooltip>
                     </el-row>
                 </el-col>
             </t-popup>
             <t-popup content="指令区" placement="top" show-arrow destroy-on-close>
                 <el-col :span="4" class="command-area" :style="{ backgroundColor: BackgroundColor }">
-                    <t-popup content="高度变化" placement="top" show-arrow destroy-on-close>
-                        <el-row>2b</el-row>
-                    </t-popup>
-                    <t-popup content="其他指令" placement="left" show-arrow destroy-on-close>
-                        <el-row>2c</el-row>
-                    </t-popup>
-                    <t-popup content="申请的巡航高度层" placement="bottom" show-arrow destroy-on-close>
-                        <el-row>2a</el-row>
-                    </t-popup>
+                    <t-tooltip :content="'高度变化: ' + efpsData.a2" placement="top" show-arrow destroy-on-close>
+                        <el-row>{{ efpsData.a2 }}</el-row>
+                    </t-tooltip>
+                    <t-tooltip :content="'其他指令: ' + efpsData.b2" placement="left" show-arrow destroy-on-close>
+                        <el-row>{{ efpsData.b2 }}</el-row>
+                    </t-tooltip>
+                    <t-tooltip :content="'申请的巡航高度层: ' + efpsData.c2" placement="bottom" show-arrow destroy-on-close>
+                        <el-row>{{ efpsData.c2 }}</el-row>
+                    </t-tooltip>
                 </el-col>
             </t-popup>
             <t-popup content="航路区" placement="top" show-arrow destroy-on-close>
                 <el-col :span="8" class="route-area" :style="{ backgroundColor: BackgroundColor }">
                     <el-row>
                         <el-col :span="4">
-                            <t-popup content="位置报告点名称" placement="top" show-arrow destroy-on-close>
-                                <el-row>3a</el-row>
-                            </t-popup>
-                            <t-popup content="位置报" placement="bottom" show-arrow destroy-on-close>
-                                <el-row>3b</el-row>
-                            </t-popup>
+                            <t-tooltip :content="'位置报告点名称: ' + efpsData.a31" placement="top" show-arrow destroy-on-close>
+                                <el-row>{{ efpsData.a31 }}</el-row>
+                            </t-tooltip>
+                            <t-tooltip :content="'位置报: ' + efpsData.b31" placement="bottom" show-arrow destroy-on-close>
+                                <el-row>{{ efpsData.b31 }}</el-row>
+                            </t-tooltip>
                         </el-col>
                         <el-col :span="4">
-                            <t-popup content="位置报告点名称" placement="top" show-arrow destroy-on-close>
-                                <el-row>3a</el-row>
-                            </t-popup>
-                            <t-popup content="位置报" placement="bottom" show-arrow destroy-on-close>
-                                <el-row>3b</el-row>
-                            </t-popup>
+                            <t-tooltip :content="'位置报告点名称: ' + efpsData.a32" placement="top" show-arrow destroy-on-close>
+                                <el-row>{{ efpsData.a32 }}</el-row>
+                            </t-tooltip>
+                            <t-tooltip :content="'位置报: ' + efpsData.b32" placement="bottom" show-arrow destroy-on-close>
+                                <el-row>{{ efpsData.b32 }}</el-row>
+                            </t-tooltip>
                         </el-col>
                         <el-col :span="4">
-                            <t-popup content="位置报告点名称" placement="top" show-arrow destroy-on-close>
-                                <el-row>3a</el-row>
-                            </t-popup>
-                            <t-popup content="位置报" placement="bottom" show-arrow destroy-on-close>
-                                <el-row>3b</el-row>
-                            </t-popup>
+                            <t-tooltip :content="'位置报告点名称: ' + efpsData.a33" placement="top" show-arrow destroy-on-close>
+                                <el-row>{{ efpsData.a33 }}</el-row>
+                            </t-tooltip>
+                            <t-tooltip :content="'位置报: ' + efpsData.b33" placement="bottom" show-arrow destroy-on-close>
+                                <el-row>{{ efpsData.b33 }}</el-row>
+                            </t-tooltip>
                         </el-col>
                         <el-col :span="4">
-                            <t-popup content="位置报告点名称" placement="top" show-arrow destroy-on-close>
-                                <el-row>3a</el-row>
-                            </t-popup>
-                            <t-popup content="位置报" placement="bottom" show-arrow destroy-on-close>
-                                <el-row>3b</el-row>
-                            </t-popup>
+                            <t-tooltip :content="'位置报告点名称: ' + efpsData.a34" placement="top" show-arrow destroy-on-close>
+                                <el-row>{{ efpsData.a34 }}</el-row>
+                            </t-tooltip>
+                            <t-tooltip :content="'位置报: ' + efpsData.b34" placement="bottom" show-arrow destroy-on-close>
+                                <el-row>{{ efpsData.b34 }}</el-row>
+                            </t-tooltip>
                         </el-col>
                         <el-col :span="4">
-                            <t-popup content="位置报告点名称" placement="top" show-arrow destroy-on-close>
-                                <el-row>3a</el-row>
-                            </t-popup>
-                            <t-popup content="位置报" placement="bottom" show-arrow destroy-on-close>
-                                <el-row>3b</el-row>
-                            </t-popup>
+                            <t-tooltip :content="'位置报告点名称: ' + efpsData.a35" placement="top" show-arrow destroy-on-close>
+                                <el-row>{{ efpsData.a35 }}</el-row>
+                            </t-tooltip>
+                            <t-tooltip :content="'位置报: ' + efpsData.b35" placement="bottom" show-arrow destroy-on-close>
+                                <el-row>{{ efpsData.b35 }}</el-row>
+                            </t-tooltip>
                         </el-col>
                         <el-col :span="4">
-                            <t-popup content="位置报告点名称" placement="top" show-arrow destroy-on-close>
-                                <el-row>3a</el-row>
-                            </t-popup>
-                            <t-popup content="位置报" placement="bottom" show-arrow destroy-on-close>
-                                <el-row>3b</el-row>
-                            </t-popup>
+                            <t-tooltip :content="'位置报告点名称: ' + efpsData.a36" placement="top" show-arrow destroy-on-close>
+                                <el-row>{{ efpsData.a36 }}</el-row>
+                            </t-tooltip>
+                            <t-tooltip :content="'位置报: ' + efpsData.b36" placement="bottom" show-arrow destroy-on-close>
+                                <el-row>{{ efpsData.b36 }}</el-row>
+                            </t-tooltip>
                         </el-col>
                     </el-row>
                 </el-col>
@@ -102,31 +101,31 @@
                 <el-col :span="6" class="coordination-area" :style="{ backgroundColor: BackgroundColor }">
                     <el-row>
                         <el-col :span="10">
-                            <t-popup content="进程单生成日期和时刻" placement="top" show-arrow destroy-on-close>
-                                <el-col>4b</el-col>
-                            </t-popup>
-                            <t-popup content="其他信息" placement="bottom" show-arrow destroy-on-close>
-                                <el-col>4c</el-col>
-                            </t-popup>
+                            <t-tooltip :content="'进程单生成日期和时刻: ' + formatDate(efpsData.createtime || '')" placement="top" show-arrow destroy-on-close>
+                                <el-col>{{ formatDate(efpsData.createtime || '') }}</el-col>
+                            </t-tooltip>
+                            <t-tooltip :content="'其他信息: ' + efpsData.c4" placement="bottom" show-arrow destroy-on-close>
+                                <el-col>{{ efpsData.c4 }}</el-col>
+                            </t-tooltip>
                         </el-col>
                         <el-col :span="14">
                             <el-row>
-                                <t-popup content="航空器收到本场ATIS信息" placement="top" show-arrow destroy-on-close>
-                                    <el-col :span="12">M</el-col>
-                                </t-popup>
-                                <t-popup content="扇区号" placement="top" show-arrow destroy-on-close>
-                                    <el-col :span="12">4a</el-col>
-                                </t-popup>
+                                <t-tooltip :content="'航空器收到本场ATIS信息: ' + efpsData.m" placement="top" show-arrow destroy-on-close>
+                                    <el-col :span="12">{{ efpsData.m }}</el-col>
+                                </t-tooltip>
+                                <t-tooltip :content="'扇区号: ' + efpsData.a4" placement="top" show-arrow destroy-on-close>
+                                    <el-col :span="12">{{ efpsData.a4 }}</el-col>
+                                </t-tooltip>
                             </el-row>
-                            <t-popup content="对过境航班，拍发EST报" placement="right" show-arrow destroy-on-close>
-                                <el-row>E</el-row>
-                            </t-popup>
-                            <t-popup content="与空军协调完毕" placement="right" show-arrow destroy-on-close>
-                                <el-row>A</el-row>
-                            </t-popup>
-                            <t-popup content="航空器被雷达识别" placement="right" show-arrow destroy-on-close>
-                                <el-row>I</el-row>
-                            </t-popup>
+                            <t-tooltip :content="'对过境航班，拍发EST报: ' + efpsData.e" placement="right" show-arrow destroy-on-close>
+                                <el-row>{{ efpsData.e }}</el-row>
+                            </t-tooltip>
+                            <t-tooltip :content="'与空军协调完毕: ' + efpsData.a" placement="right" show-arrow destroy-on-close>
+                                <el-row>{{ efpsData.a }}</el-row>
+                            </t-tooltip>
+                            <t-tooltip :content="'航空器被雷达识别: ' + efpsData.i" placement="right" show-arrow destroy-on-close>
+                                <el-row>{{ efpsData.i }}</el-row>
+                            </t-tooltip>
                         </el-col>
                     </el-row>
                 </el-col>
@@ -135,6 +134,9 @@
     </div>
 </template>
 <script lang="ts" setup>
+import type { PropType } from 'vue';
+import type { AreaEfpsData } from '@/stores/areaEfps-store';
+import { formatDate } from '@/utils/moment'
 
 const handleSelected = () => {
     console.log('i love u')
@@ -143,6 +145,10 @@ const handleSelected = () => {
 defineProps({
     BackgroundColor: {
         type: String,
+        required: true,
+    },
+    efpsData: {
+        type: Object as PropType<AreaEfpsData>,
         required: true,
     },
 });
@@ -162,6 +168,14 @@ defineProps({
 
 .el-col {
     transition-duration: 0.5s;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.el-row {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .el-col :hover,
@@ -174,6 +188,7 @@ defineProps({
     max-height: 110px;
     width: 490px;
     transition-duration: 1s;
+    font-size: xx-small;
 }
 
 .signage-area {

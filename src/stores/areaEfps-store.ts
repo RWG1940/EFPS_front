@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import { computed } from 'vue';
 import { MessagePlugin } from 'tdesign-vue-next';
 import { fetchAreaEfpsData, fetchAreaEfpsDataPages, addAreaEfps, fetchAreaEfpsDataBySearch, updateAreaEfps, deleteAreaEfps } from '../api/areaEfps-api';
-import type{ FormProps } from 'tdesign-vue-next';
+import type { FormProps } from 'tdesign-vue-next';
 import { reactive } from 'vue';
 
 // 定义区域飞行进程单数据类型
@@ -150,7 +150,9 @@ export const useareaEfpsStore = defineStore('areaEfps', () => {
     const areaEfpsStatusOptions = ref([
         { label: '待处理', value: '1' },
         { label: '处理中', value: '2' },
-        { label: '已完成', value: '3' },
+        { label: '已移交', value: '3' },
+        { label: '已完成', value: '4' },
+        { label: '回收中', value: '5' },
     ]);
     // 尾流选项
     const areaEfpsWakeOptions = ref([
@@ -178,13 +180,93 @@ export const useareaEfpsStore = defineStore('areaEfps', () => {
         { label: '场压上升', value: '5' },
         { label: '场压下降', value: '6' },
     ]);
-    
+    //过滤后的表格数据
+    const filteredArrivalEfps = computed(() => {
+        return areaEfpsData.value.filter(efps => efps.status === 1 && efps.type === 1);
+    });
+    const filteredDepartureEfps = computed(() => {
+        return areaEfpsData.value.filter(efps => efps.status === 1 && efps.type === 0);
+    });
+    const filteredTransferredArrivalEfps = computed(() => {
+        return areaEfpsData.value.filter(efps => efps.status === 3 && efps.type === 1);
+    });
+    const filteredTransferredDepartureEfps = computed(() => {
+        return areaEfpsData.value.filter(efps => efps.status === 3 && efps.type === 0);
+    });
+    const filteredRecycleEfps = computed(() => {
+        return areaEfpsData.value.filter(efps => efps.status === 5);
+    });
+    const filteredCompletedEfps = computed(() => {
+        return areaEfpsData.value.filter(efps => efps.status === 4);
+    });
+    //正在处理的进程单数据
+    const processingData = computed(() => {
+        return areaEfpsData.value.filter(efps => efps.status === 2 && (efps.type === 0 || efps.type === 1));
+    });
+    // 进程单区域选项
+    const areaEfpsAreaOptions = ref([
+        { label: '标牌区', value: '1' },
+        { label: '指令区', value: '2' },
+        { label: '航路区', value: '3' },
+        { label: '协调区', value: '4' },
+    ]);
+    // 标牌区选项
+    const areaEfpsTagOptions = ref([
+        { label: '航空器呼号', value: 'a1' },
+        { label: '航空器机型', value: 'b1' },
+        { label: '尾流标志', value: 'c1' },
+        { label: '二次雷达应答机模式及编码', value: 'd1' },
+        { label: '起飞机场', value: 'e1' },
+        { label: '预计起飞/降落时刻', value: 'fg1' },
+        { label: '目的地机场', value: 'h1' },
+    ]);
+    // 指令区选项
+    const areaEfpsInstructionOptions = ref([
+        { label: '高度变化', value: 'a2' },
+        { label: '其他指令', value: 'b2' },
+        { label: '申请的巡航高度层', value: 'c2' },
+    ])
+    //航路区选项
+    const areaEfpsRouteOptions = ref([
+        { label: '位置报告点名称1', value: 'a31' },
+        { label: '位置报1', value: 'b31' },
+        { label: '位置报告点名称2', value: 'a32' },
+        { label: '位置报2', value: 'b32' },
+        { label: '位置报告点名称3', value: 'a33' },
+        { label: '位置报3', value: 'b33' },
+        { label: '位置报告点名称4', value: 'a34' },
+        { label: '位置报4', value: 'b34' },
+        { label: '位置报告点名称5', value: 'a35' },
+        { label: '位置报5', value: 'b35' },
+        { label: '位置报告点名称6', value: 'a36' },
+        { label: '位置报6', value: 'b36' },
+    ])
+    // 协调区选项
+    const areaEfpsCoopOptions = ref([
+        { label: '进程单生成日期和时刻', value: '1' },
+        { label: '其他信息', value: '2' },
+        { label: '航空器收到本场ATIS信息', value: '3' },
+        { label: '对过境航班，拍发EST报', value: '4' },
+        { label: '与空军协调完毕', value: '5' },
+        { label: '航空器被雷达识别', value: '6' },
+    ])
+    // 进程单修改的状态
+    const selectedArea = ref('');
+    const selectedItem = ref('');
+    const inputOperationsValue = ref('');
+    const itemOptions = ref<{ label: string; value: string }[]>([]);
+
+    //指令区快捷操作的状态
+    const hightTypeRadio = ref('1');
+    const inputHightValue = ref('');
+
     //初始分页属性
     const areaEfpsPage = ref<Page>({
         page: 1,
         pageSize: 10,
         total: 0,
     });
+    
 
     /*
     * 方法
@@ -203,7 +285,7 @@ export const useareaEfpsStore = defineStore('areaEfps', () => {
         const response = await fetchAreaEfpsDataPages(
             areaEfpsPage.value.page ?? 1,
             areaEfpsPage.value.pageSize ?? 10
-            );
+        );
         if (response.code == 1) {
             areaEfpsData.value = response.result.list;
         } else {
@@ -215,6 +297,7 @@ export const useareaEfpsStore = defineStore('areaEfps', () => {
         const response = await addAreaEfps(areaEfps);
         if (response.code == 1) {
             MessagePlugin.success("添加成功");
+            fetchAllAreaEfpsData()
         } else {
             MessagePlugin.error(response.message);
         }
@@ -233,6 +316,7 @@ export const useareaEfpsStore = defineStore('areaEfps', () => {
         const response = await updateAreaEfps(areaEfps);
         if (response.code == 1) {
             MessagePlugin.success("更新成功");
+            fetchAllAreaEfpsData()
         } else {
             MessagePlugin.error(response.message);
         }
@@ -254,12 +338,84 @@ export const useareaEfpsStore = defineStore('areaEfps', () => {
             clearAreaEfpsAddFormData();
         } else {
             MessagePlugin.error(response.message);
-        } 
-        
+        }
     }
     //清空添加表单方法
     const clearAreaEfpsAddFormData = () => {
         areaEfpsAddFormData.value = JSON.parse(JSON.stringify(NullareaEfpsAddFormData.value));
+    }
+    // 回收处理中的进程单
+    const recycleProcessingAreaEfps = async () => {
+        const processingEfps = processingData.value[0];
+        if (processingEfps && processingEfps.id !== undefined) {
+            processingEfps.status = 5;
+            const response = await updateAreaEfps(processingEfps);
+            if (response.code == 1) {
+                MessagePlugin.success("回收成功");
+                fetchAllAreaEfpsData();
+            } else {
+                MessagePlugin.error(response.message);
+            }
+        } else {
+            MessagePlugin.error("未找到正在处理的进程单");
+        }
+    }
+    // 撤回处理中的进程单
+    const withdrawAreaEfps = async () => {
+        const processingEfps = processingData.value[0];
+        if (processingEfps && processingEfps.id !== undefined) {
+            processingEfps.status = 1;
+            const response = await updateAreaEfps(processingEfps);
+            if (response.code == 1) {
+                MessagePlugin.success("撤回成功");
+                fetchAllAreaEfpsData();
+            } else {
+                MessagePlugin.error(response.message);
+            }
+        } else {
+            MessagePlugin.error("未找到正在处理的进程单");
+        }
+    }
+
+    // 根据所选的区域更新数据项选项
+    const onAreaChange = () => {
+        switch (selectedArea.value) {
+            case '1':
+                itemOptions.value = areaEfpsTagOptions.value;
+                break;
+            case '2':
+                itemOptions.value = areaEfpsInstructionOptions.value;
+                break;
+            case '3':
+                itemOptions.value = areaEfpsRouteOptions.value;
+                break;
+            case '4':
+                itemOptions.value = areaEfpsCoopOptions.value;
+                break;
+            default:
+                itemOptions.value = [];
+        }
+    };
+    // 进程单操作保存
+    const saveOperations = ()=>{
+        const areaEfps = {
+            id: processingData.value[0]?.id,
+            [selectedItem.value]: inputOperationsValue.value,
+        };
+        updateAreaEfpsData(areaEfps)
+    }
+
+    // 进程单指令区快捷操作
+    const keepHight = () =>{
+        
+    }
+    
+    const riseHight = () =>{
+
+    }
+
+    const declineHight = () =>{
+
     }
 
     return {
@@ -274,6 +430,20 @@ export const useareaEfpsStore = defineStore('areaEfps', () => {
         areaEfpsWakeOptions,
         areaEfpsSecondaryRadarOptions,
         areaEfpsHightStatusOptions,
+        filteredArrivalEfps,
+        filteredDepartureEfps,
+        filteredTransferredDepartureEfps,
+        filteredTransferredArrivalEfps,
+        processingData,
+        filteredRecycleEfps,
+        filteredCompletedEfps,
+        selectedArea,
+        areaEfpsAreaOptions,
+        selectedItem,
+        itemOptions,
+        inputOperationsValue,
+        hightTypeRadio,
+        inputHightValue,
 
         // 返回方法
         fetchAllAreaEfpsData,
@@ -283,7 +453,12 @@ export const useareaEfpsStore = defineStore('areaEfps', () => {
         updateAreaEfpsData,
         searchAreaEfpsData,
         areaEfpsAddSubmit,
-        clearAreaEfpsAddFormData
+        clearAreaEfpsAddFormData,
+        recycleProcessingAreaEfps,
+        withdrawAreaEfps,
+        onAreaChange,
+        saveOperations,
+
     }
 
 })

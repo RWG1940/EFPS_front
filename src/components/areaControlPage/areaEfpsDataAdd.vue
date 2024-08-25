@@ -245,7 +245,6 @@ const cancelButton = () => {
 
 // 提交用户数据
 const addButton = async () => {
-  store.areaEfpsAddSubmit();
   emit('update:visible');
 };
 

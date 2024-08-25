@@ -41,6 +41,6 @@ export const updateAreaEfps = async (areaEfps: any) => {
 // 通过构建areaEfps来查询areaEfps数据
 export const fetchAreaEfpsDataBySearch = async (areaEfps: any) => {
   return await handleRequest(() =>
-    axios.post(`${BASE_URL}/areaEfps/search`),
+    axios.post(`${BASE_URL}/areaEfps/search`, areaEfps),
   );
 };

@@ -4,11 +4,12 @@
             <el-scrollbar height="620px">
                 <el-row style="margin-top: 10px;">
                     <el-col :span="3.5">
-                        <p style="margin-top: 0;text-decoration: underline blue 10px;font-weight: bold;margin-left: 10px;"><t-icon
-                                name="flight-landing"></t-icon>进港
-                            <t-button class="rround" theme="default" shape="circle" @click="store.fetchAllAreaEfpsData" style="margin-left: 10px;"><t-icon
-                                    name='refresh'></t-icon></t-button>
-                            <t-button class="rround" theme="default" shape="circle" @click="handleAddVisibleChange"><t-icon name='add'></t-icon></t-button>
+                        <p style="margin-top: 0;text-decoration: underline blue 10px;font-weight: bold;margin-left: 10px;">
+                            <t-icon name="flight-landing"></t-icon>进港
+                            <t-button class="rround" theme="default" shape="circle" @click="store.fetchAllAreaEfpsData"
+                                style="margin-left: 10px;"><t-icon name='refresh'></t-icon></t-button>
+                            <t-button class="rround" theme="default" shape="circle" @click="handleAddVisibleChange"><t-icon
+                                    name='add'></t-icon></t-button>
                         </p>
                     </el-col>
                     <el-col :span="3.5"
@@ -21,13 +22,15 @@
                 <el-row>
                     <el-col :span="12">
                         <div class="arrival-prepare-container">
-                            <el-table :data="prepareEfps" style="width: 100%" max-height="250">
+                            <el-table :data="store.filteredArrivalEfps" style="width: 100%" max-height="250">
                                 <el-table-column label="准备中的进程单" width="480" sortable>
                                     <template #default="scope">
                                         <div style="display: flex; align-items: center;flex-direction: column;">
-                                            <t-popconfirm theme="default" content="您想要处理该进程单吗" confirm-btn="确认"
-                                                cancel-btn="取消">
-                                                <areaEfps :BackgroundColor="prepareBackgroundColor" />
+                                            <t-popconfirm theme="default" content="您想要处理该进程单吗" :visible="visibleMap[scope.row.id]"
+                                                :cancelBtn="{ content: '取消', size: 'small', theme: 'default', onClick: () => { visibleMap[scope.row.id] = false } }"
+                                                :confirmBtn="{ content: '确定', size: 'small', theme: 'primary', onClick: () => handleArrivalEfpsProcess(scope.row.id) }">
+                                                <areaEfps :BackgroundColor="prepareBackgroundColor"
+                                                    :efpsData="scope.row || {}" @click="togglePopconfirm(scope.row.id)" />
                                             </t-popconfirm>
                                         </div>
                                     </template>
@@ -37,11 +40,12 @@
                     </el-col>
                     <el-col :span="12">
                         <div class="arrival-handled-container">
-                            <el-table :data="prepareEfps" style="width: 100%" max-height="250">
+                            <el-table :data="store.filteredTransferredArrivalEfps" style="width: 100%" max-height="250">
                                 <el-table-column label="已移交的进程单" width="480" sortable>
                                     <template #default="scope">
                                         <div style="display: flex; align-items: center;flex-direction: column;">
-                                            <areaEfps :BackgroundColor="handledBackgroundColor" />
+                                            <areaEfps :BackgroundColor="handledBackgroundColor"
+                                                :efpsData="scope.row || {}" />
                                         </div>
                                     </template>
                                 </el-table-column>
@@ -51,11 +55,12 @@
                 </el-row>
                 <el-row style="margin-top: 10px;">
                     <el-col :span="3.5">
-                        <p style="margin-top: 0;text-decoration: underline blue 10px;font-weight: bold;margin-left: 10px;"><t-icon
-                                name="flight-takeoff"></t-icon>出港
-                            <t-button class="rround" theme="default" shape="circle" @click="store.fetchAllAreaEfpsData" style="margin-left: 10px;"><t-icon
-                                    name='refresh'></t-icon></t-button>
-                            <t-button class="rround" theme="default" shape="circle" @click="handleAddVisibleChange"><t-icon name='add'></t-icon></t-button>
+                        <p style="margin-top: 0;text-decoration: underline blue 10px;font-weight: bold;margin-left: 10px;">
+                            <t-icon name="flight-takeoff"></t-icon>出港
+                            <t-button class="rround" theme="default" shape="circle" @click="store.fetchAllAreaEfpsData"
+                                style="margin-left: 10px;"><t-icon name='refresh'></t-icon></t-button>
+                            <t-button class="rround" theme="default" shape="circle" @click="handleAddVisibleChange"><t-icon
+                                    name='add'></t-icon></t-button>
                         </p>
                     </el-col>
                     <el-col :span="3.5"
@@ -68,13 +73,15 @@
                 <el-row>
                     <el-col :span="12">
                         <div class="departure-prepare-container">
-                            <el-table :data="prepareEfps" style="width: 100%" max-height="250">
+                            <el-table :data="store.filteredDepartureEfps" style="width: 100%" max-height="250">
                                 <el-table-column label="准备中的进程单" width="480" sortable>
                                     <template #default="scope">
                                         <div style="display: flex; align-items: center;flex-direction: column;">
-                                            <t-popconfirm theme="default" content="您想要处理该进程单吗" confirm-btn="确认"
-                                                cancel-btn="取消">
-                                                <areaEfps :BackgroundColor="prepareBackgroundColor" />
+                                            <t-popconfirm theme="default" content="您想要处理该进程单吗" :visible="visibleMap[scope.row.id]"
+                                                :cancelBtn="{ content: '取消', size: 'small', theme: 'default', onClick: () => { visibleMap[scope.row.id] = false }  }"
+                                                :confirmBtn="{ content: '确定', size: 'small', theme: 'primary', onClick: () => handleDepartureEfpsProcess(scope.row.id) }">
+                                                <areaEfps :BackgroundColor="prepareBackgroundColor"
+                                                    :efps-data="scope.row || {}" @click="togglePopconfirm(scope.row.id)" />
                                             </t-popconfirm>
                                         </div>
                                     </template>
@@ -84,11 +91,12 @@
                     </el-col>
                     <el-col :span="12">
                         <div class="departure-handled-container">
-                            <el-table :data="prepareEfps" style="width: 100%" max-height="250">
+                            <el-table :data="store.filteredTransferredDepartureEfps" style="width: 100%" max-height="250">
                                 <el-table-column label="已移交的进程单" width="480" sortable>
                                     <template #default="scope">
                                         <div style="display: flex; align-items: center;flex-direction: column;">
-                                            <areaEfps :BackgroundColor="handledBackgroundColor" />
+                                            <areaEfps :BackgroundColor="handledBackgroundColor"
+                                                :efps-data="scope.row || {}" />
                                         </div>
                                     </template>
                                 </el-table-column>
@@ -96,15 +104,15 @@
                         </div>
                     </el-col>
                 </el-row>
-                <p style="margin-top: 10px;text-decoration: underline blue 10px;font-weight: bold;margin-left: 10px;"><t-icon
-                        name="desktop-1"></t-icon>动态
+                <p style="margin-top: 10px;text-decoration: underline blue 10px;font-weight: bold;margin-left: 10px;">
+                    <t-icon name="desktop-1"></t-icon>动态
                     <t-button class="rround" theme="default" shape="circle"><t-icon name='refresh'></t-icon></t-button>
                 </p>
                 <el-row>
                     <trendsTool />
                 </el-row>
-                <p style="margin-top: 10px;text-decoration: underline blue 10px;font-weight: bold;margin-left: 10px;"><t-icon
-                        name="info-circle"></t-icon>信息
+                <p style="margin-top: 10px;text-decoration: underline blue 10px;font-weight: bold;margin-left: 10px;">
+                    <t-icon name="info-circle"></t-icon>信息
                     <t-button class="rround" theme="default" shape="circle"><t-icon name='refresh'></t-icon></t-button>
                 </p>
                 <el-row>
@@ -117,11 +125,10 @@
             <rightControlCenter />
         </el-col>
     </el-row>
-    <areaEfpsDataAdd :visible="addVisible" @update:visible="handleAddVisibleChange"/>
-
+    <areaEfpsDataAdd :visible="addVisible" @update:visible="handleAddVisibleChange" />
 </template>
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref,reactive } from 'vue'
 import areaEfps from '@/components/areaControlPage/areaEfps.vue'
 import rightControlCenter from '@/components/areaControlPage/rightControlCenter.vue'
 import msgTool from '@/components/areaControlPage/msgTool.vue'
@@ -129,30 +136,38 @@ import trendsTool from '@/components/areaControlPage/trendsTool.vue'
 import areaEfpsDataAdd from '../areaEfpsDataAdd.vue'
 import { useareaEfpsStore } from '@/stores/areaEfps-store'
 
+const visibleMap = reactive<{ [key: string]: boolean }>({});
 const store = useareaEfpsStore()
 const addVisible = ref(false)
 const prepareBackgroundColor = ref('antiquewhite')
 const handledBackgroundColor = ref('lightgreen')
-interface User {
-    date: string
-    name: string
-    address: string
-}
-const prepareEfps: User[] = [
-    {
-        date: '2016-05-03',
-        name: 'Tom',
-        address: 'No. 189, Grove St, Los Angeles',
-    },
-    {
-        date: '2016-05-02',
-        name: 'Tom',
-        address: 'No. 189, Grove St, Los Angeles',
-    },
-]
+
 const handleAddVisibleChange = () => {
     addVisible.value = !addVisible.value
 }
+const togglePopconfirm = (id: string) => {
+  visibleMap[id] = !visibleMap[id];
+};
+const handleArrivalEfpsProcess = (id: string) => {
+    const areaEfps = {
+        id: id,
+        status: 2,
+    };
+    console.log(id)
+    store.updateAreaEfpsData(areaEfps);
+    visibleMap[id] = false;
+}
+const handleDepartureEfpsProcess = (id: string) => {
+    const areaEfps = {
+        id: id,
+        status: 2,
+    };
+    console.log(id)
+    store.updateAreaEfpsData(areaEfps);
+    visibleMap[id] = false;
+}
+
+
 </script>
 <style lang="scss" scoped>
 .content {
@@ -180,6 +195,7 @@ const handleAddVisibleChange = () => {
     margin-left: 10px;
     transition-duration: 0.5s;
 }
+
 .arrival-prepare-container:hover {
     box-shadow: 1px 1px 5px 1px grey;
     transition-duration: 0.5s;
@@ -194,6 +210,7 @@ const handleAddVisibleChange = () => {
     margin-left: 4px;
     transition-duration: 0.5s;
 }
+
 .arrival-handled-container:hover {
     box-shadow: 1px 1px 5px 1px grey;
     transition-duration: 0.5s;
@@ -210,6 +227,7 @@ const handleAddVisibleChange = () => {
     margin-left: 10px;
     transition-duration: 0.5s;
 }
+
 .departure-prepare-container:hover {
     box-shadow: 1px 1px 5px 1px grey;
     transition-duration: 0.5s;
@@ -224,8 +242,8 @@ const handleAddVisibleChange = () => {
     margin-left: 4px;
     transition-duration: 0.5s;
 }
+
 .departure-handled-container:hover {
     box-shadow: 1px 1px 5px 1px grey;
     transition-duration: 0.5s;
-}
-</style>
+}</style>

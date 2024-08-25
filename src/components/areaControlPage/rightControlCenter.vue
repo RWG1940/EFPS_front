@@ -4,7 +4,7 @@
             <p style="margin-top: 0px;margin-bottom: 2px;font-weight: bold;"><t-icon name="setting"></t-icon>控制中心</p>
         </t-row>
         <t-row>
-            <el-scrollbar height="270px" style="border-radius: 5px;">
+            <el-scrollbar height="290px" style="border-radius: 5px;">
                 <processing />
                 <aircraftStatus />
             </el-scrollbar>
