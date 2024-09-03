@@ -41,7 +41,6 @@ import areaEfps from '../areaEfps.vue'
 import { useareaEfpsStore } from '@/stores/areaEfps-store'
 import RecyclePanel from './recyclePanel.vue';
 
-const visible3 = ref(false)
 const recycleVisible = ref(false)
 const store = useareaEfpsStore()
 const processingBackgroundColor = ref('lightskyblue')

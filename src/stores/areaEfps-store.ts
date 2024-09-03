@@ -5,6 +5,7 @@ import { MessagePlugin } from 'tdesign-vue-next';
 import { fetchAreaEfpsData, fetchAreaEfpsDataPages, addAreaEfps, fetchAreaEfpsDataBySearch, updateAreaEfps, deleteAreaEfps } from '../api/areaEfps-api';
 import type { FormProps } from 'tdesign-vue-next';
 import { reactive } from 'vue';
+import moment from 'moment';
 
 // 定义区域飞行进程单数据类型
 export interface AreaEfpsData {
@@ -266,8 +267,21 @@ export const useareaEfpsStore = defineStore('areaEfps', () => {
         pageSize: 10,
         total: 0,
     });
-    
 
+    const recordAreaOptions = ref([
+        { label: '记录1', value: '1' },
+        { label: '记录2', value: '2' },
+        { label: '记录3', value: '3' },
+        { label: '记录4', value: '4' },
+        { label: '记录5', value: '5' },
+        { label: '记录6', value: '6' },
+    ]);
+
+    const selectedRecordArea = ref('');
+    const locationName = ref('');
+    const locationReport = ref('');
+
+    const flyCommand = ref('');
     /*
     * 方法
     */
@@ -397,25 +411,175 @@ export const useareaEfpsStore = defineStore('areaEfps', () => {
         }
     };
     // 进程单操作保存
-    const saveOperations = ()=>{
-        const areaEfps = {
-            id: processingData.value[0]?.id,
-            [selectedItem.value]: inputOperationsValue.value,
-        };
-        updateAreaEfpsData(areaEfps)
+    const saveOperations = () => {
+        if (inputOperationsValue.value == '') {
+            MessagePlugin.error("请输入操作内容!");
+        } else {
+            const areaEfps = {
+                id: processingData.value[0]?.id,
+                [selectedItem.value]: inputOperationsValue.value,
+            };
+            updateAreaEfpsData(areaEfps)
+        }
     }
 
     // 进程单指令区快捷操作
-    const keepHight = () =>{
-        
+    const keepHight = () => {
+        if (inputHightValue.value == '') {
+            MessagePlugin.warning('未输入数据！')
+        } else {
+            if (hightTypeRadio.value == '1') {
+                const areaEfps = {
+                    id: processingData.value[0]?.id,
+                    b2: `${inputHightValue.value}`,
+                };
+                updateAreaEfpsData(areaEfps)
+            } else {
+                const areaEfps = {
+                    id: processingData.value[0]?.id,
+                    b2: `H${inputHightValue.value}`,
+                };
+                updateAreaEfpsData(areaEfps)
+            }
+        }
     }
-    
-    const riseHight = () =>{
 
+    const riseHight = () => {
+        if (inputHightValue.value == '') {
+            MessagePlugin.warning('未输入数据！')
+        } else {
+            if (hightTypeRadio.value == '1') {
+                const areaEfps = {
+                    id: processingData.value[0]?.id,
+                    b2: `${inputHightValue.value}↑`,
+                };
+                updateAreaEfpsData(areaEfps)
+            } else {
+                const areaEfps = {
+                    id: processingData.value[0]?.id,
+                    b2: `H${inputHightValue.value}↑`,
+                };
+                updateAreaEfpsData(areaEfps)
+            }
+        }
     }
 
-    const declineHight = () =>{
+    const declineHight = () => {
+        if (inputHightValue.value == '') {
+            MessagePlugin.warning('未输入数据！')
+        } else {
+            if (hightTypeRadio.value == '1') {
+                const areaEfps = {
+                    id: processingData.value[0]?.id,
+                    b2: `${inputHightValue.value}↓`,
+                };
+                updateAreaEfpsData(areaEfps)
+            } else {
+                const areaEfps = {
+                    id: processingData.value[0]?.id,
+                    b2: `H${inputHightValue.value}↓`,
+                };
+                updateAreaEfpsData(areaEfps)
+            }
+        }
+    }
 
+    const locationReportSave = () => {
+        if (locationName.value == '' && locationReport.value == '') {
+            MessagePlugin.warning('未输入数据或数据不完整！')
+        } else {
+            const areaEfps = {
+                id: processingData.value[0]?.id,
+                [`a3${selectedRecordArea.value}`]: `${locationName.value}`,
+                [`b3${selectedRecordArea.value}`]: `${locationReport.value}`,
+            };
+            updateAreaEfpsData(areaEfps)
+        }
+    }
+
+    const setConflictFlag = () => {
+        if (processingData.value[0]?.c4 == 'W') {
+            const areaEfps = {
+                id: processingData.value[0]?.id,
+                c4: '',
+            };
+            updateAreaEfpsData(areaEfps)
+        } else {
+            const areaEfps = {
+                id: processingData.value[0]?.id,
+                c4: 'W',
+            };
+            updateAreaEfpsData(areaEfps)
+        }
+    }
+
+    const setDiversion = () => {
+        if (processingData.value[0]?.c4 === '备降') {
+            const areaEfps = {
+                id: processingData.value[0]?.id,
+                c4: '',
+            };
+            updateAreaEfpsData(areaEfps)
+        } else {
+            const areaEfps = {
+                id: processingData.value[0]?.id,
+                c4: '备降',
+            };
+            updateAreaEfpsData(areaEfps)
+        }
+    }
+
+    const setReturnflight = () => {
+        if (processingData.value[0]?.c4 === '返航') {
+            const areaEfps = {
+                id: processingData.value[0]?.id,
+                c4: '',
+            };
+            updateAreaEfpsData(areaEfps)
+        } else {
+            const areaEfps = {
+                id: processingData.value[0]?.id,
+                c4: '返航',
+            };
+            updateAreaEfpsData(areaEfps)
+        }
+    }
+
+    const setVIP = ()=> {
+        if (processingData.value[0]?.c4 === 'VIP') {
+            const areaEfps = {
+                id: processingData.value[0]?.id,
+                c4: '',
+            };
+            updateAreaEfpsData(areaEfps)
+        } else {
+            const areaEfps = {
+                id: processingData.value[0]?.id,
+                c4: 'VIP',
+            }
+            updateAreaEfpsData(areaEfps)
+        }
+    }
+
+    const setCreateTime = () => {
+        updateAreaEfpsData({
+            id: processingData.value[0]?.id,
+            createtime: moment().format('YYYY-MM-DD HH:mm:ss')
+        })
+    }
+
+    const sendFlyCommand = () => {
+        updateAreaEfpsData({
+            id: processingData.value[0]?.id,
+            c2: flyCommand.value
+        })
+    }
+
+    const transferEfps = () => {
+        updateAreaEfpsData({
+            id: processingData.value[0]?.id,
+            status: 3
+        })
     }
 
     return {
@@ -444,6 +608,11 @@ export const useareaEfpsStore = defineStore('areaEfps', () => {
         inputOperationsValue,
         hightTypeRadio,
         inputHightValue,
+        recordAreaOptions,
+        selectedRecordArea,
+        locationReport,
+        locationName,
+        flyCommand,
 
         // 返回方法
         fetchAllAreaEfpsData,
@@ -458,6 +627,17 @@ export const useareaEfpsStore = defineStore('areaEfps', () => {
         withdrawAreaEfps,
         onAreaChange,
         saveOperations,
+        keepHight,
+        riseHight,
+        declineHight,
+        locationReportSave,
+        setConflictFlag,
+        setReturnflight,
+        setDiversion,
+        setVIP,
+        setCreateTime,
+        sendFlyCommand,
+        transferEfps,
 
     }
 

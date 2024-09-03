@@ -7,7 +7,7 @@
                 <t-col :span="3">机型: <span>{{ store.processingData[0]?.b1 || 'N/A' }}</span></t-col>
                 <t-col :span="6">预计到达/离开时间: <span>{{ store.processingData[0]?.fg1 || 'N/A' }}</span></t-col>
 
-                
+
             </t-row>
             <t-row>
                 <t-col :span="4">状态:
@@ -15,12 +15,15 @@
                     <el-tag v-else-if="store.processingData[0]?.type === 1" type="warning" effect="dark">准备降落</el-tag>
                     <span v-else>N/A</span>
                 </t-col>
-                <t-col :span="8">状态更新时间: <span>{{ formatDate(store.processingData[0]?.updatetime || '') || 'N/A' }}</span></t-col>
+                <t-col :span="8">状态更新时间: <span>{{ formatDate(store.processingData[0]?.updatetime || '') || 'N/A'
+                }}</span></t-col>
             </t-row>
             <t-row>
-
-                <t-col :span="6">管制指令:</t-col>
-                
+                <t-col>管制指令:
+                    巡航高度层：<span>{{ store.processingData[0]?.a2 }}</span>
+                    高度：<span>{{ store.processingData[0]?.b2 }}</span>
+                    其他：<span>{{ store.processingData[0]?.c2 }}</span>
+                </t-col>
             </t-row>
         </div>
     </div>
@@ -46,6 +49,7 @@ const store = useareaEfpsStore();
     padding: 5px;
     border-radius: 10px;
 }
+
 span {
     font-weight: bolder;
 }

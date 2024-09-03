@@ -30,7 +30,7 @@
                         </template>
                     </t-button>
                     <template #cancelBtn>
-                        <t-button size="small" variant="text" style="margin-right: 12px"
+                        <t-button size="small" theme="default" style="margin-right: 12px"
                             @click="visible = false">取消</t-button>
                     </template>
                     <template #confirmBtn>
