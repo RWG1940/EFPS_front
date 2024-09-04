@@ -9,6 +9,7 @@ import { useUserStore } from "@/stores/user-store";
 import { userLoginBytoken} from "@/api/login-api";
 import axios from 'axios';
 import { MessagePlugin } from 'tdesign-vue-next';
+import flightTrendsPage from '@/views/aircraftsTrendsPage.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -35,6 +36,12 @@ const router = createRouter({
           path: '/system-management/system-settings',
           name: 'settingsPage',
           component: settingsPage,
+          meta: { requiresAuth: true }, 
+        },
+        {
+          path: '/flight-status',
+          name: 'flightTrendsPage',
+          component: flightTrendsPage,
           meta: { requiresAuth: true }, 
         },
       ],
