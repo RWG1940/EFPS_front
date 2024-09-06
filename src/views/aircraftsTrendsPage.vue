@@ -1,15 +1,30 @@
 <template>
     <div class="wrap">
         <t-row :gutter="20">
-            <t-col :span="5">
+            <t-col :span="4.5">
                 <div class="msg">
                     <p class="title"><t-icon name="notification">
                         </t-icon> 已发布的航班动态
                         <t-tooltip content="新增一条动态">
-                            <t-button size="small"><t-icon name="add"></t-icon></t-button>
+                            <t-button size="small" @click="handleAddVisibleChange"><t-icon name="add"></t-icon></t-button>
                         </t-tooltip>
                         <t-tooltip content="删除过期的动态">
-                            <t-button size="small" style="margin-left: 5px;"><t-icon name="delete-time"></t-icon></t-button>
+                            <t-popconfirm theme="default" content="您确定要删除24小时之前的动态吗" :visible="visible1" :confirm-btn="{
+                                content: '确认',
+                                theme: 'warning',
+                                onClick: () => {
+                                    store.deleteExpiredAircraftsTrendsData()
+                                    visible1 = false
+                                }
+                            }" :cancel-btn="{
+                                content: '我再想想',
+                                theme: 'default',
+                                variant: 'outline',
+                                onClick: () => { visible1 = false }
+                            }">
+                                <t-button size="small" style="margin-left: 5px;" @click="visible1 = true"><t-icon
+                                        name="delete-time"></t-icon></t-button>
+                            </t-popconfirm>
                         </t-tooltip>
                     </p>
                     <aircraftsTrends />
@@ -20,37 +35,66 @@
                     <p class="title"><t-icon name="root-list">
                         </t-icon> 所有动态
                         <t-tooltip content="新增一条动态">
-                            <t-button size="small" theme="default"><t-icon name="add"></t-icon></t-button>
+                            <t-button size="small" theme="default" @click="handleAddVisibleChange"><t-icon
+                                    name="add"></t-icon></t-button>
                         </t-tooltip>
                         <t-tooltip content="删除选中的动态">
-                            <t-button size="small" theme="default" style="margin-left: 5px;"><t-icon name="delete"></t-icon></t-button>
+                            <t-button size="small" theme="default" style="margin-left: 5px;"
+                                @click="store.deleteSelectedAircraftsTrendsData"><t-icon name="delete"></t-icon></t-button>
                         </t-tooltip>
                     </p>
-                    <el-table :data="store.aircraftsTrendsData" max-height="300" style="margin-top: 3px;"
-                        @selection-change="handleSelectionChange">
-                        <el-table-column type="selection" width="55" />
-                        <el-table-column prop="theme" label="主题" width="60" show-overflow-tooltip></el-table-column>
+                    <el-table :data="store.filterTableData" max-height="300" style="margin-top: 3px;"
+                        @selection-change="store.handleSelectionChange">
+                        <el-table-column type="selection" width="30" />
+                        <el-table-column prop="theme" label="主题" width="70" show-overflow-tooltip :filters="[
+                            { text: '通知', value: 'info' },
+                            { text: '警告', value: 'warning' },
+                            { text: '严重', value: 'error' },
+                            { text: '成功', value: 'success' },
+                        ]" :filter-method="(value: string, row: AircraftsTrendsData) => { return row.theme === value }"
+                            filter-placement="bottom-end">
+                            <template #default="scope">
+                                <el-tag :type="scope.row.theme" effect="dark" size="small">
+                                    {{ scope.row.theme == 'error' ? '严重' : scope.row.theme == 'info' ? '通知' : scope.row.theme == 'warning' ?'警告' : '成功' }}
+                                </el-tag>
+                            </template>
+                        </el-table-column>
                         <el-table-column prop="header" label="标题" width="120" show-overflow-tooltip></el-table-column>
                         <el-table-column prop="content" label="内容" width="180" show-overflow-tooltip></el-table-column>
-                        <el-table-column prop="createtime" label="创建时间" width="120" show-overflow-tooltip sortable>
+                        <el-table-column prop="createtime" label="创建时间" width="120" show-overflow-tooltip
+                            column-key="createtime" sortable>
                             <template #default="scope">
                                 {{ formatDate(scope.row.createtime) }}
                             </template>
                         </el-table-column>
-                        <el-table-column prop="updatetime" label="更新时间" width="120" show-overflow-tooltip sortable>
+                        <el-table-column prop="updatetime" label="更新时间" width="120" show-overflow-tooltip
+                            column-key="updatetime" sortable>
                             <template #default="scope">
                                 {{ formatDate(scope.row.updatetime) }}
                             </template>
                         </el-table-column>
-                        <el-table-column prop="status" label="状态" width="80"></el-table-column>
+                        <el-table-column prop="status" label="状态" width="80" :filters="[
+                            { text: '已发布', value: 1 },
+                            { text: '未发布', value: 0 },
+                            
+                        ]" :filter-method="(value: number, row: AircraftsTrendsData) => { return row.status === value }"
+                            filter-placement="bottom-end">
+                            <template #default="scope">
+                                <el-tag :type="scope.row.status == 1 ? 'success' : 'danger'"
+                                    size="small">
+                                    {{ scope.row.status == 1 ? '已发布' : '未发布' }}
+                                </el-tag>
+                            </template>
+                        </el-table-column>
                         <el-table-column prop="author" label="作者" width="80"></el-table-column>
                         <el-table-column fixed="right" min-width="120">
                             <template #header>
-                                <el-input v-model="search" size="small" placeholder="搜索" />
+                                <el-input v-model="store.search" size="small" placeholder="搜索" />
                             </template>
-                            <template #default>
-                                <t-button size="small" theme="default">编辑</t-button>
-                                <t-button size="small" theme="danger" style="margin-left: 5px;">删除</t-button>
+                            <template #default="scope">
+                                <t-button size="small" theme="default"
+                                    @click="() => { store.aircraftsTrendEditFormData = scope.row; handleEditVisibleChange() }">编辑</t-button>
+                                <t-button size="small" theme="danger" style="margin-left: 5px;" @click="store.deleteAircraftsTrendsData([scope.row.id])">删除</t-button>
                             </template>
                         </el-table-column>
 
@@ -58,14 +102,30 @@
                 </div>
             </t-col>
         </t-row>
+        <addAircraftsTrend :visible="addVisible" @update:visible="handleAddVisibleChange" />
+        <editAircraftsTrend :visible="editVisible" @update:visible="handleEditVisibleChange" />
+
     </div>
 </template>
 <script setup lang="ts">
 import aircraftsTrends from '@/components/areaControlPage/trendsTool/aircraftsTrends.vue';
 import { useAircraftsTrendsStore } from '@/stores/aircraftsTrends-store';
 import { formatDate } from '@/utils/moment'
+import addAircraftsTrend from '../components/aircraftsTrendsPage/addAircraftsTrend.vue'
+import editAircraftsTrend from '../components/aircraftsTrendsPage/editAircraftsTrend.vue'
+import { ref } from 'vue';
+import type { AircraftsTrendsData } from '@/stores/aircraftsTrends-store';
 
 const store = useAircraftsTrendsStore();
+const addVisible = ref(false)
+const editVisible = ref(false)
+const visible1 = ref(false)
+const handleAddVisibleChange = () => {
+    addVisible.value = !addVisible.value
+}
+const handleEditVisibleChange = () => {
+    editVisible.value = !editVisible.value
+}
 </script>
 <style lang="scss" scoped>
 .wrap {
@@ -101,6 +161,7 @@ const store = useAircraftsTrendsStore();
     padding: 10px;
     border-radius: 8px;
     flex-direction: column;
+    height: 355px;
 }
 </style>
   

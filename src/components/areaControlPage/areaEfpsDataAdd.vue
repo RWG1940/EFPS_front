@@ -230,7 +230,7 @@ const props = defineProps<{
   visible: boolean;
 }>();
 // 通知父组件(table)事件
-const emit = defineEmits(['update:visible', 'userAdded']);
+const emit = defineEmits(['update:visible']);
 
 // visible更新后通知父组件 通知面板原本就能控制visible值
 const handleAddVisibleChange = () => {

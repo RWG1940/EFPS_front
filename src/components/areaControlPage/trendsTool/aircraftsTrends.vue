@@ -1,7 +1,7 @@
 <template>
     <div class="aircraftsTrends">
         <el-scrollbar height="300px" style="border-radius: 10px;">
-            <t-notification v-for="(message, index) in aircraftsTrendsStore.aircraftsTrendsData" :key="index" :title="message.header"
+            <t-notification v-for="(message, index) in aircraftsTrendsStore.aircraftsTrendsDataPublished" :key="index" :title="message.header"
                 :content="message.content" :footer="formatDate(message.createtime || '')" :theme="message.theme" style="width: 460px;margin-bottom: 5px;" :max-line="2" />
         </el-scrollbar>
     </div>

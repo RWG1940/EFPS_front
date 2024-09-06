@@ -40,6 +40,7 @@ const handleAddVisibleChange = () => {
   emit('update:visible');
 };
 const cancelButton = () => {
+  store.deptData.dName = ''
   emit('update:visible')
 }
 // 提交用户数据
