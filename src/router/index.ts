@@ -10,6 +10,9 @@ import { userLoginBytoken} from "@/api/login-api";
 import axios from 'axios';
 import { MessagePlugin } from 'tdesign-vue-next';
 import flightTrendsPage from '@/views/aircraftsTrendsPage.vue';
+import airSpaceTrendsPage from '@/views/airSpaceTrendsPage.vue';
+import dashboard from '@/views/dashboard.vue';
+import noticesPage from '@/views/noticesPage.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -42,6 +45,24 @@ const router = createRouter({
           path: '/flight-status',
           name: 'flightTrendsPage',
           component: flightTrendsPage,
+          meta: { requiresAuth: true }, 
+        },
+        {
+          path: '/airspace-status',
+          name: 'airSpaceTrendsPage',
+          component: airSpaceTrendsPage,
+          meta: { requiresAuth: true }, 
+        },
+        {
+          path: '/dashboard',
+          name: 'dashboardPage',
+          component: dashboard,
+          meta: { requiresAuth: true }, 
+        },
+        {
+          path: '/notices',
+          name: 'noticesPage',
+          component: noticesPage,
           meta: { requiresAuth: true }, 
         },
       ],

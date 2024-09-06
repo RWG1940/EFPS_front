@@ -30,17 +30,17 @@
       <t-menu-item value="command-control/tower-management" @click="handleMenuClick('command-control/tower-management')">塔台管制</t-menu-item>
       <t-menu-item value="command-control/combined-ground-release-management" @click="handleMenuClick('command-control/combined-ground-release-management')">放行地面合并管制</t-menu-item>
     </t-submenu>
-      <t-menu-item value="weather-info" @click="handleMenuClick('weather-info')">
+      <t-menu-item value="airspace-status" @click="handleMenuClick('airspace-status')">
         <template #icon>
           <t-icon name="cloud" />
         </template>
-        气象信息
+        空域动态
       </t-menu-item>
-      <t-menu-item value="communication-records" @click="handleMenuClick('communication-records')">
+      <t-menu-item value="notices" @click="handleMenuClick('notices')">
         <template #icon>
           <t-icon name="chat" />
         </template>
-        通信记录
+        公告通知
       </t-menu-item>
       <t-submenu value="data-analysis" mode="popup">
         <template #icon>
@@ -75,7 +75,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed,onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
 const collapsed = ref(false);
@@ -90,4 +90,5 @@ const router = useRouter();
 const handleMenuClick = (path: string) => {
   router.push(`/${path}`);
 };
+
 </script>

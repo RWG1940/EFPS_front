@@ -4,16 +4,16 @@
             <t-col :span="4.5">
                 <div class="msg">
                     <p class="title"><t-icon name="notification">
-                        </t-icon> 已发布的航班动态
-                        <t-tooltip content="新增一条动态">
+                        </t-icon> 已发布的公告
+                        <t-tooltip content="新增一条公告">
                             <t-button size="small" @click="handleAddVisibleChange"><t-icon name="add"></t-icon></t-button>
                         </t-tooltip>
-                        <t-tooltip content="删除过期的动态">
-                            <t-popconfirm theme="default" content="您确定要删除24小时之前的动态吗" :visible="visible1" :confirm-btn="{
+                        <t-tooltip content="删除过期的公告">
+                            <t-popconfirm theme="default" content="您确定要删除24小时之前的公告吗" :visible="visible1" :confirm-btn="{
                                 content: '确认',
                                 theme: 'warning',
                                 onClick: () => {
-                                    store.deleteExpiredAircraftsTrendsData()
+                                    store.deleteExpiredNoticesData()
                                     visible1 = false
                                 }
                             }" :cancel-btn="{
@@ -27,38 +27,25 @@
                             </t-popconfirm>
                         </t-tooltip>
                     </p>
-                    <aircraftsTrends />
+                    <importantMsgVue />
                 </div>
             </t-col>
             <t-col :span="7">
                 <div class="msgTable">
                     <p class="title"><t-icon name="root-list">
-                        </t-icon> 所有动态
-                        <t-tooltip content="新增一条动态">
+                        </t-icon> 所有公告
+                        <t-tooltip content="新增一条公告">
                             <t-button size="small" theme="default" @click="handleAddVisibleChange"><t-icon
                                     name="add"></t-icon></t-button>
                         </t-tooltip>
-                        <t-tooltip content="删除选中的动态">
+                        <t-tooltip content="删除选中的公告">
                             <t-button size="small" theme="default" style="margin-left: 5px;"
-                                @click="store.deleteSelectedAircraftsTrendsData"><t-icon name="delete"></t-icon></t-button>
+                                @click="store.deleteSelectedNoticesData"><t-icon name="delete"></t-icon></t-button>
                         </t-tooltip>
                     </p>
                     <el-table :data="store.filterTableData" max-height="300" style="margin-top: 3px;"
                         @selection-change="store.handleSelectionChange">
                         <el-table-column type="selection" width="30" />
-                        <el-table-column prop="theme" label="主题" width="70" show-overflow-tooltip :filters="[
-                            { text: '通知', value: 'info' },
-                            { text: '警告', value: 'warning' },
-                            { text: '严重', value: 'error' },
-                            { text: '成功', value: 'success' },
-                        ]" :filter-method="(value: string, row: AircraftsTrendsData) => { return row.theme === value }"
-                            filter-placement="bottom-end">
-                            <template #default="scope">
-                                <el-tag :type="scope.row.theme" effect="dark" size="small">
-                                    {{ scope.row.theme == 'error' ? '严重' : scope.row.theme == 'info' ? '通知' : scope.row.theme == 'warning' ?'警告' : '成功' }}
-                                </el-tag>
-                            </template>
-                        </el-table-column>
                         <el-table-column prop="header" label="标题" width="120" show-overflow-tooltip></el-table-column>
                         <el-table-column prop="content" label="内容" width="180" show-overflow-tooltip></el-table-column>
                         <el-table-column prop="createtime" label="创建时间" width="120" show-overflow-tooltip
@@ -77,7 +64,7 @@
                             { text: '已发布', value: 1 },
                             { text: '未发布', value: 0 },
                             
-                        ]" :filter-method="(value: number, row: AircraftsTrendsData) => { return row.status === value }"
+                        ]" :filter-method="(value: number, row: NoticesData) => { return row.status === value }"
                             filter-placement="bottom-end">
                             <template #default="scope">
                                 <el-tag :type="scope.row.status == 1 ? 'success' : 'danger'"
@@ -93,29 +80,29 @@
                             </template>
                             <template #default="scope">
                                 <t-button size="small" theme="default"
-                                    @click="() => { store.aircraftsTrendEditFormData = scope.row; handleEditVisibleChange() }">编辑</t-button>
-                                <t-button size="small" theme="danger" style="margin-left: 5px;" @click="store.deleteAircraftsTrendsData([scope.row.id])">删除</t-button>
+                                    @click="() => { store.noticesEditFormData = scope.row; handleEditVisibleChange() }">编辑</t-button>
+                                <t-button size="small" theme="danger" style="margin-left: 5px;" @click="store.deleteNoticesData([scope.row.id])">删除</t-button>
                             </template>
                         </el-table-column>
                     </el-table>
                 </div>
             </t-col>
         </t-row>
-        <addAircraftsTrend :visible="addVisible" @update:visible="handleAddVisibleChange" />
-        <editAircraftsTrend :visible="editVisible" @update:visible="handleEditVisibleChange" />
+        <addNotice :visible="addVisible" @update:visible="handleAddVisibleChange" />
+        <editNotice :visible="editVisible" @update:visible="handleEditVisibleChange" />
 
     </div>
 </template>
 <script setup lang="ts">
-import aircraftsTrends from '@/components/areaControlPage/trendsTool/aircraftsTrends.vue';
-import { useAircraftsTrendsStore } from '@/stores/aircraftsTrends-store';
+import { useNoticesStore } from '@/stores/notices-store';
 import { formatDate } from '@/utils/moment'
-import addAircraftsTrend from '../components/aircraftsTrendsPage/addAircraftsTrend.vue'
-import editAircraftsTrend from '../components/aircraftsTrendsPage/editAircraftsTrend.vue'
+import addNotice from '../components/noticesPage/addNotice.vue'
+import editNotice from '../components/noticesPage/editNotice.vue'
 import { ref } from 'vue';
-import type { AircraftsTrendsData } from '@/stores/aircraftsTrends-store';
+import type { NoticesData } from '@/stores/notices-store';
+import type importantMsgVue from '@/components/areaControlPage/msgTool/importantMsg.vue';
 
-const store = useAircraftsTrendsStore();
+const store = useNoticesStore();
 const addVisible = ref(false)
 const editVisible = ref(false)
 const visible1 = ref(false)
