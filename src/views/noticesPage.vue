@@ -6,7 +6,7 @@
                     <p class="title"><t-icon name="notification">
                         </t-icon> 已发布的公告
                         <t-tooltip content="新增一条公告">
-                            <t-button size="small" @click="handleAddVisibleChange"><t-icon name="add"></t-icon></t-button>
+                            <t-button size="small" @click="handleAddVisibleChange" theme="warning"><t-icon name="add"></t-icon></t-button>
                         </t-tooltip>
                         <t-tooltip content="删除过期的公告">
                             <t-popconfirm theme="default" content="您确定要删除24小时之前的公告吗" :visible="visible1" :confirm-btn="{
@@ -22,12 +22,12 @@
                                 variant: 'outline',
                                 onClick: () => { visible1 = false }
                             }">
-                                <t-button size="small" style="margin-left: 5px;" @click="visible1 = true"><t-icon
-                                        name="delete-time"></t-icon></t-button>
+                                <t-button size="small" style="margin-left: 5px;" @click="visible1 = true" theme="warning"><t-icon
+                                        name="delete-time" ></t-icon></t-button>
                             </t-popconfirm>
                         </t-tooltip>
                     </p>
-                    <importantMsgVue />
+                    <importantMsg />
                 </div>
             </t-col>
             <t-col :span="7">
@@ -80,7 +80,7 @@
                             </template>
                             <template #default="scope">
                                 <t-button size="small" theme="default"
-                                    @click="() => { store.noticesEditFormData = scope.row; handleEditVisibleChange() }">编辑</t-button>
+                                    @click="() => { store.noticeEditFormData = scope.row; handleEditVisibleChange() }">编辑</t-button>
                                 <t-button size="small" theme="danger" style="margin-left: 5px;" @click="store.deleteNoticesData([scope.row.id])">删除</t-button>
                             </template>
                         </el-table-column>
@@ -100,7 +100,7 @@ import addNotice from '../components/noticesPage/addNotice.vue'
 import editNotice from '../components/noticesPage/editNotice.vue'
 import { ref } from 'vue';
 import type { NoticesData } from '@/stores/notices-store';
-import type importantMsgVue from '@/components/areaControlPage/msgTool/importantMsg.vue';
+import importantMsg from '@/components/areaControlPage/msgTool/importantMsg.vue';
 
 const store = useNoticesStore();
 const addVisible = ref(false)
@@ -128,7 +128,7 @@ const handleEditVisibleChange = () => {
 }
 
 .msg {
-    background-color: rgb(93, 120, 255);
+    background-color:orange;
     display: flex;
     border-radius: 8px;
     flex-direction: column;
@@ -138,7 +138,7 @@ const handleEditVisibleChange = () => {
     margin: 15px;
     font-weight: bold;
     font-size: large;
-    color: aliceblue;
+    color:aliceblue;
 }
 
 .msgTable {
