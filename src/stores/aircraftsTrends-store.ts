@@ -4,8 +4,7 @@ import type { TableColumnCtx } from 'element-plus'
 import { computed } from 'vue';
 import { MessagePlugin } from 'tdesign-vue-next';
 import type { UploadInstanceFunctions, DropdownProps, UploadProps, FormProps } from 'tdesign-vue-next';
-import { BASE_URL } from "@/api/user-api";
-import { fetchAircraftsTrendsData, fetchAircraftsTrendsDataPages, fetchAircraftsTrendsDataBySearch, deleteAircraftsTrends, updateAircraftsTrends, addAircraftsTrends } from '@/api/aircraftsTrends-api';
+import { fetchAircraftsTrendsData, fetchAircraftsTrendsDataPages, fetchAircraftsTrendsDataBySearch, deleteAircraftsTrends, updateAircraftsTrends, addAircraftsTrends } from '@/api/services/aircraftsTrends-api';
 
 // 定义航班动态数据类型
 export interface AircraftsTrendsData {
@@ -76,62 +75,41 @@ export const useAircraftsTrendsStore = defineStore('aircraftsTrends', () => {
     // 获取所有航班动态数据
     const fetchAllAircraftsTrendsData = async () => {
         const res = await fetchAircraftsTrendsData();
-        if (res.code == 1) {
-            aircraftsTrendsData.value = res.result;
-        } else {
-            MessagePlugin.error(res.message);
-        }
+        aircraftsTrendsData.value = res.data.result;
     }
     // 获取航班动态数据分页数据
     const fetchAircraftsTrendsDataPagesData = async (page: number, pageSize: number) => {
         const res = await fetchAircraftsTrendsDataPages(page, pageSize);
-        if (res.code == 1) {
-            aircraftsTrendsDataPages.value = res.result.list;
-            aircraftsTrendsDataPagesTotal.value = res.result.total;
-            aircraftsTrendsDataPagesCurrent.value = res.result.page;
-        } else {
-            MessagePlugin.error(res.message);
-        }
+        aircraftsTrendsDataPages.value = res.data.result.list;
+        aircraftsTrendsDataPagesTotal.value = res.data.result.total;
+        aircraftsTrendsDataPagesCurrent.value = res.data.result.page;
     }
     // 根据搜索条件获取航班动态数据
     const fetchAircraftsTrendsDataBySearchData = async (aircraftsTrends: any) => {
         const res = await fetchAircraftsTrendsDataBySearch(aircraftsTrends);
-        if (res.code == 1) {
-            aircraftsTrendsData.value = res.data;
-        } else {
-            MessagePlugin.error(res.message);
-        }
+        aircraftsTrendsData.value = res.data;
     }
     // 删除航班动态数据
     const deleteAircraftsTrendsData = async (ids: number[]) => {
-        console.log(ids)
-        const res = await deleteAircraftsTrends(ids);
-        if (res.code == 1) {
-            MessagePlugin.success("删除成功");
+        await deleteAircraftsTrends(ids).then(() => {
             fetchAllAircraftsTrendsData();
-        } else {
-            MessagePlugin.error(res.message);
-        }
+            MessagePlugin.success("删除成功");
+        });
     }
     // 更新航班动态数据
     const updateAircraftsTrendData = async (aircraftsTrends: AircraftsTrendsData) => {
-        const res = await updateAircraftsTrends(aircraftsTrends);
-        if (res.code == 1) {
-            MessagePlugin.success("更新成功");
+        await updateAircraftsTrends(aircraftsTrends).then(() => {
             fetchAllAircraftsTrendsData();
-        } else {
-            MessagePlugin.error(res.message);
-        }
+            MessagePlugin.success("更新成功");
+        })
+
     }
     // 添加航班动态数据
     const addAircraftsTrendData = async (aircraftsTrendData: AircraftsTrendsData) => {
-        const res = await addAircraftsTrends(aircraftsTrendData);
-        if (res.code == 1) {
-            MessagePlugin.success("添加成功");
+        await addAircraftsTrends(aircraftsTrendData).then(() => {
             fetchAllAircraftsTrendsData();
-        } else {
-            MessagePlugin.error(res.message);
-        }
+            MessagePlugin.success("添加成功");
+        })
     }
     // 添加航班动态数据提交添加 验证
     const addAircraftsTrendSubmit: FormProps['onSubmit'] = async ({ validateResult, firstError }) => {
@@ -170,12 +148,10 @@ export const useAircraftsTrendsStore = defineStore('aircraftsTrends', () => {
         });
         // 如果有数据过期，则批量删除
         if (expiredIds.length > 0) {
-            try {
-                await deleteAircraftsTrendsData(expiredIds);
-                MessagePlugin.success(`成功删除 ${expiredIds.length} 条过期数据`);
-            } catch (error) {
-                MessagePlugin.error('删除过期数据时发生错误');
-            }
+            await deleteAircraftsTrendsData(expiredIds)
+                .then(() => {
+                    MessagePlugin.success(`成功删除 ${expiredIds.length} 条过期数据`);
+                })
         } else {
             MessagePlugin.info('没有找到过期数据');
         }
@@ -198,8 +174,6 @@ export const useAircraftsTrendsStore = defineStore('aircraftsTrends', () => {
                 data.header?.toLowerCase().includes(search.value.toLowerCase()) ||
                 data.content?.toLowerCase().includes(search.value.toLowerCase()) ||
                 data.theme?.toLowerCase().includes(search.value.toLowerCase())
-              
-
         )
     )
 
@@ -233,6 +207,6 @@ export const useAircraftsTrendsStore = defineStore('aircraftsTrends', () => {
         deleteSelectedAircraftsTrendsData,
         editAircraftsTrendSubmit,
         filterTableData,
-        
+
     }
 })

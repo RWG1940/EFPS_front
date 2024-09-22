@@ -12,6 +12,13 @@
     <el-table-column fixed prop="emp.eName" label="姓名" width="100" show-overflow-tooltip>
       <template #default="scope"><el-tag effect="plain">{{ scope.row.emp.eName }}</el-tag></template>
     </el-table-column>
+    <el-table-column label="状态" width="80" show-overflow-tooltip>
+      <template #default="scope">
+        <el-tag :type="scope.row.isOnline == '1' ? 'success' : 'info'" effect="dark" round size="small">{{ scope.row.isOnline == '1' ?
+          '在线' : '离线'
+        }}</el-tag>
+      </template>
+    </el-table-column>
     <el-table-column prop="emp.eUsername" label="账号" width="120" show-overflow-tooltip>
     </el-table-column>
     <el-table-column prop="emp.ePassword" label="密码" width="80" show-overflow-tooltip>

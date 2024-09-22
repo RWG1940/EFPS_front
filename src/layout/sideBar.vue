@@ -1,7 +1,7 @@
 <template>
   <div style="border-top: 1px solid rgba(220, 220, 220, 0.765)">
-    <t-menu theme="light" default-value="dashboard" :collapsed="collapsed">
-      <t-menu-item value="dashboard" @click="handleMenuClick('dashboard')">
+    <t-menu theme="light" default-value="" :collapsed="collapsed">
+      <t-menu-item :value="rwg" @click="handleMenuClick('dashboard')">
         <template #icon>
           <t-icon name="dashboard" />
         </template>
@@ -80,7 +80,7 @@ import { useRouter } from 'vue-router';
 
 const collapsed = ref(false);
 const iconName = computed(() => (collapsed.value ? 'chevron-right' : 'chevron-left'));
-
+const rwg = ref('');
 const changeCollapsed = () => {
   collapsed.value = !collapsed.value;
 };
@@ -90,5 +90,10 @@ const router = useRouter();
 const handleMenuClick = (path: string) => {
   router.push(`/${path}`);
 };
+onMounted(() => {
+  if(rwg.value ==''){
+    router.push('/dashboard')
+  }
+});
 
 </script>

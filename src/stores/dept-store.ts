@@ -4,8 +4,7 @@ import type { TableColumnCtx } from 'element-plus'
 import { computed } from 'vue';
 import { MessagePlugin } from 'tdesign-vue-next';
 import type { UploadInstanceFunctions, DropdownProps, UploadProps } from 'tdesign-vue-next';
-import { BASE_URL } from "@/api/user-api";
-import { fetchDeptDataBySearch, fetchDeptDataPages, deleteDepts, deleteDept, addDept, updateDept } from '@/api/dept-api';
+import { fetchDeptDataBySearch, fetchDeptDataPages, deleteDepts, deleteDept, addDept, updateDept } from '@/api/services/dept-api';
 
 
 // 定义部门数据类型
@@ -47,7 +46,7 @@ export const useDeptStore = defineStore('dept', () => {
   const uploadAllFilesInOneRequest = ref(false);
   const file1 = ref<UploadProps['value']>([]);
   const file2 = ref<UploadProps['value']>([]);
-  const avatarUrl = ref(`${BASE_URL}/upload`);
+  const avatarUrl = ref(`${import.meta.env.VITE_API_BASE_URL}/upload`);
   const uploadRef = ref<UploadInstanceFunctions>();
 
   /*
@@ -55,30 +54,18 @@ export const useDeptStore = defineStore('dept', () => {
   */
   // 部门数据查找
   const searchDept = async () => {
-      const response = await fetchDeptDataBySearch({
-        [searchCondition.value]: searchInput.value,
-      });
-      if (response.code == 1) {
-        tableData.value = response.result;
-      } else {
-        console.error(response.msg);
-      } 
+    await fetchDeptDataBySearch({
+      [searchCondition.value]: searchInput.value,
+    }).then((resp) => {
+      tableData.value = resp.data.result;
+    })
   };
   // 部门分页数据获取
   const handlePageChange = async () => {
-    const token = localStorage.getItem('token');
-    if (token) {
-        const response = await fetchDeptDataPages(current.value, pageSize.value, token);
-        if (response.code == 1) {
-          tableData.value = response.result.rows;
-          total.value = response.result.total;
-        } else {
-          console.error(response.msg);
-        }
-    } else {
-      MessagePlugin.error('token不存在')
-    }
-
+    await fetchDeptDataPages(current.value, pageSize.value).then((resp) => {
+      tableData.value = resp.data.result.rows;
+      total.value = resp.data.result.total;
+    })
   };
   // 批量删除部门
   const handleBatchDelete = async () => {
@@ -87,28 +74,22 @@ export const useDeptStore = defineStore('dept', () => {
       return;
     }
     const msg = MessagePlugin.loading('批量删除中')
-      await new Promise(resolve => setTimeout(resolve, 500));
-      const response = await deleteDepts(selectedIds.value);
-      if (response.code == 1) {
-        MessagePlugin.close(msg);
-        MessagePlugin.success('批量删除成功');
-        handlePageChange();
-      } else {
-        MessagePlugin.close(response.msg);
-      }
+    await new Promise(resolve => setTimeout(resolve, 500));
+    await deleteDepts(selectedIds.value).then(() => {
+      MessagePlugin.close(msg);
+      handlePageChange();
+      MessagePlugin.success('删除成功');
+    })
   };
   // 删除单条部门BY id
   const handleDelete = async (id: number) => {
     const msg = MessagePlugin.info('删除中');
-      await new Promise(resolve => setTimeout(resolve, 200));
-      const response = await deleteDept(id);
-      if (response.code == 1) {
-        MessagePlugin.close(msg);
-        MessagePlugin.success('部门删除成功');
-        handlePageChange();
-      } else {
-        MessagePlugin.close(response.msg);
-      }
+    await new Promise(resolve => setTimeout(resolve, 200));
+    await deleteDept(id).then(() => {
+      MessagePlugin.close(msg);
+      handlePageChange();
+      MessagePlugin.success('删除成功');
+    })
   };
   // 查询条件修改
   const clickHandler = (data: { content: string, value: string }) => {
@@ -158,23 +139,17 @@ export const useDeptStore = defineStore('dept', () => {
   });
   // 修改部门保存按钮
   const saveButton = async () => {
-      const response = await updateDept(deptData.value);
-      if (response.code == 1) {
-        MessagePlugin.success('部门信息更新成功');
-        handlePageChange()
-      }else{
-        MessagePlugin.error(response.msg);
-      }
+    await updateDept(deptData.value).then(() => {
+      MessagePlugin.success('修改部门成功');
+      handlePageChange();
+    })
   }
   // 添加部门添加按钮
   const submitButton = async () => {
-      const response = await addDept(deptData.value);
-      if (response.code == 1) {
-        MessagePlugin.success('添加部门成功');
-        handlePageChange()
-      } else {
-        MessagePlugin.error('添加部门失败');
-      }
+    await addDept(deptData.value).then(() => {
+      MessagePlugin.success('添加部门成功');
+      handlePageChange();
+    })
   }
 
   // 清除暂存的部门数据

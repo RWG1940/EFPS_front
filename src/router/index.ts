@@ -6,8 +6,7 @@ import loginPage from '@/views/loginPage.vue';
 import settingsPage from '@/views/settingsPage.vue';
 import areaControlPage from '@/views/areaControlPage.vue';
 import { useUserStore } from "@/stores/user-store";
-import { userLoginBytoken} from "@/api/login-api";
-import axios from 'axios';
+import { userLoginBytoken} from "@/api/services/login-api";
 import { MessagePlugin } from 'tdesign-vue-next';
 import flightTrendsPage from '@/views/aircraftsTrendsPage.vue';
 import airSpaceTrendsPage from '@/views/airSpaceTrendsPage.vue';
@@ -88,29 +87,15 @@ const router = createRouter({
 // 路由守卫
 router.beforeEach(async (to, from, next) => {
   const userStore = useUserStore();
-  const token = userStore.token;
 
   if (to.matched.some(record => record.meta.requiresAuth)) {
-    if (token) {
-      try {
-        const response = await userLoginBytoken(token);
-        if (response.code == 1) {
-          if (to.name === 'areaControlPage' && response.result.dept.id !== 47) {
+    if (userStore.token) {
+          if (to.name === 'areaControlPage' && userStore.myData.dept.id !== 47) {
             MessagePlugin.error('您无权访问此页面');
             next('/home'); 
           } else {
-            userStore.myData = response.result
             next();
           }
-        } else {
-          MessagePlugin.error('您无权访问');
-          userStore.logout();
-          next('/login');
-        }
-      } catch (error) {
-        userStore.logout();
-        next('/login');
-      }
     } else {
       MessagePlugin.error('您还未登录');
       next('/login');

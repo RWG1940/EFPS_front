@@ -54,7 +54,7 @@
                         ]" :filter-method="(value: string, row: AircraftsTrendsData) => { return row.theme === value }"
                             filter-placement="bottom-end">
                             <template #default="scope">
-                                <el-tag :type="scope.row.theme" effect="dark" size="small">
+                                <el-tag :type="scope.row.theme == 'error' ? 'danger' : scope.row.theme == 'info' ? 'primary' : scope.row.theme == 'warning' ? 'warning' : 'success'" effect="dark" size="small">
                                     {{ scope.row.theme == 'error' ? '严重' : scope.row.theme == 'info' ? '通知' : scope.row.theme == 'warning' ?'警告' : '成功' }}
                                 </el-tag>
                             </template>

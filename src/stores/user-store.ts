@@ -2,12 +2,11 @@ import { defineStore } from 'pinia';
 import { ref, reactive } from 'vue';
 import type { TableColumnCtx } from 'element-plus'
 import { computed } from 'vue';
-import { userLogin, userLoginBytoken } from '@/api/login-api';
-import { regUser } from '@/api/reg-api';
-import { fetchUserDataBySearch, fetchUserDataPages, deleteUsers, deleteUser, updateUser, addUser } from '@/api/user-api'
+import { userLogin, userLoginBytoken, userLogout } from '@/api/services/login-api';
+import { regUser } from '@/api/services/reg-api';
+import { fetchUserDataBySearch, fetchUserDataPages, deleteUsers, deleteUser, updateUser, addUser } from '@/api/services/user-api'
 import { MessagePlugin } from 'tdesign-vue-next';
 import type { UploadInstanceFunctions, DropdownProps, UploadProps, FormProps } from 'tdesign-vue-next';
-import { BASE_URL } from "@/api/user-api";
 import { useRouter } from 'vue-router';
 
 // 定义用户数据类型
@@ -34,6 +33,7 @@ export interface Role {
 }
 // 定义用户部门类型
 export interface Dept {
+  id?: number;
   dName?: string;
 }
 // 定义用户数据类型
@@ -41,6 +41,7 @@ export interface UserData {
   emp: Emp;
   role: Role;
   dept: Dept;
+  isOnline: string
 }
 // 该模块用于管理用户管理页的用户数据
 export const useUserStore = defineStore('user', () => {
@@ -55,11 +56,13 @@ export const useUserStore = defineStore('user', () => {
     emp: {} as Emp,
     role: {} as Role,
     dept: {} as Dept,
+    isOnline: ''
   });
   const emptyUserData = ref<UserData>({
     emp: {} as Emp,
     role: {} as Role,
     dept: {} as Dept,
+    isOnline: ''
   });
   const tableData = ref<UserData[]>([]);
   // 用户数据体 这里用于登录的帐号 显示数据
@@ -67,6 +70,7 @@ export const useUserStore = defineStore('user', () => {
     emp: {} as Emp,
     role: {} as Role,
     dept: {} as Dept,
+    isOnline: ''
   });
   // 用户数据查询条件
   const options: DropdownProps['options'] = [
@@ -111,7 +115,7 @@ export const useUserStore = defineStore('user', () => {
   const uploadAllFilesInOneRequest = ref(false);
   const file1 = ref<UploadProps['value']>([]);
   const Nullfile1 = ref<UploadProps['value']>([]);
-  const avatarUrl = ref(`${BASE_URL}/upload`);
+  const avatarUrl = ref(`${import.meta.env.VITE_API_BASE_URL}/upload`);
   const uploadRef = ref<UploadInstanceFunctions>();
   // 登陆表单
   const LOGIN_FORM_RULES = { account: [{ required: true, message: '账户必填' }], password: [{ required: true, message: '密码必填' }] };
@@ -221,7 +225,7 @@ export const useUserStore = defineStore('user', () => {
       phone: null,
       age: null,
       gender: null,
-      avatar:null,
+      avatar: null,
     },
   });
   const NullmyDataFormData = {
@@ -233,7 +237,7 @@ export const useUserStore = defineStore('user', () => {
       phone: null,
       age: null,
       gender: null,
-      avatar:null,
+      avatar: null,
     },
   }
   /*
@@ -244,21 +248,13 @@ export const useUserStore = defineStore('user', () => {
     const response = await fetchUserDataBySearch({
       [searchCondition.value]: searchInput.value,
     });
-    if (response.code == 1) {
-      tableData.value = response.result;
-    } else {
-      MessagePlugin.error(response.msg);
-    }
+    tableData.value = response.data.result;
   };
   // 用户分页数据获取
   const handlePageChange = async () => {
     const response = await fetchUserDataPages(current.value, pageSize.value);
-    if (response.code == 1) {
-      tableData.value = response.result.rows;
-      total.value = response.result.total;
-    } else {
-      MessagePlugin.error(response.msg);
-    }
+    tableData.value = response.data.result.rows;
+    total.value = response.data.result.total;
   };
   // 批量删除用户
   const handleBatchDelete = async () => {
@@ -268,25 +264,21 @@ export const useUserStore = defineStore('user', () => {
     }
     const msg = MessagePlugin.loading('批量删除中')
     await new Promise(resolve => setTimeout(resolve, 500));
-    const response = await deleteUsers(selectedIds.value);
-    if (response.code == 1) {
+    await deleteUsers(selectedIds.value).then(() => {
       MessagePlugin.close(msg);
-      MessagePlugin.success('批量删除成功');
+      MessagePlugin.success('用户删除成功');
       handlePageChange();
-    } else {
-      MessagePlugin.close(response.msg);
-    }
+    })
   };
   // 删除单条用户BY id
   const handleDelete = async (id: number) => {
     const msg = MessagePlugin.info('删除中');
     await new Promise(resolve => setTimeout(resolve, 200));
-    const response = await deleteUser(id);
-    if (response.code == 1) {
+    await deleteUser(id).then(() => {
       MessagePlugin.close(msg);
       MessagePlugin.success('用户删除成功');
       handlePageChange();
-    }
+    })
   };
   // 查询条件修改
   const clickHandler = (data: { content: string, value: string }) => {
@@ -347,17 +339,13 @@ export const useUserStore = defineStore('user', () => {
         },
         role: { rId: userAddFormData.role.rid }
       };
-      const response = await addUser(user);
-      if (response.code == 1) {
+      await addUser(user).then(() => {
         MessagePlugin.success('添加用户成功');
-        userAddFormData.value = JSON.parse(JSON.stringify(NulluserAddFormData));
         file1.value = Nullfile1.value;
         handlePageChange()
-      } else {
-        MessagePlugin.error('添加用户失败');
-        userAddFormData.value = JSON.parse(JSON.stringify(NulluserAddFormData));
-        file1.value = Nullfile1.value;
-      }
+      })
+      userAddFormData.value = JSON.parse(JSON.stringify(NulluserAddFormData));
+      file1.value = Nullfile1.value;
     } else {
       console.log('Validate Errors: ', firstError, validateResult);
       if (firstError) {
@@ -373,16 +361,13 @@ export const useUserStore = defineStore('user', () => {
     await new Promise(resolve => setTimeout(resolve, 200));
     if (validateResult === true) {
       const user = { eUsername: loginFormData.account, ePassword: loginFormData.password };
-      const response = await userLogin(user);
-      MessagePlugin.close(msg)
-      if (response.code == 1) {
-        token.value = response.result
-        localStorage.setItem('token', response.result);
+      await userLogin(user).then((resp) => {
+        MessagePlugin.close(msg)
+        token.value = resp.data.result;
+        localStorage.setItem('token', token.value);
         MessagePlugin.success('登录成功');
         router.push('/home');
-      } else {
-        MessagePlugin.error(response.message);
-      }
+      })
     } else {
       console.log('Validate Errors: ', firstError, validateResult);
       if (firstError) {
@@ -394,36 +379,30 @@ export const useUserStore = defineStore('user', () => {
   };
   // 自动登录
   const autoLogin = async () => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      const msg = MessagePlugin.loading('自动登陆中')
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      const response = await userLoginBytoken(token);
-      if (response.code == 1) {
+    const msg = MessagePlugin.loading('自动登陆中')
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    await userLoginBytoken()
+      .then((resp) => {
         MessagePlugin.close(msg)
-        MessagePlugin.success('登录成功');
-        myData.value = response.result
+        myData.value = resp.data.result
         router.push('/home');
-      } else {
+      })
+      .catch(() => {
+        MessagePlugin.close(msg)
         router.push('/login');
-        MessagePlugin.error('登陆失败，token可能过期了');
-      }
-    }
+      })
   }
   // 登录用户数据刷新
   const updateLoginUserData = async () => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      const response = await userLoginBytoken(token);
-      if (response.code == 1) {
+    await userLoginBytoken()
+      .then((resp) => {
         MessagePlugin.success('🎈🌼欢迎访问EFPS system！❤');
-        myData.value = response.result
-        router.push('/home');
-      } else {
-        MessagePlugin.error(response.msg);
+        myData.value = resp.data.result
+      })
+      .catch(() => {
         router.push('/login');
-      }
-    }
+      })
+
   }
   // 注册提交按钮
   const regOnSubmit: FormProps['onSubmit'] = async ({ validateResult, firstError }) => {
@@ -433,15 +412,10 @@ export const useUserStore = defineStore('user', () => {
       const user = { eUsername: regFormData.account, ePassword: regFormData.password, eId: regFormData.eid, ePhone: regFormData.phone };
       const response = await regUser(user);
       MessagePlugin.close(msg);
-      console.log('响应结果', response);
-      if (response.code == 1) {
-        MessagePlugin.success('注册成功');
-        token.value = response.result
-        localStorage.setItem('token', response.result);
-        router.push('/home');
-      } else {
-        MessagePlugin.error(response.msg);
-      }
+      MessagePlugin.success('注册成功');
+      token.value = response.data.result
+      localStorage.setItem('token', response.data.result);
+      router.push('/home');
     } else {
       console.log('Validate Errors: ', firstError, validateResult);
       if (firstError) {
@@ -452,11 +426,16 @@ export const useUserStore = defineStore('user', () => {
     }
   };
   // 登出
-  const logout = () => {
-    token.value = '';
-    localStorage.removeItem('token');
-    MessagePlugin.info('已退出登录')
-    router.push('/login');
+  const logout = async () => {
+    const response = await userLogout();
+    if (response.data.code == 1) {
+      token.value = '';
+      localStorage.removeItem('token');
+      MessagePlugin.info('已退出登录')
+      router.push('/login');
+    } else {
+      MessagePlugin.warning('退出登录失败');
+    }
   };
   // 修改用户提交按钮
   const saveButton = async () => {
@@ -471,17 +450,18 @@ export const useUserStore = defineStore('user', () => {
       },
       role: { rId: userDataFormData.role.rid }
     };
-    const response = await updateUser(user);
-    if (response.code == 1) {
-      MessagePlugin.success('用户信息更新成功');
-      userDataFormData.value = JSON.parse(JSON.stringify(NulluserDataFormData));
-      file1.value = Nullfile1.value;
-      handlePageChange()
-    } else {
-      MessagePlugin.warning('用户信息更新失败');
-      userDataFormData.value = JSON.parse(JSON.stringify(NulluserDataFormData));
-      file1.value = Nullfile1.value;
-    }
+    await updateUser(user)
+      .then(() => {
+        MessagePlugin.success('用户信息更新成功');
+        userDataFormData.value = JSON.parse(JSON.stringify(NulluserDataFormData));
+        file1.value = Nullfile1.value;
+        handlePageChange()
+      })
+      .catch(() => {
+        MessagePlugin.warning('用户信息更新失败');
+        userDataFormData.value = JSON.parse(JSON.stringify(NulluserDataFormData));
+        file1.value = Nullfile1.value;
+      })
   }
   // 修改个人信息头像
   const myInfoEditHandleSuccess = (response: any, file: File) => {
@@ -499,25 +479,26 @@ export const useUserStore = defineStore('user', () => {
     userData.value = emptyUserData.value;
   }
   // 修改个人信息
-  const saveMyInfoButton = async()=>{
+  const saveMyInfoButton = async () => {
     const user = {
       emp: {
         id: myData.value.emp.id, ePassword: myDataFormData.emp.password,
         eId: myDataFormData.emp.eid, ePhone: myDataFormData.emp.phone,
-        eName: myDataFormData.emp.name,eAge: myDataFormData.emp.age,
+        eName: myDataFormData.emp.name, eAge: myDataFormData.emp.age,
         eGender: myDataFormData.emp.gender,
         eAvatarpath: myDataFormData.emp.avatar,
       },
       role: { rId: myData.value.role.rId }
     };
-    const response = await updateUser(user);
-    if (response.code == 1) {
-      MessagePlugin.success('用户信息更新成功');
-      autoLogin()
-      handlePageChange()
-    } else {
-      MessagePlugin.warning('用户信息更新失败');
-    }
+    await updateUser(user)
+      .then(() => {
+        MessagePlugin.success('用户信息更新成功');
+        autoLogin()
+        handlePageChange()
+      })
+      .catch(() => {
+        MessagePlugin.warning('用户信息更新失败');
+      })
   }
 
 

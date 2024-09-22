@@ -51,6 +51,11 @@ import cooperaMsg from './msgTool/cooperaMsg.vue';
     background-color: white;
     border-radius: 15px;
     padding: 8px;
+    transition-duration: 0.5s;
+}
+.left-msg:hover,.right-msg:hover {
+    transition-duration: 0.5s;
+    box-shadow: 1px 1px 5px grey;
 }
 .right-msg {
     width: 480px;
@@ -58,7 +63,8 @@ import cooperaMsg from './msgTool/cooperaMsg.vue';
     background-color: white;
     border-radius: 15px;
     padding: 8px;
-    margin-left: 10px
+    margin-left: 10px;
+    transition-duration: 0.5s;
 }
     
 </style>

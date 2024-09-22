@@ -33,7 +33,9 @@ const store = useUserStore()
 
 // 自动登录处理
 onMounted(()=>{
+    if (localStorage.getItem('token') != null){
     store.autoLogin()
+    }
 });
 </script>
 <style scoped>

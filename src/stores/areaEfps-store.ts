@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { computed } from 'vue';
 import { MessagePlugin } from 'tdesign-vue-next';
-import { fetchAreaEfpsData, fetchAreaEfpsDataPages, addAreaEfps, fetchAreaEfpsDataBySearch, updateAreaEfps, deleteAreaEfps } from '../api/areaEfps-api';
+import { fetchAreaEfpsData, fetchAreaEfpsDataPages, addAreaEfps, fetchAreaEfpsDataBySearch, updateAreaEfps, deleteAreaEfps } from '../api/services/areaEfps-api';
 import type { FormProps } from 'tdesign-vue-next';
 import { reactive } from 'vue';
 import moment from 'moment';
@@ -287,72 +287,51 @@ export const useareaEfpsStore = defineStore('areaEfps', () => {
     */
     //获取所有areaEfps数据
     const fetchAllAreaEfpsData = async () => {
-        const response = await fetchAreaEfpsData();
-        if (response.code == 1) {
-            areaEfpsData.value = response.result;
-        } else {
-            MessagePlugin.error(response.message);
-        }
+        await fetchAreaEfpsData().then((resp) => {
+            areaEfpsData.value = resp.data.result;
+        })
     }
     // 获取分页后的areaEfps数据
     const fetchAreaEfpsDataPagesData = async () => {
-        const response = await fetchAreaEfpsDataPages(
+        await fetchAreaEfpsDataPages(
             areaEfpsPage.value.page ?? 1,
             areaEfpsPage.value.pageSize ?? 10
-        );
-        if (response.code == 1) {
-            areaEfpsData.value = response.result.list;
-        } else {
-            MessagePlugin.error(response.message);
-        }
+        ).then(resp => {
+            areaEfpsData.value = resp.data.result.list;
+        })
     }
     // 添加areaEfps数据
     const addAreaEfpsData = async (areaEfps: any) => {
-        const response = await addAreaEfps(areaEfps);
-        if (response.code == 1) {
+        await addAreaEfps(areaEfps).then(() => {
             MessagePlugin.success("添加成功");
             fetchAllAreaEfpsData()
-        } else {
-            MessagePlugin.error(response.message);
-        }
+        })
     }
     // 删除areaEfps数据
     const deleteAreaEfpsData = async (ids: number[]) => {
-        const response = await deleteAreaEfps(ids);
-        if (response.code == 1) {
+        await deleteAreaEfps(ids).then(() => {
+            fetchAllAreaEfpsData();
             MessagePlugin.success("删除成功");
-        } else {
-            MessagePlugin.error(response.message);
-        }
+        });
     }
     // 更新areaEfps数据
     const updateAreaEfpsData = async (areaEfps: any) => {
-        const response = await updateAreaEfps(areaEfps);
-        if (response.code == 1) {
+        await updateAreaEfps(areaEfps).then(() => {
+            fetchAllAreaEfpsData();
             MessagePlugin.success("更新成功");
-            fetchAllAreaEfpsData()
-        } else {
-            MessagePlugin.error(response.message);
-        }
+        });
     }
     // 查询areaEfps数据
     const searchAreaEfpsData = async (areaEfps: any) => {
-        const response = await fetchAreaEfpsDataBySearch(areaEfps);
-        if (response.code == 1) {
-            MessagePlugin.success("查询成功");
-        } else {
-            MessagePlugin.error(response.message);
-        }
+        await fetchAreaEfpsDataBySearch(areaEfps);
+        // 。。。
     }
     //添加进程单表单提交
     const areaEfpsAddSubmit = async () => {
-        const response = await addAreaEfps(areaEfpsAddFormData);
-        if (response.code == 1) {
+        await addAreaEfps(areaEfpsAddFormData).then(() => {
             MessagePlugin.success("添加成功");
             clearAreaEfpsAddFormData();
-        } else {
-            MessagePlugin.error(response.message);
-        }
+        })
     }
     //清空添加表单方法
     const clearAreaEfpsAddFormData = () => {
@@ -363,13 +342,10 @@ export const useareaEfpsStore = defineStore('areaEfps', () => {
         const processingEfps = processingData.value[0];
         if (processingEfps && processingEfps.id !== undefined) {
             processingEfps.status = 5;
-            const response = await updateAreaEfps(processingEfps);
-            if (response.code == 1) {
+            await updateAreaEfps(processingEfps).then(() => {
                 MessagePlugin.success("回收成功");
                 fetchAllAreaEfpsData();
-            } else {
-                MessagePlugin.error(response.message);
-            }
+            })
         } else {
             MessagePlugin.error("未找到正在处理的进程单");
         }
@@ -379,13 +355,10 @@ export const useareaEfpsStore = defineStore('areaEfps', () => {
         const processingEfps = processingData.value[0];
         if (processingEfps && processingEfps.id !== undefined) {
             processingEfps.status = 1;
-            const response = await updateAreaEfps(processingEfps);
-            if (response.code == 1) {
+            await updateAreaEfps(processingEfps).then(() => {
                 MessagePlugin.success("撤回成功");
                 fetchAllAreaEfpsData();
-            } else {
-                MessagePlugin.error(response.message);
-            }
+            })
         } else {
             MessagePlugin.error("未找到正在处理的进程单");
         }
@@ -545,7 +518,7 @@ export const useareaEfpsStore = defineStore('areaEfps', () => {
         }
     }
 
-    const setVIP = ()=> {
+    const setVIP = () => {
         if (processingData.value[0]?.c4 === 'VIP') {
             const areaEfps = {
                 id: processingData.value[0]?.id,

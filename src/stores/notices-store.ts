@@ -4,8 +4,7 @@ import type { TableColumnCtx } from 'element-plus'
 import { computed } from 'vue';
 import { MessagePlugin } from 'tdesign-vue-next';
 import type { UploadInstanceFunctions, DropdownProps, UploadProps, FormProps } from 'tdesign-vue-next';
-import { BASE_URL } from "@/api/user-api";
-import { fetchNoticesData, fetchNoticesDataPages, fetchNoticesDataBySearch, deleteNotices, updateNotices, addNotice } from '@/api/notices-api';
+import { fetchNoticesData, fetchNoticesDataPages, fetchNoticesDataBySearch, deleteNotices, updateNotices, addNotice } from '@/api/services/notices-api';
 
 // 定义Notices数据类型
 export interface NoticesData {
@@ -66,63 +65,45 @@ export const useNoticesStore = defineStore('notices', () => {
     */
     // 获取所有Notice数据
     const fetchAllNoticesData = async () => {
-        const res = await fetchNoticesData();
-        if (res.code == 1) {
-            noticesData.value = res.result;
-        } else {
-            MessagePlugin.error(res.message);
-        }
+        await fetchNoticesData().then((resp) => {
+            noticesData.value = resp.data.result;
+        })
     }
     // 获取Notice分页数据
     const fetchNoticesDataPagesData = async (page: number, pageSize: number) => {
-        const res = await fetchNoticesDataPages(page, pageSize);
-        if (res.code == 1) {
-            noticesDataPages.value = res.result.list;
-            noticesDataPagesTotal.value = res.result.total;
-            noticesDataPagesCurrent.value = res.result.page;
-        } else {
-            MessagePlugin.error(res.message);
-        }
+        await fetchNoticesDataPages(page, pageSize).then((resp) => {
+            noticesDataPages.value = resp.data.result.list;
+            noticesDataPagesTotal.value = resp.data.result.total;
+            noticesDataPagesCurrent.value = resp.data.result.page;
+        })
     }
     // 根据搜索条件获取Notice数据
     const fetchNoticesDataBySearchData = async (notices: any) => {
-        const res = await fetchNoticesDataBySearch(notices);
-        if (res.code == 1) {
-            noticesData.value = res.data;
-        } else {
-            MessagePlugin.error(res.message);
-        }
+        await fetchNoticesDataBySearch(notices).then((resp) => {
+            noticesData.value = resp.data.result;
+        })
     }
     // 删除Notice数据
     const deleteNoticesData = async (ids: number[]) => {
         console.log(ids)
-        const res = await deleteNotices(ids);
-        if (res.code == 1) {
-            MessagePlugin.success("删除成功");
+        await deleteNotices(ids).then(() => {
             fetchAllNoticesData();
-        } else {
-            MessagePlugin.error(res.message);
-        }
+            MessagePlugin.success("删除成功");
+        });
     }
     // 更新Notice数据
     const updateNoticeData = async (notices: NoticesData) => {
-        const res = await updateNotices(notices);
-        if (res.code == 1) {
-            MessagePlugin.success("更新成功");
+        await updateNotices(notices).then(() => {
             fetchAllNoticesData();
-        } else {
-            MessagePlugin.error(res.message);
-        }
+            MessagePlugin.success("更新成功");
+        });
     }
     // 添加Notice数据
     const addNoticeData = async (noticeData: NoticesData) => {
-        const res = await addNotice(noticeData);
-        if (res.code == 1) {
-            MessagePlugin.success("添加成功");
+        await addNotice(noticeData).then(() => {
             fetchAllNoticesData();
-        } else {
-            MessagePlugin.error(res.message);
-        }
+            MessagePlugin.success("添加成功");
+        });
     }
     // 添加Notice数据提交添加 验证
     const addNoticeSubmit: FormProps['onSubmit'] = async ({ validateResult, firstError }) => {
@@ -161,12 +142,9 @@ export const useNoticesStore = defineStore('notices', () => {
         });
         // 如果有数据过期，则批量删除
         if (expiredIds.length > 0) {
-            try {
-                await deleteNoticesData(expiredIds);
+            await deleteNoticesData(expiredIds).then(() => {
                 MessagePlugin.success(`成功删除 ${expiredIds.length} 条过期数据`);
-            } catch (error) {
-                MessagePlugin.error('删除过期数据时发生错误');
-            }
+            })
         } else {
             MessagePlugin.info('没有找到过期数据');
         }

@@ -32,8 +32,6 @@ const clickHandler: DropdownProps['onClick'] = (data) => {
 onMounted(() => {
   // 从token读取登陆用户信息
   homeStore.getMyInfo()
-  // 确保登陆用户信息显示为最新
-  userStore.updateLoginUserData()
 })
 </script>
   
