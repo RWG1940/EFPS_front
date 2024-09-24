@@ -6,6 +6,7 @@ import { fetchAreaEfpsData, fetchAreaEfpsDataPages, addAreaEfps, fetchAreaEfpsDa
 import type { FormProps } from 'tdesign-vue-next';
 import { reactive } from 'vue';
 import moment from 'moment';
+import { formatDate,formatDate2 } from '@/utils/moment';
 
 // 定义区域飞行进程单数据类型
 export interface AreaEfpsData {
@@ -204,6 +205,7 @@ export const useareaEfpsStore = defineStore('areaEfps', () => {
     const processingData = computed(() => {
         return areaEfpsData.value.filter(efps => efps.status === 2 && (efps.type === 0 || efps.type === 1));
     });
+    
     // 进程单区域选项
     const areaEfpsAreaOptions = ref([
         { label: '标牌区', value: '1' },
@@ -555,6 +557,20 @@ export const useareaEfpsStore = defineStore('areaEfps', () => {
         })
     }
 
+    const getOffsetDate = (days: number): Date => {
+        return new Date(new Date().getTime() - days * 24 * 60 * 60 * 1000);
+    }
+
+    const filterEfpsByStatusAndDate = (status: number, type: number, date: Date) => {
+        return computed(() => {
+            return areaEfpsData.value.filter(efps => 
+                efps.status == status && 
+                efps.type == type && 
+                formatDate(efps.createtime as string || new Date()/*如果时间未定义，则采用当天的时间*/)?.startsWith(formatDate2(date))
+            ).length
+        });
+    }
+
     return {
         // 返回属性
         areaEfpsData,
@@ -586,6 +602,10 @@ export const useareaEfpsStore = defineStore('areaEfps', () => {
         locationReport,
         locationName,
         flyCommand,
+        getOffsetDate,
+        filterEfpsByStatusAndDate,
+
+        
 
         // 返回方法
         fetchAllAreaEfpsData,

@@ -4,7 +4,7 @@
     <t-layout class="t-layout2">
       <sideBar />
       <t-layout>
-        <el-scrollbar height="600px">
+        <el-scrollbar height="92vh" width="100vh">
           <content />
           <rfooter />
         </el-scrollbar>

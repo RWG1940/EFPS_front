@@ -4,7 +4,7 @@ import type { TableColumnCtx } from 'element-plus'
 import { computed } from 'vue';
 import { MessagePlugin } from 'tdesign-vue-next';
 import type { UploadInstanceFunctions, DropdownProps, UploadProps } from 'tdesign-vue-next';
-import { fetchDeptDataBySearch, fetchDeptDataPages, deleteDepts, deleteDept, addDept, updateDept } from '@/api/services/dept-api';
+import { fetchDeptDataBySearch, fetchDeptDataPages, deleteDepts, deleteDept, addDept, updateDept, fetchDeptData } from '@/api/services/dept-api';
 
 
 // 定义部门数据类型
@@ -13,9 +13,11 @@ export interface DeptData {
   dAvatarpath?: string;
   dName?: string;
   dTotal?: string;
+  dOnlineTotal?: 0;
   dCreatetime?: string;
   dUpdatetime?: string;
 }
+
 export const useDeptStore = defineStore('dept', () => {
   /*
   *状态
@@ -48,10 +50,25 @@ export const useDeptStore = defineStore('dept', () => {
   const file2 = ref<UploadProps['value']>([]);
   const avatarUrl = ref(`${import.meta.env.VITE_API_BASE_URL}/upload`);
   const uploadRef = ref<UploadInstanceFunctions>();
-
+  // 过滤出每个部门名字对应的员工人数
+  const deptTotal = computed(() => {
+    return tableData.value.map(item => {
+      return {
+        dName: item.dName,
+        dTotal: item.dTotal,
+        dOnlineTotal: item.dOnlineTotal,
+      }
+    })
+  })
   /*
   *动作
   */
+  // 部门数据获取
+  const getAllDeptData = async () => {
+    await fetchDeptData().then((resp) => {
+      tableData.value = resp.data.result;
+    })
+  };
   // 部门数据查找
   const searchDept = async () => {
     await fetchDeptDataBySearch({
@@ -178,6 +195,7 @@ export const useDeptStore = defineStore('dept', () => {
     autoUpload,
     uploadRef,
     deptData,
+    deptTotal,
 
 
     searchDept,
@@ -193,5 +211,6 @@ export const useDeptStore = defineStore('dept', () => {
     submitButton,
     handleSuccess,
     cleanDeptData,
+    getAllDeptData,
   };
 });

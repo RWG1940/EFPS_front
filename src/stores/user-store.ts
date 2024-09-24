@@ -4,7 +4,7 @@ import type { TableColumnCtx } from 'element-plus'
 import { computed } from 'vue';
 import { userLogin, userLoginBytoken, userLogout } from '@/api/services/login-api';
 import { regUser } from '@/api/services/reg-api';
-import { fetchUserDataBySearch, fetchUserDataPages, deleteUsers, deleteUser, updateUser, addUser } from '@/api/services/user-api'
+import { fetchUserDataBySearch, fetchUserDataPages, deleteUsers, deleteUser, updateUser, addUser, fetchUserData } from '@/api/services/user-api'
 import { MessagePlugin } from 'tdesign-vue-next';
 import type { UploadInstanceFunctions, DropdownProps, UploadProps, FormProps } from 'tdesign-vue-next';
 import { useRouter } from 'vue-router';
@@ -240,9 +240,25 @@ export const useUserStore = defineStore('user', () => {
       avatar: null,
     },
   }
+  // tableData过滤出isOnline为1的数据长度
+  const onlineUserLength = computed(() => {
+    return tableData.value.filter((item) => item.isOnline == '1').length;
+  });
+  // tableData过滤出isOnline为0的数据长度
+  const offlineUserLength = computed(() => {
+    return tableData.value.filter((item) => item.isOnline == '0').length;
+  });
+  // 
   /*
   *动作
   */
+  // 获取所有用户数据
+  const getAllUserData = async () => {
+    await fetchUserData().then((resp) => {
+      tableData.value = resp.data.result;
+    })
+    
+  };
   // 用户数据查找
   const searchUser = async () => {
     const response = await fetchUserDataBySearch({
@@ -431,7 +447,6 @@ export const useUserStore = defineStore('user', () => {
     if (response.data.code == 1) {
       token.value = '';
       localStorage.removeItem('token');
-      MessagePlugin.info('已退出登录')
       router.push('/login');
     } else {
       MessagePlugin.warning('退出登录失败');
@@ -542,6 +557,8 @@ export const useUserStore = defineStore('user', () => {
     myDataFormData,
     MYDATA_FORM_RULES,
     NullmyDataFormData,
+    onlineUserLength,
+    offlineUserLength,
 
     // 方法
     searchUser,
@@ -564,6 +581,6 @@ export const useUserStore = defineStore('user', () => {
     myInfoEditHandleSuccess,
     cleanUserData,
     saveMyInfoButton,
-
+    getAllUserData
   };
 });

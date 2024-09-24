@@ -53,9 +53,9 @@ const handleUpdateAddVisible = () => {
   display: flex;
   flex-direction: column;
   padding: 20px;
-  margin: 2%;
+  margin: 1%;
   height: 98%;
-  width: 93%;
+  width: 95%;
 
 }
 
