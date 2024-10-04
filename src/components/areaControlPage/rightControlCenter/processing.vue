@@ -62,9 +62,11 @@ const handleRecycleVisibleChange = () => {
 <style lang="scss" scoped>
 .processing {
     width: 100%;
-    background-color: rgba(220, 220, 220, 0.594);
+    background-color: rgba(255, 255, 255, 0.594);
     justify-content: center;
-    border-radius: 5px;
+    border-radius: 10px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
     padding: 3px;
 }
 </style>

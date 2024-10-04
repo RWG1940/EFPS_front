@@ -1,5 +1,5 @@
 <template>
-  <el-table :data="store.tableData" stripe border style="width: 170vh" max-height="60vh"
+  <el-table :data="store.tableData" stripe border style="width: 170vh" max-height="65vh"
     @selection-change="store.handleSelectionChange">
     <el-table-column type="selection" width="55" />
     <el-table-column fixed prop="emp.eAvatarpath" label="头像" width="80">

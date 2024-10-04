@@ -4,10 +4,7 @@
     <t-layout class="t-layout2">
       <sideBar />
       <t-layout>
-        <el-scrollbar height="92vh" width="100vh">
-          <content />
-          <rfooter />
-        </el-scrollbar>
+        <content />
       </t-layout>
     </t-layout>
   </t-layout>
@@ -17,7 +14,6 @@
 import sideBar from "@/layout/sideBar.vue";
 import rheader from "@/layout/header.vue";
 import content from "@/layout/content.vue";
-import rfooter from "@/layout/footer.vue";
 </script>
 <style scoped>
 .t-layout1 {

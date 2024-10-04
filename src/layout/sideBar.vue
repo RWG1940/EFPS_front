@@ -88,16 +88,10 @@
 <script setup lang="ts">
 import { ref, computed, onMounted,onBeforeMount } from 'vue';
 import { useRouter } from 'vue-router';
-import { content } from "@/utils/stateVariables";
-import { LoadingPlugin } from 'tdesign-vue-next';
-import { useDeptStore } from '@/stores/dept-store';
-import { useareaEfpsStore } from '@/stores/areaEfps-store';
 
 const collapsed = ref(false);
 const iconName = computed(() => (collapsed.value ? 'chevron-right' : 'chevron-left'));
 const rwg = ref('');
-const deptStore = useDeptStore();
-const efpsStore = useareaEfpsStore();
 
 const changeCollapsed = () => {
   collapsed.value = !collapsed.value;
@@ -107,11 +101,11 @@ const router = useRouter();
 
 
 const handleMenuClick = (path: string) => {
-  router.push(`/${path}`);
+  router.push(`/home/${path}`);
 };
 onMounted(() => {
   if (rwg.value == '') {
-    router.push('/dashboard')
+    //router.push('/home/dashboarda')
   }
 });
 

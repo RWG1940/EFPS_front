@@ -1,6 +1,8 @@
 <template>
     <div class="wrap">
         <t-row :gutter="20">
+            <transition name="m-trans" appear>
+            
             <t-col :span="4.5">
                 <div class="msg">
                     <p class="title"><t-icon name="notification">
@@ -30,6 +32,10 @@
                     <importantMsg />
                 </div>
             </t-col>
+        </transition>
+        <transition name="m1-trans" appear>
+        
+       
             <t-col :span="7">
                 <div class="msgTable">
                     <p class="title"><t-icon name="root-list">
@@ -87,6 +93,7 @@
                     </el-table>
                 </div>
             </t-col>
+        </transition>
         </t-row>
         <addNotice :visible="addVisible" @update:visible="handleAddVisibleChange" />
         <editNotice :visible="editVisible" @update:visible="handleEditVisibleChange" />
@@ -121,10 +128,7 @@ const handleEditVisibleChange = () => {
     display: flex;
     flex-direction: column;
     padding: 20px;
-    margin: 1%;
     height: 98%;
-    width: 95%;
-
 }
 
 .msg {
@@ -148,6 +152,28 @@ const handleEditVisibleChange = () => {
     border-radius: 8px;
     flex-direction: column;
     height: 355px;
+}
+
+.m-trans-enter-from,
+.m-trans-leave-to {
+    transform: translateX(-100px) scale(0.5) rotateY(-20deg) rotateX(20deg);
+    opacity: 0;
+}
+
+.m-trans-enter-active,
+.m-trans-leave-active {
+    transition: all 0.5s ease;
+}
+
+.m1-trans-enter-from,
+.m1-trans-leave-to {
+    transform: translateX(150px) scale(0.5) rotateY(20deg) rotateX(-20deg);
+    opacity: 0;
+}
+
+.m1-trans-enter-active,
+.m1-trans-leave-active {
+    transition: all 0.6s ease;
 }
 </style>
   

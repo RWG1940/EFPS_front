@@ -1,5 +1,5 @@
 <template>
-    <div style="cursor:pointer;margin: 1%;transition-duration: 0.5s;">
+    <div style="cursor:pointer;margin: 1%;transition-duration: 0.5s;margin-bottom: 5px;">
         <t-tag theme="primary" :variant="item.isActive ? 'dark' : 'light'"
             class="menu-tags" closable v-for="(item, index) in tagData"
             :key="item.name + index" @close="handleClose(item)" @click="handleSelect(item)">
@@ -38,6 +38,7 @@ onMounted(() => {
   
 <style lang="less" scoped>
 .menu-tags {
+    margin-right: 6px;
     transition-duration: 0.5s;
 }
 .menu-tags:active {

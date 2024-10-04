@@ -106,9 +106,9 @@ const handleTransfer = () => {
 </script>
 <style lang="scss" scoped>
 .operations {
-    background-color: rgba(220, 220, 220, 0.594);
+    background-color: rgba(255, 255, 255, 0.594);
     padding: 5px;
-    border-radius: 5px;
+    border-radius: 10px;
     margin-top: 10px;
 }
 </style>

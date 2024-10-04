@@ -48,19 +48,21 @@ import cooperaMsg from './msgTool/cooperaMsg.vue';
     margin-left: 10px;
     width: 480px;
     height: 250px;
-    background-color: white;
+    background-color: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(15px);
     border-radius: 15px;
     padding: 8px;
     transition-duration: 0.5s;
 }
 .left-msg:hover,.right-msg:hover {
     transition-duration: 0.5s;
-    box-shadow: 1px 1px 5px grey;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.5);
 }
 .right-msg {
     width: 480px;
     height: 250px;
-    background-color: white;
+    background-color: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(15px);
     border-radius: 15px;
     padding: 8px;
     margin-left: 10px;

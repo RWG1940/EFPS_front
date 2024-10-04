@@ -38,7 +38,7 @@ const store = useareaEfpsStore();
 
 <style lang="scss" scoped>
 .aircraftStatus {
-    background-color: rgba(220, 220, 220, 0.594);
+    background-color: rgba(255, 255, 255, 0.594);
     padding: 5px;
     border-radius: 5px;
     margin-top: 10px;

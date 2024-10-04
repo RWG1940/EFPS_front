@@ -27,12 +27,10 @@ export const useTagsStore = defineStore('tags', () => {
       }
     });
     currentRoute.value = curTag;
-    console.log('tagsList的值', tagsList.value);
   };
 
   // 添加路由
   const addRoute = (curTag: Tag) => {
-    console.log('执行了添加', curTag);
     const target = tagsList.value.find(item => item.name === curTag.name);
     // 如果没有找到，则添加
     if (!target) {

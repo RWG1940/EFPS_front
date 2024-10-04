@@ -1,8 +1,12 @@
 <template>
     <div class="wrap">
-        <pageHeader />
-        <pageContent/>
-        <pageFooter />
+        <transition name="pa-trans" appear>
+            <pageHeader />
+        </transition>
+        <pageContent />
+        <transition name="pa-trans" appear>
+            <pageFooter />
+        </transition>
     </div>
 </template>
 <script lang="ts" setup>
@@ -12,10 +16,10 @@ import pageFooter from '@/components/areaControlPage/layout/pageFooter.vue'
 import { onMounted } from 'vue';
 import { useareaEfpsStore } from '@/stores/areaEfps-store'
 
- onMounted(() => {
-     const areaStore = useareaEfpsStore()
-     areaStore.fetchAllAreaEfpsData()
- })
+onMounted(() => {
+    const areaStore = useareaEfpsStore()
+    areaStore.fetchAllAreaEfpsData()
+})
 </script>
 <style lang="scss" scoped>
 .wrap {
@@ -23,7 +27,27 @@ import { useareaEfpsStore } from '@/stores/areaEfps-store'
     height: 100vh;
     display: flex;
     flex-direction: column;
-    background-color: rgba(220, 220, 220, 0.594);
+    background-image: url('../assets/img/areaControlPage/th.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    background-attachment: fixed;
 }
 
-</style>
+.pa-trans-enter-from {
+    opacity: 0;
+}
+
+.pa-trans-enter-to {
+    opacity: 1;
+    transition-duration: 0.8s;
+
+}
+
+.pa-trans-leave-from {
+    opacity: 1;
+}
+
+.pa-trans-leave-to {
+    opacity: 0;
+}</style>

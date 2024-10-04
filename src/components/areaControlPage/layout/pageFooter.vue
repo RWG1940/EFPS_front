@@ -11,12 +11,12 @@
 </script>
 <style lang="scss" scoped>
 .footer {
-    background-color: white;
+    background-color: rgba(255, 255, 255, 0.5);
     display: flex;
-    height: 25px;
+    height: 27px;
     font-size: smaller;
     align-items: center;
-    border-top: solid 1px lightgrey;
+    backdrop-filter: blur(15px);
 }
 .footer p {
     margin-left: 20px;

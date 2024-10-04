@@ -1,5 +1,5 @@
 <template>
-        <div id="users" style=" height: 300px;"></div>
+  <div id="users" style=" height: 300px;"></div>
 </template>
 <script setup lang="ts">
 import * as echarts from 'echarts';
@@ -26,10 +26,7 @@ onBeforeMount(async () => {
         deptItem.dOnlineTotal++;
       }
     });
-  })
-}),
-  onMounted(() => {
-    const u = echarts.init(document.getElementById('users')  as HTMLDivElement)
+    const u = echarts.init(document.getElementById('users') as HTMLDivElement)
     u.showLoading();
     const option0 = {
       title: {
@@ -46,10 +43,11 @@ onBeforeMount(async () => {
       ]
     };
     setTimeout(() => {
-    u.hideLoading();
-    u.setOption(option0);
-  }, 800);
-});
+      u.hideLoading();
+      u.setOption(option0);
+    }, 800);
+  })
+})
 
 function formatChartData(data: any) {
   let arr: any[] = []
@@ -62,6 +60,4 @@ function formatChartData(data: any) {
   return arr
 }
 </script>
-<style scoped>
-    
-</style>
+<style scoped></style>

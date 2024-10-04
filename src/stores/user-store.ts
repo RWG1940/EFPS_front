@@ -418,7 +418,17 @@ export const useUserStore = defineStore('user', () => {
       .catch(() => {
         router.push('/login');
       })
-
+  }
+  const updateLoginUserDataNoInfo = async () => {
+    await userLoginBytoken()
+      .then((resp) => {
+        sessionStorage.setItem('userDeptid', resp.data.result.emp.eDeptid);
+        console.log('无权限',sessionStorage.getItem('userDeptid'));
+        
+      })
+      .catch(() => {
+        router.push('/login');
+      })
   }
   // 注册提交按钮
   const regOnSubmit: FormProps['onSubmit'] = async ({ validateResult, firstError }) => {
@@ -581,6 +591,7 @@ export const useUserStore = defineStore('user', () => {
     myInfoEditHandleSuccess,
     cleanUserData,
     saveMyInfoButton,
-    getAllUserData
+    getAllUserData,
+    updateLoginUserDataNoInfo
   };
 });

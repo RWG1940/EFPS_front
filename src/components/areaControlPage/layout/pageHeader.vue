@@ -1,6 +1,6 @@
 <template>
     <div class="header">
-        <t-head-menu theme="dark">
+        <t-head-menu class="menu">
             <template #logo>
                 <t-icon name="user" color="yellow"></t-icon>
                 <p style="color: white; margin-left: 2px;">
@@ -11,20 +11,30 @@
                     角色：<span style="color: white;">{{ userStore.myData.dept.dName }}</span>
                 </p>
             </template>
-            <t-button @click="toggleTimezone" theme="default" size="small" style="margin-left: 35%;">
-                <t-icon name="time" color="white" style="color: black;margin: auto;"></t-icon>&ensp;{{ currentTimezoneLabel
+            <t-button @click="toggleTimezone" theme="default" size="small"
+                style="margin-left: 35%;background-color: rgba(24, 24, 24, 0.16);border:none;color: white;">
+                <t-icon name="time" color="white" style="margin: auto;"></t-icon>&ensp;{{ currentTimezoneLabel
                 }}
             </t-button>
             <p style="color: white; margin-left: 5px;">
-                <span style="font-weight: bold; color: white;">{{ currentDateTime }}</span>
+                <span style=" color: white;">{{ currentDateTime }}</span>
             </p>
             <template #operations>
+                <t-button theme="default" shape="square" size="small"
+                    style="margin-right: 20px;background-color: rgba(255, 255, 255, 0.11);border: none;width: 100px;color: white;"
+                    @click="()=>{$router.push('/')}">
+                    <template #icon>
+                        <t-icon name="home" color="white" />
+                    </template>
+                    回到主页
+                </t-button>
                 <p
                     style="margin-right: 10px; color: rgb(255, 255, 255); padding: 5px; border-radius: 3px; font-weight: bolder; font-style: italic;">
                     EFPS-SYSTEM
                 </p>
-                <t-popconfirm content="确认退出登录吗" :visible="visible"> 
-                    <t-button theme="danger" shape="square" size="small" style="margin-right: 20px;" @click="visible = true">
+                <t-popconfirm content="确认退出登录吗" :visible="visible">
+                    <t-button theme="danger" shape="square" size="small" style="margin-right: 20px;"
+                        @click="visible = true">
                         <template #icon>
                             <t-icon name="logout" color="white" />
                         </template>
@@ -80,4 +90,9 @@ onMounted(() => {
 });
 </script>
 
-<style lang="scss"></style>
+<style lang="scss" scoped>
+.menu {
+    background-color: rgba(119, 119, 119, 0.217);
+    backdrop-filter: blur(10px);
+    box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.24);
+}</style>

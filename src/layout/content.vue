@@ -1,16 +1,26 @@
 <template>
+  <tags />
+  <div style="position: relative; height: 580px">
     <my-info />
-    <tags />
-    <t-content class="tc">
+    <t-list class="rwg" style="position: relative; height: 100%; overflow-y: scroll">
+      <t-content style="margin-top: -10px;">
         <transition name="m-trans">
-            <router-view></router-view>
+          <router-view></router-view>
         </transition>
-    </t-content>
+      </t-content>
+      <rfooter />
+    </t-list>
+    <p style="display: flex;justify-content: center;margin: 0;color: grey;font-size: small;">Powered By JDZU</p>
+    <t-back-top container=".rwg" :visible-height="500" style="position: absolute" :offset="['24px', '80px']"
+      :duration="500" shape="circle"></t-back-top>
+  </div>
 </template>
 <script lang="ts" setup>
 import myInfo from "@/layout/components/myInfo.vue";
 import { ref } from "vue";
 import tags from "@/layout/components/tags.vue";
+import rfooter from "@/layout/footer.vue";
+
 
 </script>
 <style scoped>
@@ -23,5 +33,12 @@ import tags from "@/layout/components/tags.vue";
 .m-trans-leave-to {
   opacity: 0;
   transform: perspective(1000px) rotateX(10deg) rotateY(10deg) translateX(200px);
+}
+
+.rwg {
+  background-color: rgb(255, 255, 255,0);
+  margin-left: 1%;
+  margin-right: 1%;
+  border-radius: 5px;
 }
 </style>

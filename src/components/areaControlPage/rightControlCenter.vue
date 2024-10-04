@@ -22,7 +22,8 @@ import aircraftStatus from './rightControlCenter/aircraftStatus.vue';
 </script>
 <style lang="scss" scoped>
 .control-center {
-    background-color: white;
+    background-color: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(15px);
     border-radius: 15px;
     padding: 5px;
     margin-right: 10px;
