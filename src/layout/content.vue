@@ -1,7 +1,6 @@
 <template>
   <tags />
   <div style="position: relative; height: 580px">
-    <my-info />
     <t-list class="rwg" style="position: relative; height: 100%; overflow-y: scroll">
       <t-content style="margin-top: -10px;">
         <transition name="m-trans">
@@ -10,7 +9,16 @@
       </t-content>
       <rfooter />
     </t-list>
-    <p style="display: flex;justify-content: center;margin: 0;color: grey;font-size: small;">Powered By JDZU</p>
+
+    <p style="display: flex;justify-content: center;margin: 0;color: grey;font-size: small;">
+      <t-breadcrumb style="position: absolute;left: 10px;">
+        <t-icon name="system-location"></t-icon>当前位置：
+        <t-breadcrumb-item v-for="(item, index) in $route.matched" :key="index" :to="item.path" :replace="true">{{
+          item.name }}</t-breadcrumb-item>
+      </t-breadcrumb>
+      Powered By JDZU
+    </p>
+    <my-info />
     <t-back-top container=".rwg" :visible-height="500" style="position: absolute" :offset="['24px', '80px']"
       :duration="500" shape="circle"></t-back-top>
   </div>
@@ -36,7 +44,7 @@ import rfooter from "@/layout/footer.vue";
 }
 
 .rwg {
-  background-color: rgb(255, 255, 255,0);
+  background-color: rgb(255, 255, 255, 0);
   margin-left: 1%;
   margin-right: 1%;
   border-radius: 5px;

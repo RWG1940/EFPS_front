@@ -2,7 +2,7 @@
     <div style="cursor:pointer;margin: 1%;transition-duration: 0.5s;margin-bottom: 5px;">
         <t-tag theme="primary" :variant="item.isActive ? 'dark' : 'light'"
             class="menu-tags" closable v-for="(item, index) in tagData"
-            :key="item.name + index" @close="handleClose(item)" @click="handleSelect(item)">
+            :key="item.name + index" @close="handleClose(item)" @click="handleSelect(item)" @contextmenu.prevent="onRightClick">
             <span>{{ item.name }}</span>
         </t-tag>
     </div>
@@ -30,10 +30,10 @@ const handleSelect = (item: any) => {
         tagsStore.setTagsList(item);
     }
 };
+const onRightClick = (e: any) => {
+    
+};
 
-onMounted(() => {
-    // 初始化数据
-});
 </script>
   
 <style lang="less" scoped>
@@ -47,5 +47,6 @@ onMounted(() => {
 }
 .menu-tags:hover {
     transform: perspective(1000px) rotateY(-40deg) scale(1.4);
+    font-weight: bold;
 }
 </style>

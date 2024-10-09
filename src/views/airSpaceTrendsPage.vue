@@ -1,8 +1,8 @@
 <template>
     <div class="wrap">
         <el-affix :offset="120">
-            <t-button style="margin-left: 1000px;" theme="default" @click="visible = true">
-                <t-icon name="setting-1"></t-icon>空域操作
+            <t-button style="margin-left: 1000px;" theme="default" @click="operateBtn">
+                <t-icon :name="iconName" class="icon"></t-icon>空域操作
             </t-button>
         </el-affix>
         <t-row>
@@ -29,9 +29,32 @@
         <t-row>
             <p class="hp">各空域状态以及事件明细</p>
         </t-row>
-        <t-drawer v-model:visible="visible" header="空域操作" :on-overlay-click="() => (visible = false)" :show-overlay="false"
-            placement="bottom" @cancel="visible = false">
-            <p>d</p>
+        <t-row style="justify-content: center;align-items: center;padding: 10px;margin: 10px;border-radius: 10px;">
+            <airSpaceEventTable />
+        </t-row>
+        <t-drawer v-model:visible="visible" header="空域操作"
+            :on-overlay-click="() => { visible = false, iconName = 'setting-1' }" :show-overlay="false" placement="bottom"
+            @cancel="() => { visible = false, iconName = 'setting-1' }"
+            @confirm="() => { visible = false, iconName = 'setting-1' }">
+            <t-row :gutter="16">
+                <t-col :span="2">
+                    空域：
+                    <t-select placeholder="请选择空域" clearable></t-select>
+                </t-col>
+                <t-col :span="2">
+                    操作：
+                    <t-select placeholder="请选择操作" clearable></t-select>
+                </t-col>
+                <t-col :span="2">
+                    起止日期：
+                    <t-date-range-picker enable-time-picker allow-input clearable @pick="" @change="" />
+                </t-col>
+            </t-row>
+            <t-row :gutter="16">
+                <t-col :span="2">
+                    <t-card style="margin-top: 16px;">该空域目前状态：</t-card>
+                </t-col>
+            </t-row>
         </t-drawer>
     </div>
 </template>
@@ -41,9 +64,18 @@ import { ref } from 'vue';
 import airspace from '@/components/areaControlPage/trendsTool/airspace.vue';
 import airSpaceFlowView from '@/components/airSpaceTrendsPage/airSpaceFlowView.vue';
 import airSpaceWeather from '@/components/airSpaceTrendsPage/airSpaceWeather.vue';
+import airSpaceEventTable from '@/components/airSpaceTrendsPage/airSpaceEventTable.vue';
 
 const visible = ref(false);
-
+const iconName = ref('setting-1')
+const operateBtn = () => {
+    visible.value = !visible.value;
+    if (visible.value) {
+        iconName.value = 'close'
+    } else {
+        iconName.value = 'setting-1'
+    }
+}
 
 </script>
 <style lang="scss" scoped>
@@ -61,6 +93,10 @@ const visible = ref(false);
     font-weight: bolder;
     margin: 0;
     border-bottom: 5px solid blue;
+}
+
+.icon {
+    margin-top: 2px;
 }
 </style>
   

@@ -26,6 +26,8 @@
 <script setup lang="ts">
 import empDeptView from '../components/dashboard/empDeptView.vue'
 import efpsView from '../components/dashboard/efpsView.vue'
+
+
 </script>
 <style lang="scss" scoped>
 .wrap {

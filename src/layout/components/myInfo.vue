@@ -54,8 +54,8 @@ import { formatDate } from "@/utils/moment";
 
 const userStore = useUserStore()
 const homeStore = useHomeStore()
-const placement = ref('top');
-const mode = ref('overlay');
+const placement = ref('bottom');
+const mode = ref('push');
 const editVisible = ref(false)
 
 // myInfoEdit保存按钮的回调

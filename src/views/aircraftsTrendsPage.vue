@@ -48,8 +48,9 @@
                                         name="delete"></t-icon></t-button>
                             </t-tooltip>
                         </p>
-                        <el-table :data="store.filterTableData" max-height="300" style="margin-top: 3px;"
-                            @selection-change="store.handleSelectionChange">
+                        <t-card>
+                        <el-table :data="store.filterTableData" max-height="265" style="margin-top: 3px;"
+                            @selection-change="store.handleSelectionChange" stripe border>
                             <el-table-column type="selection" width="30" />
                             <el-table-column prop="theme" label="主题" width="70" show-overflow-tooltip :filters="[
                                 { text: '通知', value: 'info' },
@@ -95,7 +96,7 @@
                                     </el-tag>
                                 </template>
                             </el-table-column>
-                            <el-table-column prop="author" label="作者" width="80"></el-table-column>
+                            <el-table-column prop="author" label="作者" width="80" show-overflow-tooltip></el-table-column>
                             <el-table-column fixed="right" min-width="120">
                                 <template #header>
                                     <el-input v-model="store.search" size="small" placeholder="搜索" />
@@ -108,6 +109,7 @@
                                 </template>
                             </el-table-column>
                         </el-table>
+                    </t-card>
                     </div>
                 </t-col>
             </transition>
@@ -149,26 +151,43 @@ const handleEditVisibleChange = () => {
 }
 
 .msg {
-    background-color: rgb(93, 120, 255);
+    background-color: rgba(93, 120, 255, 0.5);
     display: flex;
     border-radius: 8px;
     flex-direction: column;
+    transition-duration: 0.5s;
+}
+
+.msg:hover {
+    background-color: rgba(93, 120, 255, 0.8);
+    transition-duration: 0.5s;
+    box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
+    transform: scale(1.01);
 }
 
 .title {
     margin: 15px;
     font-weight: bold;
     font-size: large;
-    color: aliceblue;
+    color: rgb(255, 255, 255);
 }
 
 .msgTable {
     display: flex;
-    background-color: rgb(141, 141, 141);
+    background-color: rgba(141, 141, 141, 0.5);
     padding: 10px;
     border-radius: 8px;
     flex-direction: column;
     height: 355px;
+    transition-duration: 0.5s;
+}
+
+.msgTable:hover {
+    background-color: rgba(141, 141, 141, 0.8);
+    transition-duration: 0.5s;
+    box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
+    transform: scale(1.01);
+
 }
 
 .m-trans-enter-from,

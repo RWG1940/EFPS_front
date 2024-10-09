@@ -8,17 +8,11 @@
           </template>
           仪表盘
         </t-menu-item>
-        <t-menu-item value="flight-plan" @click="() => { }">
+        <t-menu-item value="flight-plan" @click="handleMenuClick('flight-plan')">
           <template #icon>
             <t-icon name="assignment" />
           </template>
           飞行计划
-        </t-menu-item>
-        <t-menu-item value="flight-status" @click="handleMenuClick('flight-status')">
-          <template #icon>
-            <t-icon name="earth" />
-          </template>
-          航班动态
         </t-menu-item>
         <t-submenu value="command-control" mode="popup">
           <template #title>
@@ -39,6 +33,12 @@
             <t-icon name="cloud" />
           </template>
           空域动态
+        </t-menu-item>
+        <t-menu-item value="flight-status" @click="handleMenuClick('flight-status')">
+          <template #icon>
+            <t-icon name="earth" />
+          </template>
+          航班动态
         </t-menu-item>
         <t-menu-item value="notices" @click="handleMenuClick('notices')">
           <template #icon>
@@ -86,7 +86,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted,onBeforeMount } from 'vue';
+import { ref, computed, onMounted, onBeforeMount } from 'vue';
 import { useRouter } from 'vue-router';
 
 const collapsed = ref(false);
