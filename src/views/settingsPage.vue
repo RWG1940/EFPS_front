@@ -2,7 +2,27 @@
   <div class="wrap">
     <div class="header">
       <t-row>
-        <t-col style="font-weight: bold;border-bottom: 5px solid blue;">系统设置
+        <t-col style="font-weight: bold;border-bottom: 5px solid blue;">路由设置
+        </t-col>
+      </t-row>
+      <t-row>
+        <t-col style="font-weight: bold;border-bottom: 5px solid blue;">角色设置
+        </t-col>
+      </t-row>
+      <t-row>
+        <t-col style="font-weight: bold;border-bottom: 5px solid blue;">角色-路由设置
+        </t-col>
+      </t-row>
+      <t-row>
+        <t-col style="font-weight: bold;border-bottom: 5px solid blue;">权限设置
+        </t-col>
+      </t-row>
+      <t-row>
+        <t-col style="font-weight: bold;border-bottom: 5px solid blue;">用户-权限设置
+        </t-col>
+      </t-row>
+      <t-row>
+        <t-col style="font-weight: bold;border-bottom: 5px solid blue;">角色-权限设置
         </t-col>
       </t-row>
     </div>

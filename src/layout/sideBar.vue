@@ -2,78 +2,47 @@
   <div style="border-top: 1px solid rgba(220, 220, 220, 0.765)">
     <transition name="m-trans" appear>
       <t-menu theme="light" default-value="" :collapsed="collapsed">
-        <t-menu-item :value="rwg" @click="handleMenuClick('dashboard')">
-          <template #icon>
-            <t-icon name="dashboard" />
-          </template>
-          仪表盘
-        </t-menu-item>
-        <t-menu-item value="flight-plan" @click="handleMenuClick('flight-plan')">
-          <template #icon>
-            <t-icon name="assignment" />
-          </template>
-          飞行计划
-        </t-menu-item>
-        <t-submenu value="command-control" mode="popup">
-          <template #title>
-            <span>指挥控制</span>
-          </template>
-          <template #icon>
-            <t-icon name="tower-3" />
-          </template>
-          <t-menu-item value="command-control/area-management"
-            @click="handleMenuClick('command-control/area-management')">区域管制</t-menu-item>
-          <t-menu-item value="command-control/tower-management"
-            @click="handleMenuClick('command-control/tower-management')">塔台管制</t-menu-item>
-          <t-menu-item value="command-control/combined-ground-release-management"
-            @click="handleMenuClick('command-control/combined-ground-release-management')">放行地面合并管制</t-menu-item>
-        </t-submenu>
-        <t-menu-item value="airspace-status" @click="handleMenuClick('airspace-status')">
-          <template #icon>
-            <t-icon name="cloud" />
-          </template>
-          空域动态
-        </t-menu-item>
-        <t-menu-item value="flight-status" @click="handleMenuClick('flight-status')">
-          <template #icon>
-            <t-icon name="earth" />
-          </template>
-          航班动态
-        </t-menu-item>
-        <t-menu-item value="notices" @click="handleMenuClick('notices')">
-          <template #icon>
-            <t-icon name="chat" />
-          </template>
-          公告通知
-        </t-menu-item>
-        <t-submenu value="data-analysis" mode="popup">
-          <template #icon>
-            <t-icon name="chart" />
-          </template>
-          <template #title>
-            <span>数据统计与分析</span>
-          </template>
-          <t-menu-item value="data-analysis/flight-traffic"
-            @click="handleMenuClick('data-analysis/flight-traffic')">航班流量统计</t-menu-item>
-          <t-menu-item value="data-analysis/operation-efficiency"
-            @click="handleMenuClick('data-analysis/operation-efficiency')">运行效率分析</t-menu-item>
-          <t-menu-item value="data-analysis/delay-analysis"
-            @click="handleMenuClick('data-analysis/delay-analysis')">延误原因分析</t-menu-item>
-        </t-submenu>
-        <t-submenu value="system-management" mode="popup">
-          <template #icon>
-            <t-icon name="control-platform" />
-          </template>
-          <template #title>
-            <span>系统管理</span>
-          </template>
-          <t-menu-item value="system-management/user-manage"
-            @click="handleMenuClick('system-management/user-manage')">用户管理</t-menu-item>
-          <t-menu-item value="system-management/dept-manage"
-            @click="handleMenuClick('system-management/dept-manage')">部门管理</t-menu-item>
-          <t-menu-item value="system-management/system-settings"
-            @click="handleMenuClick('system-management/system-settings')">系统设置</t-menu-item>
-        </t-submenu>
+        <template v-for="route in menuRoutes" :key="route.id">
+          <t-menu-item v-if="!route.children || route.children.length === 0" :value="route.path"
+            @click="handleMenuClick(route.path)">
+            <template #icon>
+              <t-icon :name="route.meta?.icon || 'default-icon'" />
+            </template>
+            {{ route.name }}
+          </t-menu-item>
+
+          <t-submenu v-else :value="route.path" mode="popup">
+            <template #title>
+              <span>{{ route.name }}</span>
+            </template>
+            <template #icon>
+              <t-icon :name="route.meta?.icon || 'default-icon'" />
+            </template>
+
+            <!-- 递归渲染子菜单 -->
+            <template v-for="childRoute in route.children" :key="childRoute.id">
+              <t-menu-item v-if="!childRoute.children || childRoute.children.length === 0" :value="childRoute.path"
+                @click="handleMenuClick(route.path + '/' + childRoute.path)">
+                {{ childRoute.name }}
+              </t-menu-item>
+
+              <t-submenu v-else :value="childRoute.path" mode="popup">
+                <template #title>
+                  <span>{{ childRoute.name }}</span>
+                </template>
+                <template #icon>
+                  <t-icon :name="childRoute.meta?.icon || 'default-icon'" />
+                </template>
+                <!-- 递归子菜单 -->
+                <template v-for="subChildRoute in childRoute.children" :key="subChildRoute.id">
+                  <t-menu-item :value="subChildRoute.path" @click="handleMenuClick(subChildRoute.path)">
+                    {{ subChildRoute.name }}
+                  </t-menu-item>
+                </template>
+              </t-submenu>
+            </template>
+          </t-submenu>
+        </template>
 
         <template #operations>
           <t-button class="t-demo-collapse-btn" variant="text" shape="square" @click="changeCollapsed">
@@ -88,6 +57,8 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeMount } from 'vue';
 import { useRouter } from 'vue-router';
+import { useRouteStore } from '@/stores/routes-store';
+
 
 const collapsed = ref(false);
 const iconName = computed(() => (collapsed.value ? 'chevron-right' : 'chevron-left'));
@@ -98,10 +69,13 @@ const changeCollapsed = () => {
 };
 
 const router = useRouter();
+const menuRoutes = router.getRoutes().find((route) => route.path === '/home')?.children;
 
-
+const routeStore = useRouteStore();
 const handleMenuClick = (path: string) => {
-  router.push(`/home/${path}`);
+  routeStore.aimRoutePath = path;
+  console.log(routeStore.aimRoutePath)
+  router.push('/home/' + path);
 };
 onMounted(() => {
   if (rwg.value == '') {

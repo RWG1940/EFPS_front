@@ -1,11 +1,13 @@
 <template>
-    <div style="cursor:pointer;margin: 1%;transition-duration: 0.5s;margin-bottom: 5px;">
-        <t-tag theme="primary" :variant="item.isActive ? 'dark' : 'light'"
-            class="menu-tags" closable v-for="(item, index) in tagData"
-            :key="item.name + index" @close="handleClose(item)" @click="handleSelect(item)" @contextmenu.prevent="onRightClick">
-            <span>{{ item.name }}</span>
-        </t-tag>
-    </div>
+    <transition name="t-trans" appear>
+        <div style="cursor:pointer;margin: 1%;transition-duration: 0.5s;margin-bottom: 5px;">
+            <t-tag theme="primary" :variant="item.isActive ? 'dark' : 'light'" class="menu-tags" closable
+                v-for="(item, index) in tagData" :key="item.name + index" @close="handleClose(item)"
+                @click="handleSelect(item)" @contextmenu.prevent="onRightClick">
+                <span><t-icon :name="item.meta.icon" style="margin-top: -1px;"></t-icon>{{ item.name }}</span>
+            </t-tag>
+        </div>
+    </transition>
 </template>
   
 <script lang="ts" setup>
@@ -31,7 +33,7 @@ const handleSelect = (item: any) => {
     }
 };
 const onRightClick = (e: any) => {
-    
+
 };
 
 </script>
@@ -41,12 +43,25 @@ const onRightClick = (e: any) => {
     margin-right: 6px;
     transition-duration: 0.5s;
 }
+
 .menu-tags:active {
     transform: scale(1.2);
     transition-duration: 0.5s;
 }
+
 .menu-tags:hover {
-    transform: perspective(1000px) rotateY(-40deg) scale(1.4);
-    font-weight: bold;
+    transform: perspective(1000px) rotateY(-35deg) scale(1.3);
+    box-shadow: 1px 1px 10px rgb(167, 205, 255);
+}
+
+.t-trans-enter-active,
+.t-trans-leave-active {
+    transition: all 0.5s ease-out;
+}
+
+.t-trans-enter-from,
+.t-trans-leave-to {
+    opacity: 0;
+    transform: scale(0.01);
 }
 </style>

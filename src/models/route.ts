@@ -1,22 +1,33 @@
-export interface Route {
-    id?: number;
-    path: string;
-    name: string;
-    component: any;
-    redirect?: string;
-    children: Route[];
-    meta?: {
-        title?: string;
-        requiresAuth?: boolean;
-    };
+import type { Component } from 'vue'; 
+export interface RouteEntity {
+    id: number,
+    parentrouteid: number,
+    name: string,
+    icon: string,
+    alias: string,
+    state: number,
+    sort: number,
+    value: string,
+    redirect: string,
+    type: string,
+    discription: string,
+    createuserid: number,
+    children: RouteEntity[]
 }
-// 后端返回的route 格式
-export interface rRoute {
-    id?: number;
-    path: string;
-    name: string;
-    component: any;
-    redirect?: string;
-    children: string;
-    meta?: string;
+
+export interface Route {
+    path: string,
+    name: string,
+    component: Component | (() => Promise<Component>),
+    redirect: string,
+    meta: {
+        id: number,
+        icon: string,
+        state: number,
+        sort: number,
+        type: string,
+        description: string,
+        createUserId: number
+    },
+    children: Route[]
 }

@@ -422,9 +422,7 @@ export const useUserStore = defineStore('user', () => {
   const updateLoginUserDataNoInfo = async () => {
     await userLoginBytoken()
       .then((resp) => {
-        sessionStorage.setItem('userDeptid', resp.data.result.emp.eDeptid);
-        console.log('无权限',sessionStorage.getItem('userDeptid'));
-        
+        sessionStorage.setItem('userDeptid', resp.data.result.emp.eDeptid);  
       })
       .catch(() => {
         router.push('/login');

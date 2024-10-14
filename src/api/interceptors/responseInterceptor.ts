@@ -29,6 +29,7 @@ export const responseInterceptorError = async (error: any) => {
     errMsg += "服务器错误，请联系管理员";
   } else if (ERROR_MESSAGE.includes("401")){
     errMsg += "登陆状态失效，请重新登陆";
+    localStorage.removeItem('token');
   } else {
     errMsg += ERROR_MESSAGE;
   }
