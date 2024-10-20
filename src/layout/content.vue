@@ -3,7 +3,7 @@
   <div style="position: relative; height: 580px">
     <t-list class="rwg" style="position: relative; height: 100%; overflow-y: scroll">
       <t-content style="margin-top: -10px;">
-        <transition name="m-trans">
+        <transition name="m-trans" appear>
           <router-view></router-view>
         </transition>
       </t-content>

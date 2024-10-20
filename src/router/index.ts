@@ -28,21 +28,22 @@ router.beforeEach(async (to, from, next) => {
   // 定义isToken为true时添加路由
   if (isToken && localStorage.getItem('token') !== null) {
     try {
-    await routeStore.getDynamicRoutes()
-    isToken = false;
-    next({
-      ...to,
-      replace: true,
-    });
-    return;
-  } catch (error) {
-    localStorage.removeItem('token');
-    next('/login');
-    return;
+      await routeStore.getDynamicRoutes()
+      isToken = false;
+      next({
+        ...to,
+        replace: true,
+      });
+      return;
+    } catch (error) {
+      localStorage.removeItem('token');
+      next('/login');
+      return;
+    }
   }
-}
 
   if (to.matched.some(record => record.meta.id)) {
+    userStore.updateLoginUserDataNoInfo();
     if (userStore.token) {
       // 添加当前路由到标签列表
       tagsStore.addRoute({
@@ -51,15 +52,7 @@ router.beforeEach(async (to, from, next) => {
         meta: to.meta,
         isActive: true,
       });
-
-      userStore.updateLoginUserDataNoInfo();
-
-      if (to.name === '区域飞行进程单管理' && parseInt(sessionStorage.getItem('userDeptid') as string) != 47) {
-        MessagePlugin.error('您无权访问此页面');
-        next('/home');
-      } else {
-        next();
-      }
+      next();
     } else {
       MessagePlugin.error('您还未登录');
       next('/login');

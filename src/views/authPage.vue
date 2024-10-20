@@ -3,7 +3,7 @@
         <t-progress theme="circle" :percentage="percentage" size="small" />
         <h2>正在检查权限...</h2>
         <h1>目标地址: {{ store.aimRoutePath }}</h1>
-
+        <h1 id="info" style="color: red;"></h1>
     </div>
 </template>
   
@@ -18,11 +18,22 @@ const percentage = ref(0);
 
 onMounted(() => {
     const interval = setInterval(() => {
-        if (percentage.value < 100) {
-            percentage.value += 10; // 每次增加10%
+        if (store.aimRoutePath == 'command-control/areaControl') {
+            if (parseInt(sessionStorage.getItem('userDeptid') as string) == 47) {
+                if (percentage.value < 100) {
+                    percentage.value += 20;
+                } else {
+                    clearInterval(interval);
+                    router.replace('/' + store.aimRoutePath);
+                }
+            } else {
+                percentage.value = 0
+                document.getElementById('info')!.innerHTML = '您没有权限访问该页面！'
+                clearInterval(interval);
+
+            }
         } else {
-            clearInterval(interval); // 当百分比到达100时停止增加
-            router.replace('/' + store.aimRoutePath); // 跳转到目标页面
+            // 其它的页面权限判断
         }
     }, 100);
 });

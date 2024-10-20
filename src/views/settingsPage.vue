@@ -6,29 +6,44 @@
         </t-col>
       </t-row>
       <t-row>
+        <routesTable />
+      </t-row>
+      <t-row>
         <t-col style="font-weight: bold;border-bottom: 5px solid blue;">角色设置
         </t-col>
+      </t-row>
+      <t-row>
+        <rolesTable />
       </t-row>
       <t-row>
         <t-col style="font-weight: bold;border-bottom: 5px solid blue;">角色-路由设置
         </t-col>
       </t-row>
       <t-row>
+        <roleRoutesTable />
+      </t-row>
+      <t-row>
         <t-col style="font-weight: bold;border-bottom: 5px solid blue;">权限设置
         </t-col>
       </t-row>
+      <t-row>设置所有权限列表</t-row>
       <t-row>
         <t-col style="font-weight: bold;border-bottom: 5px solid blue;">用户-权限设置
         </t-col>
       </t-row>
+      <t-row>设置各个用户所具有的权限，用于访问后端端口时检测，该权限用于管理员管理分配，颗粒度的权限分配</t-row>
       <t-row>
         <t-col style="font-weight: bold;border-bottom: 5px solid blue;">角色-权限设置
         </t-col>
       </t-row>
+      <t-row>最基础的权限分配</t-row>
     </div>
   </div>
 </template>
 <script setup lang="ts">
+import routesTable from '@/components/settingsPage/routesTable.vue'
+import rolesTable from '@/components/settingsPage/rolesTable.vue'
+import roleRoutesTable from '@/components/settingsPage/roleRoutesTable.vue'
 
 </script>
 <style lang="scss" scoped>

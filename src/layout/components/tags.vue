@@ -1,12 +1,13 @@
 <template>
     <transition name="t-trans" appear>
-        <div style="cursor:pointer;margin: 1%;transition-duration: 0.5s;margin-bottom: 5px;">
+
+        <el-scrollbar class="eb">
             <t-tag theme="primary" :variant="item.isActive ? 'dark' : 'light'" class="menu-tags" closable
                 v-for="(item, index) in tagData" :key="item.name + index" @close="handleClose(item)"
                 @click="handleSelect(item)" @contextmenu.prevent="onRightClick">
                 <span><t-icon :name="item.meta.icon" style="margin-top: -1px;"></t-icon>{{ item.name }}</span>
             </t-tag>
-        </div>
+        </el-scrollbar>
     </transition>
 </template>
   
@@ -41,6 +42,7 @@ const onRightClick = (e: any) => {
 <style lang="less" scoped>
 .menu-tags {
     margin-right: 6px;
+    margin-bottom: 4px;
     transition-duration: 0.5s;
 }
 
@@ -50,7 +52,7 @@ const onRightClick = (e: any) => {
 }
 
 .menu-tags:hover {
-    transform: perspective(1000px) rotateY(-35deg) scale(1.3);
+    transform: perspective(1000px) rotateY(-35deg) scale(1.04);
     box-shadow: 1px 1px 10px rgb(167, 205, 255);
 }
 
@@ -64,4 +66,11 @@ const onRightClick = (e: any) => {
     opacity: 0;
     transform: scale(0.01);
 }
-</style>
+
+.eb {
+    cursor: pointer;
+    margin: 1%;
+    transition-duration: 0.5s;
+    margin-bottom: 5px;
+    height: 25px;
+}</style>
