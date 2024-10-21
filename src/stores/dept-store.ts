@@ -115,7 +115,6 @@ export const useDeptStore = defineStore('dept', () => {
   const handleSuccess = (response: any, file: File) => {
     if (response.response.code == 1) {
       deptData.value.dAvatarpath = response.response.result;
-      console.log('图片上传成功:', response.response.result);
     } else {
       console.error('Unexpected upload response format:', response.response);
       MessagePlugin.error('图片上传失败: 响应格式不正确');
