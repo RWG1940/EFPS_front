@@ -110,7 +110,6 @@ export const useRouteStore = defineStore('routes', () => {
 
   // 动态解析组件
   const routerCom = (name: string) => {
-    console.log(name);
     if (!name) {
       return () => import('@/views/notFound.vue');
     }

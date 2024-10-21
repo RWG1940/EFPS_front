@@ -28,8 +28,8 @@ export const addUser = async (user: any) => {
 };
 
 // 查询用户
-export const fetchUserDataBySearch = async (params: { [key: string]: string }) => {
-  return apiClient.post('/emps/search', params);
+export const fetchUserDataBySearch = async (user: any) => {
+  return apiClient.post('/emps/search', user);
 };
 
 // 批量删除用户

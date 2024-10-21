@@ -8,19 +8,26 @@
             <t-col :span="1"><t-input v-model="route.redirect" placeholder="重定向"></t-input></t-col>
             <t-col :span="1">
                 <t-select v-model="route.type" placeholder="类型">
-                    <t-option v-for="item in store.ROUTE_TYPE_OPTIONS" :key="item.value" :value="item.value" :label="item.label">
+                    <t-option v-for="item in store.ROUTE_TYPE_OPTIONS" :key="item.value" :value="item.value"
+                        :label="item.label">
                     </t-option>
                 </t-select>
             </t-col>
             <t-col :span="1">
                 <t-select v-model="route.state" placeholder="状态">
-                    <t-option v-for="item in store.ROUTE_STATE_OPTIONS" :key="item.value" :value="item.value" :label="item.label">
+                    <t-option v-for="item in store.ROUTE_STATE_OPTIONS" :key="item.value" :value="item.value"
+                        :label="item.label">
                     </t-option>
                 </t-select></t-col>
             <t-col :span="3">
                 <t-row>
-                    <t-button theme="primary" @click="store.searchRoutes(route!)">搜索</t-button>
-                    <t-button theme="default" style="margin-left: 10px;" @click="resetSearch">重置筛选</t-button>
+                    <t-button theme="primary" @click="store.searchRoutes(route!)">
+                        <p><t-icon name="search"></t-icon>搜索</p>
+
+                    </t-button>
+                    <t-button theme="default" style="margin-left: 10px;" @click="resetSearch">
+                        <p><t-icon name="refresh"></t-icon>重置</p>
+                    </t-button>
                     <t-tooltip content="增行">
                         <t-button theme="default" style="margin-left: 10px;" shape="circle" @click="addVisible = true">
                             <t-icon name="add"></t-icon>
@@ -61,7 +68,11 @@
             <el-table-column prop="sort" label="排序" width="60"></el-table-column>
             <el-table-column prop="value" label="路径" width="120" show-overflow-tooltip></el-table-column>
             <el-table-column prop="redirect" label="重定向" width="80" show-overflow-tooltip></el-table-column>
-            <el-table-column prop="type" label="类型" width="80">
+            <el-table-column prop="type" label="类型" width="80" :filters="[
+                    { text: '菜单', value: 'MENU' },
+                    { text: '页面', value: 'LINK' }
+                ]" :filter-method="(value: string, row: RouteEntity) => { return row.type === value }"
+                filter-placement="bottom-end">
                 <template #default="scope">
                     <el-tag :type="scope.row.type === 'MENU' ? 'primary' : 'warning'" effect="dark">{{ scope.row.type ===
                         'MENU' ? '菜单' :
@@ -151,7 +162,6 @@ const handleEdit = (row: any) => {
 };
 </script>
 <style scoped>
-
 .route-table {
     padding: 15px;
 }

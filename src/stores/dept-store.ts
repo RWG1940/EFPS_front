@@ -26,15 +26,16 @@ export const useDeptStore = defineStore('dept', () => {
   const deptData = ref<DeptData>({});
   const emptyDeptData = ref<DeptData>({});
   const tableData = ref<DeptData[]>([]);
-  // 数据下拉条件
-  const options: DropdownProps['options'] = [
-    { content: '所有', value: 'all' },
-    { content: 'id', value: 'id' },
-    { content: '部门名', value: 'dName' },
-  ];
-  const condition = ref(options[0].content);
-  const searchCondition = ref<string>('id');
-  const searchInput = ref<string>('');
+  const createTime1 = ref('');
+  const createTime2 = ref('');
+  // 查询数据
+  const createEmptyUserData = () => {
+    return {
+      id: null,
+      dName: null,
+    };
+  }
+  const searchData = ref(createEmptyUserData())
   // 分页数据
   const current = ref<number>(1);
   const pageSize = ref<number>(10);
@@ -70,13 +71,7 @@ export const useDeptStore = defineStore('dept', () => {
     })
   };
   // 部门数据查找
-  const searchDept = async () => {
-    await fetchDeptDataBySearch({
-      [searchCondition.value]: searchInput.value,
-    }).then((resp) => {
-      tableData.value = resp.data.result;
-    })
-  };
+
   // 部门分页数据获取
   const handlePageChange = async () => {
     await fetchDeptDataPages(current.value, pageSize.value).then((resp) => {
@@ -108,30 +103,11 @@ export const useDeptStore = defineStore('dept', () => {
       MessagePlugin.success('删除成功');
     })
   };
-  // 查询条件修改
-  const clickHandler = (data: { content: string, value: string }) => {
-    condition.value = data.content;
-    searchCondition.value = data.value;
-  };
+
   // 多选
   const handleSelectionChange = (selection: DeptData[]) => {
     selectedIds.value = selection.map(item => item.id!);
   };
-  // 筛选
-  const filterHandler = (
-    value: string,
-    row: DeptData,
-    column: TableColumnCtx<DeptData>
-  ) => {
-    const property = column['property'] as keyof DeptData;
-    return row[property] === value;
-  }
-  const idFilters = computed(() => {
-    return tableData.value.map(item => ({
-      text: item.id?.toString() || '',
-      value: item.id
-    }));
-  });
   // 图片上传失败回调
   const handleFail: UploadProps['onFail'] = ({ file }) => {
     MessagePlugin.error(`图片 ${file.name} 上传失败`);
@@ -175,16 +151,40 @@ export const useDeptStore = defineStore('dept', () => {
     file1.value = file2.value
   }
 
+  // 搜索部门
+  const searchDept = async () => {
+    await fetchDeptDataBySearch(searchData.value).then((resp) => {
+      tableData.value = resp.data.result;
+    })
+    if (createTime1.value != '' && createTime2.value != '') {
+      const startDate = new Date(createTime1.value).getTime();
+      const endDate = new Date(createTime2.value).getTime();
+      const filteredItems = tableData.value.filter(item => {
+        const createTime = new Date(item.dCreatetime!).getTime();
+        return createTime >= startDate && createTime <= endDate;
+      });
+      tableData.value = filteredItems;
+    }
+    total.value = tableData.value.length;
+  }
+  
+  
+  // 搜索部门数据体重置
+  const searchDeptDataRefresh = async () => {
+    await handlePageChange().then(() => {
+      searchData.value = createEmptyUserData()
+      createTime1.value = ''
+      createTime2.value = ''
+    })
+  }
+
 
   return {
     tableData,
-    searchInput,
     total,
     current,
     pageSize,
     selectedIds,
-    condition,
-    options,
     imageViewerProps,
     sizeLimit,
     avatarUrl,
@@ -196,21 +196,23 @@ export const useDeptStore = defineStore('dept', () => {
     uploadRef,
     deptData,
     deptTotal,
+    createTime1,
+    createTime2,
+    searchData,
 
 
-    searchDept,
     handlePageChange,
     handleBatchDelete,
     handleDelete,
-    clickHandler,
     handleSelectionChange,
-    idFilters,
-    filterHandler,
     handleFail,
     saveButton,
     submitButton,
     handleSuccess,
     cleanDeptData,
     getAllDeptData,
+    searchDept,
+    searchDeptDataRefresh
+    
   };
 });

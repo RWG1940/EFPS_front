@@ -23,7 +23,7 @@ export interface Emp {
   eGender?: string;
   eCreatetime?: string;
   eUpdatetime?: string;
-  eIsenabled?: boolean;
+  eIsenabled?: number;
 }
 // 定义用户角色类型
 export interface Role {
@@ -72,31 +72,40 @@ export const useUserStore = defineStore('user', () => {
     dept: {} as Dept,
     isOnline: ''
   });
-  // 用户数据查询条件
-  const options: DropdownProps['options'] = [
-    { content: '所有', value: 'all' },
-    { content: 'id', value: 'id' },
-    { content: '姓名', value: 'eName' },
-    { content: '账号', value: 'eUsername' },
-    { content: '手机号', value: 'ePhone' },
-  ];
-  const condition = ref(options[0].content);
-  const searchCondition = ref<string>('id');
-  const searchInput = ref<string>('');
-  // 用户修改及添加的一些状态
-  const options1 = ref([
-    { label: '管理部', value: '46' },
-    { label: '区域管制部', value: '47' },
-    { label: '塔台管制部', value: '48' },
-  ])
+  const createEmptyUserData = () => ({
+    emp: {
+      id: null,
+      eUsername: null,
+      eAvatarpath: null,
+      eName: null,
+      ePassword: null,
+      eId: null,
+      ePhone: null,
+      eAge: null,
+      eDeptid: null,
+      eGender: null,
+      eCreatetime: null,
+      eUpdatetime: null,
+      eIsenabled: null
+    },
+    role: {
+      rId: null,
+      rName: null,
+      rInfo: null
+    },
+    dept: {
+      id: null,
+      dName: null
+    },
+    isOnline: null
+  });
+
+  const searchUserData = ref(createEmptyUserData());
+  const createTime1 = ref('')
+  const createTime2 = ref('')
   const options2 = ref([
     { label: '男', value: '0' },
     { label: '女', value: '1' },
-  ])
-  const options3 = ref([
-    { label: '超级管理员', value: '1' },
-    { label: '管理员', value: '2' },
-    { label: '普通用户', value: '3' },
   ])
   const options4 = ref([
     { label: '正常', value: '0' },
@@ -257,15 +266,9 @@ export const useUserStore = defineStore('user', () => {
     await fetchUserData().then((resp) => {
       tableData.value = resp.data.result;
     })
-    
+
   };
-  // 用户数据查找
-  const searchUser = async () => {
-    const response = await fetchUserDataBySearch({
-      [searchCondition.value]: searchInput.value,
-    });
-    tableData.value = response.data.result;
-  };
+
   // 用户分页数据获取
   const handlePageChange = async () => {
     const response = await fetchUserDataPages(current.value, pageSize.value);
@@ -295,11 +298,6 @@ export const useUserStore = defineStore('user', () => {
       MessagePlugin.success('用户删除成功');
       handlePageChange();
     })
-  };
-  // 查询条件修改
-  const clickHandler = (data: { content: string, value: string }) => {
-    condition.value = data.content;
-    searchCondition.value = data.value;
   };
   // 多选
   const handleSelectionChange = (selection: UserData[]) => {
@@ -422,7 +420,7 @@ export const useUserStore = defineStore('user', () => {
   const updateLoginUserDataNoInfo = async () => {
     await userLoginBytoken()
       .then((resp) => {
-        sessionStorage.setItem('userDeptid', resp.data.result.emp.eDeptid);  
+        sessionStorage.setItem('userDeptid', resp.data.result.emp.eDeptid);
       })
       .catch(() => {
         router.push('/login');
@@ -524,6 +522,36 @@ export const useUserStore = defineStore('user', () => {
       })
   }
 
+  // 搜索用户
+  const searchUser = async () => {
+    await fetchUserDataBySearch(searchUserData.value).then((resp) => {
+      tableData.value = resp.data.result;
+      if (searchUserData.value.role.rId == undefined) {
+        return;
+      }
+      const filteredItems = tableData.value.filter(item => item.role.rId === searchUserData.value.role.rId);
+      tableData.value = filteredItems;
+    })
+    if (createTime1.value != '' && createTime2.value != '') {
+      const startDate = new Date(createTime1.value).getTime();
+      const endDate = new Date(createTime2.value).getTime();
+      const filteredItems = tableData.value.filter(item => {
+        const createTime = new Date(item.emp.eCreatetime!).getTime();
+        return createTime >= startDate && createTime <= endDate;
+      });
+      tableData.value = filteredItems;
+    }
+    total.value = tableData.value.length;
+  }
+
+  // 搜索用户数据体重置
+  const searchUserDataRefresh = async () => {
+    await handlePageChange().then(() => {
+      searchUserData.value = createEmptyUserData()
+      createTime1.value = ''
+      createTime2.value = ''
+    })
+  }
 
 
   return {
@@ -531,13 +559,10 @@ export const useUserStore = defineStore('user', () => {
     token,
     userData,
     tableData,
-    searchInput,
     total,
     current,
     pageSize,
     selectedIds,
-    condition,
-    options,
     imageViewerProps,
     sizeLimit,
     avatarUrl,
@@ -552,11 +577,9 @@ export const useUserStore = defineStore('user', () => {
     REG_FORM_RULES,
     uploadRef,
     myData,
-    options1,
     options2,
     userDataFormData,
     USERDATA_FORM_RULES,
-    options3,
     options4,
     NulluserDataFormData,
     NulluserAddFormData,
@@ -567,13 +590,14 @@ export const useUserStore = defineStore('user', () => {
     NullmyDataFormData,
     onlineUserLength,
     offlineUserLength,
+    searchUserData,
+    createTime1,
+    createTime2,
 
     // 方法
-    searchUser,
     handlePageChange,
     handleBatchDelete,
     handleDelete,
-    clickHandler,
     handleSelectionChange,
     idFilters,
     filterHandler,
@@ -590,6 +614,8 @@ export const useUserStore = defineStore('user', () => {
     cleanUserData,
     saveMyInfoButton,
     getAllUserData,
-    updateLoginUserDataNoInfo
+    updateLoginUserDataNoInfo,
+    searchUser,
+    searchUserDataRefresh,
   };
 });

@@ -25,8 +25,8 @@ export const addDept = async (dept: any) => {
 };
 
 // 查询部门
-export const fetchDeptDataBySearch = async (params: { [key: string]: string }) => {
-  return apiClient.post('/depts/search', params);
+export const fetchDeptDataBySearch = async (dept:any) => {
+  return apiClient.post('/depts/search', dept);
 };
 // 批量删除部门
 export const deleteDepts = async (ids: number[]) => {

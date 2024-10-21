@@ -1,14 +1,13 @@
 <template>
-  <el-table :data="store.tableData" stripe border style="width: 170vh" max-height="65vh"
+  <el-table :data="store.tableData" stripe border style="width: 175vh" height="55vh"
     @selection-change="store.handleSelectionChange">
     <el-table-column type="selection" width="55" />
-    <el-table-column fixed prop="dAvatarpath" label="部门图片" width="120">
+    <el-table-column fixed prop="dAvatarpath" label="部门图" width="80">
       <template #default="scope">
-        <t-avatar :image="scope.row.dAvatarpath" size="50px" />
+        <t-avatar :image="scope.row.dAvatarpath" size="40px" shape="round" />
       </template>
     </el-table-column>
-    <el-table-column fixed prop="id" label="ID" sortable width="90" column-key="id" :filters="store.idFilters"
-      :filter-method="store.filterHandler" />
+    <el-table-column fixed prop="id" label="ID" sortable width="90" column-key="id"/>
     <el-table-column fixed prop="dName" label="部门" width="150" show-overflow-tooltip>
       <template #default="scope"><el-tag effect="plain">{{ scope.row.dName }}</el-tag></template>
     </el-table-column>
@@ -26,8 +25,8 @@
     <el-table-column fixed="right" label="操作" min-width="120">
       <template #default="{ row }">
         <div style="display: flex;">
-          <t-button theme="default" shape="round" @click="handleEditClick(row)">修改</t-button>
-          <t-button theme="danger" shape="round" @click="handleDeleteClick(row.id)">删除</t-button>
+          <el-button type="default" size="small" @click="handleEditClick(row)">修改</el-button>
+          <el-button type="danger" size="small" @click="handleDeleteClick(row.id)">删除</el-button>
         </div>
       </template>
     </el-table-column>
@@ -40,7 +39,6 @@
       <p style="margin-left: 50px; text-shadow: 1px 1px 10px rgb(255, 0, 0); ">此操作将不可逆</p>
     </template>
     <template #footer>
-
       <t-button @click="handleCancel" theme="default">取消</t-button>
       <t-button @click="handleDelete(delId)">确认</t-button>
     </template>

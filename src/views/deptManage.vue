@@ -1,19 +1,36 @@
 <template>
   <div class="wrap">
-    <div class="search">
-      <deptSort />
-      <t-input placeholder="搜索部门" v-model:="store.searchInput" clearable style="width: 15%;"></t-input>
-      <t-button theme="default" @click="store.searchDept();"><template #icon><search-icon /></template>
-      </t-button>
-      <div class="operations">
-        <t-button theme="primary" @click="addButton">
-          <template #icon><add-icon /></template>
-          新增
+    <t-row :gutter="10">
+      <t-col :span="2">
+        <t-input v-model="store.searchData.id" placeholder="id" clearable></t-input>
+      </t-col>
+      <t-col :span="2">
+        <t-input v-model="store.searchData.dName" placeholder="部门名" clearable></t-input>
+      </t-col>
+      <t-col :span="3">
+        <t-date-range-picker :value="[store.createTime1, store.createTime2]" placeholder="创建日期范围" @pick="onPick" @change="onChange"
+ enable-time-picker />
+      </t-col>
+      <t-col :span="1">
+        <t-button @click="store.searchDept()"><template #icon><search-icon /></template>搜索
         </t-button>
-        <t-button @click="store.handleBatchDelete()"><template #icon><delete-icon /></template>
-          批量删除</t-button>
-      </div>
-    </div>
+      </t-col>
+      <t-col :span="1">
+        <t-button theme="primary" variant="outline" @click="store.searchDeptDataRefresh()"><template #icon><refresh-icon /></template>重置
+        </t-button>
+      </t-col>
+      <t-col :span="0.5">
+        <t-tooltip content="增行">
+          <t-button @click="addButton()" theme="default" shape="circle"><template #icon><add-icon /></template></t-button>
+        </t-tooltip>
+      </t-col>
+      <t-col :span="0.5">
+        <t-tooltip content="删行">
+          <t-button @click="store.handleBatchDelete()" theme="default" shape="circle"><template
+              #icon><delete-icon /></template></t-button>
+        </t-tooltip>
+      </t-col>
+    </t-row>
     <div class="table">
       <deptTable v-model:addVisible="addVisible" @update:addVisible="handleUpdateAddVisible" />
       <pagination class="pag" />
@@ -21,11 +38,11 @@
   </div>
 </template>
 <script setup lang="ts">
-import deptSort from '../components/deptManage/deptSortDropdown.vue'
 import deptTable from '../components/deptManage/deptTable.vue'
 import { ref, onMounted } from "vue";
 import pagination from "@/components/deptManage/pagination.vue";
 import { useDeptStore } from "@/stores/dept-store";
+import type { DateRangePickerProps } from 'tdesign-vue-next';
 
 const store = useDeptStore()
 
@@ -33,7 +50,14 @@ const store = useDeptStore()
 onMounted(() => {
   store.handlePageChange()
 });
-
+const onPick: DateRangePickerProps['onPick'] = (value: any, context) => {
+  store.createTime1 = value[0]
+  store.createTime2 = value[1]
+}
+const onChange: DateRangePickerProps['onChange'] = (value: any, context) => {
+  store.createTime1 = value[0]
+  store.createTime2 = value[1]
+};
 //新增用户面板的可视化以及回调
 const addVisible = ref(false)
 const addButton = () => {
@@ -56,16 +80,6 @@ const handleUpdateAddVisible = () => {
   height: 98%;
 }
 
-.search {
-  display: flex;
-}
-
-.operations {
-  margin-left: auto;
-  display: flex;
-  gap: 10px;
-}
-
 .table {
   display: flex;
   margin-top: 20px;
@@ -76,6 +90,10 @@ const handleUpdateAddVisible = () => {
 
 .pag {
   margin-top: 20px;
+}
+
+.t-col {
+  margin-top: 10px;
 }
 </style>
   

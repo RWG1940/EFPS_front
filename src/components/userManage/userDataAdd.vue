@@ -49,13 +49,17 @@
 
         <t-form-item name="role.rid">
           <t-input-adornment prepend="角色">
-            <t-select v-model="store.userAddFormData.role.rid" :options="store.options3" placeholder="请选择角色" clearable></t-select>
+            <t-select v-model="store.userAddFormData.role.rid" placeholder="请选择角色" clearable>
+            <t-option  :value="item.rId" :label="item.rInfo" v-for="(item, index) in roleStore.roleList" :key="index" ></t-option>
+            </t-select>
           </t-input-adornment>
         </t-form-item>
 
         <t-form-item name="emp.deptid">
           <t-input-adornment prepend="部门">
-            <t-select v-model="store.userAddFormData.emp.deptid" :options="store.options1" placeholder="请选择部门" clearable></t-select>
+            <t-select v-model="store.userAddFormData.emp.deptid" placeholder="请选择部门" clearable>
+              <t-option  :value="item.id" :label="item.dName" v-for="(item, index) in deptStore.tableData" :key="index" ></t-option>
+            </t-select>
           </t-input-adornment>
         </t-form-item>
 
@@ -92,8 +96,13 @@
 <script lang="ts" setup>
 import userEdit from './userEdit.vue'
 import { useUserStore } from "@/stores/user-store";
+import { useDeptStore } from "@/stores/dept-store";
+import { useRoleStore } from "@/stores/role-store";
+
 
 const store = useUserStore()
+const deptStore = useDeptStore()
+const roleStore = useRoleStore()
 const props = defineProps<{
   visible: boolean;
 }>();
