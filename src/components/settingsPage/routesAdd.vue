@@ -63,14 +63,12 @@
                             <t-input v-model="store.routeAddFormData.redirect" clearable />
                         </t-input-adornment>
                     </t-form-item>
-
-                    <t-form-item>
-                        <t-button theme="primary" type="submit" block>提交</t-button>
-                        <t-button theme="default" type="reset" block style="margin-left: 10px;">取消</t-button>
-                    </t-form-item>
-
                 </t-form>
             </el-scrollbar>
+        </template>
+        <template #footer>
+            <t-button theme="primary" @click="submitBtn" block>提交</t-button>
+            <t-button theme="default" @click="resetBtn" block style="margin-left: 10px;">取消</t-button>
         </template>
     </userEdit>
 </template>
@@ -112,6 +110,13 @@ const handleAddFormSubmit: FormProps['onSubmit'] = async ({ validateResult, firs
         }
     }
 };
+
+const submitBtn = () => {
+    form.value?.submit();
+}
+const resetBtn = () => {
+    form.value?.reset();
+}
 
 </script>
 <style scoped></style>

@@ -1,9 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref, reactive } from 'vue';
-import type { TableColumnCtx } from 'element-plus'
 import { computed } from 'vue';
 import { MessagePlugin } from 'tdesign-vue-next';
-import type { UploadInstanceFunctions, DropdownProps, UploadProps, FormProps } from 'tdesign-vue-next';
 import { fetchNoticesData, fetchNoticesDataPages, fetchNoticesDataBySearch, deleteNotices, updateNotices, addNotice } from '@/api/services/notices-api';
 
 // 定义Notices数据类型
@@ -22,21 +20,12 @@ export const useNoticesStore = defineStore('notices', () => {
     */
     // Notices数据体
     const noticesData = ref<NoticesData[]>([]);
-    // Notices单条数据
-    const noticeData = ref<NoticesData>({});
-    // Notices单条空数据
-    const emptyNoticesData = ref<NoticesData>({});
     // Notices分页数据体
     const noticesDataPages = ref<NoticesData[]>([]);
-    // Notices分页数据总数
-    const noticesDataPagesTotal = ref<number>(0);
-    // Notices分页数据当前页
-    const noticesDataPagesCurrent = ref<number>(1);
-    // Notices分页数据每页数据条数
-    const noticesDataPagesSize = ref<number>(10);
     // 添加、修改Notice表单数据
     const noticeAddFormData = ref<NoticesData>({});
-
+    const pageSize = ref(10);
+    const currentPage = ref(1);
     const noticeADD_FORM_RULES = {
         header: [{ required: true, message: '标题必填' }],
         content: [{ required: true, message: '内容必填' }],
@@ -70,11 +59,9 @@ export const useNoticesStore = defineStore('notices', () => {
         })
     }
     // 获取Notice分页数据
-    const fetchNoticesDataPagesData = async (page: number, pageSize: number) => {
-        await fetchNoticesDataPages(page, pageSize).then((resp) => {
-            noticesDataPages.value = resp.data.result.list;
-            noticesDataPagesTotal.value = resp.data.result.total;
-            noticesDataPagesCurrent.value = resp.data.result.page;
+    const getPage = async () => {
+        await fetchNoticesDataPages(currentPage.value, pageSize.value).then((resp: any) => {
+            noticesDataPages.value = resp.data.result.rows;
         })
     }
     // 根据搜索条件获取Notice数据
@@ -85,50 +72,26 @@ export const useNoticesStore = defineStore('notices', () => {
     }
     // 删除Notice数据
     const deleteNoticesData = async (ids: number[]) => {
-        console.log(ids)
         await deleteNotices(ids).then(() => {
-            fetchAllNoticesData();
+            getPage()
             MessagePlugin.success("删除成功");
         });
     }
     // 更新Notice数据
     const updateNoticeData = async (notices: NoticesData) => {
         await updateNotices(notices).then(() => {
-            fetchAllNoticesData();
+            getPage();
             MessagePlugin.success("更新成功");
         });
     }
     // 添加Notice数据
-    const addNoticeData = async (noticeData: NoticesData) => {
-        await addNotice(noticeData).then(() => {
-            fetchAllNoticesData();
+    const addNoticeData = async () => {
+        await addNotice(noticeAddFormData.value).then(() => {
+            getPage();
             MessagePlugin.success("添加成功");
         });
     }
-    // 添加Notice数据提交添加 验证
-    const addNoticeSubmit: FormProps['onSubmit'] = async ({ validateResult, firstError }) => {
-        if (validateResult === true) {
-            await addNoticeData(noticeAddFormData.value);
-        } else {
-            console.log('Validate Errors: ', firstError, validateResult);
-            if (firstError) {
-                MessagePlugin.warning(firstError);
-            } else {
-                MessagePlugin.warning('验证失败');
-            }
-        }
-    };
-    // 更新Notice数据提交修改 验证
-    const editNoticeSubmit: FormProps['onSubmit'] = async ({ validateResult, firstError }) => {
-        if (validateResult === true) {
-            await updateNoticeData(noticeEditFormData.value);
-        } else {
-            console.log('Validate Errors: ', firstError, validateResult);
-            if (firstError) {
-                MessagePlugin.warning(firstError);
-            }
-        }
-    }
+
     // 删除过期的Notice数据
     const deleteExpiredNoticesData = async () => {
         // 过期时间 当前时间减去24小时
@@ -154,6 +117,7 @@ export const useNoticesStore = defineStore('notices', () => {
             MessagePlugin.warning('请先选择要删除的数据');
         } else {
             await deleteNoticesData(selectedIds.value);
+            getPage()
         }
     };
     // 多选
@@ -161,7 +125,7 @@ export const useNoticesStore = defineStore('notices', () => {
         selectedIds.value = selection.map(item => item.id!);
     };
     const filterTableData = computed(() =>
-        noticesData.value.filter(
+        noticesDataPages.value.filter(
             (data) =>
                 !search.value ||
                 data.header?.toLowerCase().includes(search.value.toLowerCase()) ||
@@ -174,26 +138,22 @@ export const useNoticesStore = defineStore('notices', () => {
 
     return {
         noticesData,
-        emptyNoticesData,
         noticesDataPages,
-        noticesDataPagesTotal,
-        noticesDataPagesCurrent,
-        noticesDataPagesSize,
         noticeAddFormData,
         noticeADD_FORM_RULES,
         noticeEditFormData,
         noticeEDIT_FORM_RULES,
         fetchAllNoticesData,
-        fetchNoticesDataPagesData,
+        getPage,
         fetchNoticesDataBySearchData,
         deleteNoticesData,
         updateNoticeData,
         noticesDataPublished,
-        noticeData,
+        currentPage,
+        pageSize,
+
 
         addNoticeData,
-        addNoticeSubmit,
-        editNoticeSubmit,
         deleteExpiredNoticesData,
         deleteSelectedNoticesData,
         handleSelectionChange,

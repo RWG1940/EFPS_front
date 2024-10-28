@@ -18,41 +18,39 @@
         <t-form ref="form" :data="store.userDataFormData" :rules="store.USERDATA_FORM_RULES" :label-width="0"
           @submit="saveButton">
 
-          <t-form-item name="account">
+          <t-form-item name="emp.eUsername">
             <t-input-adornment prepend="账号">
-              <t-input v-model="store.userDataFormData.emp.account" disabled clearable
-                :placeholder="store.userData.emp.eUsername" />
+              <t-input v-model="store.userDataFormData.emp.eUsername" disabled clearable />
             </t-input-adornment>
           </t-form-item>
 
-          <t-form-item name="password">
+          <t-form-item name="emp.ePassword">
             <t-input-adornment prepend="密码">
-              <t-input v-model="store.userDataFormData.emp.password" type="password" clearable
-                :placeholder="store.userData.emp.ePassword" />
+              <t-input v-model="store.userDataFormData.emp.ePassword" type="password" clearable />
             </t-input-adornment>
           </t-form-item>
 
-          <t-form-item name="name">
+          <t-form-item name="emp.eName">
             <t-input-adornment prepend="姓名">
-              <t-input v-model="store.userDataFormData.emp.name" clearable :placeholder="store.userData.emp.eName" />
+              <t-input v-model="store.userDataFormData.emp.eName" clearable />
             </t-input-adornment>
           </t-form-item>
 
-          <t-form-item name="eid">
+          <t-form-item name="emp.eId">
             <t-input-adornment prepend="身份证号">
-              <t-input v-model="store.userDataFormData.emp.eid" clearable :placeholder="store.userData.emp.eId" />
+              <t-input v-model="store.userDataFormData.emp.eId" clearable />
             </t-input-adornment>
           </t-form-item>
 
-          <t-form-item name="phone">
+          <t-form-item name="emp.ePhone">
             <t-input-adornment prepend="手机号">
-              <t-input v-model="store.userDataFormData.emp.phone" clearable :placeholder="store.userData.emp.ePhone" />
+              <t-input v-model="store.userDataFormData.emp.ePhone" clearable />
             </t-input-adornment>
           </t-form-item>
 
-          <t-form-item name="role">
+          <t-form-item name="role.rId">
             <t-input-adornment prepend="角色">
-              <t-select v-model="store.userDataFormData.role.rid" placeholder="请选择角色" clearable>
+              <t-select v-model="store.userDataFormData.role.rId" clearable>
                 <t-option :value="item.rId" :label="item.rInfo" v-for="(item, index) in roleStore.roleList"
                   :key="index"></t-option>
 
@@ -60,47 +58,44 @@
             </t-input-adornment>
           </t-form-item>
 
-          <t-form-item name="deptid">
+          <t-form-item name="emp.eDeptid">
             <t-input-adornment prepend="部门">
-              <t-select v-model="store.userDataFormData.emp.deptid" placeholder="请选择部门"
-                clearable>
+              <t-select v-model="store.userDataFormData.emp.eDeptid" clearable>
                 <t-option :value="item.id" :label="item.dName" v-for="(item, index) in deptStore.tableData"
                   :key="index"></t-option>
               </t-select>
             </t-input-adornment>
           </t-form-item>
 
-          <t-form-item name="isEnabled">
+          <t-form-item name="emp.eIsenabled">
             <t-input-adornment prepend="账号状态">
-              <t-select v-model="store.userDataFormData.emp.isEnabled" :options="store.options4" placeholder="请选择状态"
-                clearable></t-select>
+              <t-select v-model="store.userDataFormData.emp.eIsenabled" clearable>
+                <t-option :value="item.value" :label="item.label" v-for="(item, index) in store.options4"
+                  :key="index"></t-option>
+              </t-select>
             </t-input-adornment>
           </t-form-item>
 
-          <t-form-item name="age">
+          <t-form-item name="emp.eAge">
             <t-input-adornment prepend="年龄">
-              <t-input v-model="store.userDataFormData.emp.age" clearable
-                :placeholder="String(store.userData.emp.eAge)" />
+              <t-input v-model="store.userDataFormData.emp.eAge" clearable />
             </t-input-adornment>
           </t-form-item>
 
-          <t-form-item name="gender">
-            <t-input-adornment prepend="性别">
-              <t-select v-model="store.userDataFormData.emp.gender" :options="store.options2" placeholder="请选择性别"
-                clearable></t-select>
+          <t-form-item name="emp.eGender">
+            <t-input-adornment prepend=" 性别">
+              <t-select v-model="store.userDataFormData.emp.eGender" clearable>
+                <t-option :value="item.value" :label="item.label" v-for="(item, index) in store.options2"
+                  :key="index"></t-option>
+              </t-select>
             </t-input-adornment>
           </t-form-item>
-
-
-          <t-form-item>
-            <t-button theme="primary" type="submit" block>提交</t-button>
-            <t-button theme="default" @click="cancelButton" block style="margin-left: 10px;">取消</t-button>
-          </t-form-item>
-
         </t-form>
       </el-scrollbar>
     </template>
     <template #footer>
+      <t-button theme="default" @click="cancelButton" block style="margin-left: 10px;">取消</t-button>
+      <t-button theme="primary" @click="submitButton" block>提交</t-button>
     </template>
   </userEdit>
 </template>
@@ -110,31 +105,62 @@ import userEdit from './userEdit.vue'
 import { useUserStore } from "@/stores/user-store";
 import { useDeptStore } from "@/stores/dept-store";
 import { useRoleStore } from "@/stores/role-store";
+import type { FormInstanceFunctions, FormProps } from 'tdesign-vue-next';
+import { MessagePlugin } from 'tdesign-vue-next';
+import { ref } from 'vue';
+import { updateUser } from '@/api/services/user-api';
+
 
 const store = useUserStore()
 const deptStore = useDeptStore()
 const roleStore = useRoleStore()
-
+const form = ref<FormInstanceFunctions>();
 const props = defineProps<{
   visible: boolean;
 }>();
 const emit = defineEmits(['update:visible']);
 
 const handleEditVisibleChange = () => {
-  emit('update:visible', false);
+  emit('update:visible');
 }
-const saveButton = () => {
-  store.saveButton()
-  emit('update:visible', false);
-}
-
-// 取消按钮回调
-const cancelButton = () => {
-  // 清空表单数据
-  store.userDataFormData = JSON.parse(JSON.stringify(store.NulluserDataFormData));
-  emit('update:visible', false);
+const submitButton = async () => {
+  form.value?.submit();
 }
 
+const cancelButton: FormProps['onReset'] = () => {
+  store.avatarPath = null
+  store.file1 = store.Nullfile1;
+  form.value?.reset();
+  store.handlePageChange()
+  emit('update:visible')
+}
+
+const saveButton: FormProps['onSubmit'] = async ({ validateResult, firstError }) => {
+  if (validateResult === true) {
+    console.log("1:" + store.userDataFormData.emp.eUsername)
+    await handleUpdateUser().then(() => {
+      form.value?.reset();
+      emit('update:visible')
+    })
+  } else {
+    if (firstError) {
+      MessagePlugin.warning(firstError);
+    } else {
+      MessagePlugin.warning('验证失败');
+    }
+  }
+};
+
+const handleUpdateUser = async () => {
+  store.userDataFormData.emp.eAvatarpath = store.avatarPath
+  console.log("2" + store.userDataFormData.emp.eUsername)
+  await updateUser(store.userDataFormData).then(() => {
+    MessagePlugin.success('用户修改成功');
+    store.file1 = store.Nullfile1;
+    store.avatarPath = null
+    store.handlePageChange();
+  })
+};
 </script>
 
 <style scoped></style>

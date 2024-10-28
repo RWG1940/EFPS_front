@@ -2,8 +2,7 @@
     <div class="wrap">
         <t-row :gutter="20">
             <transition name="m-trans" appear>
-
-                <t-col :span="4.5">
+                <t-col :span="12">
                     <div class="msg">
                         <p class="title"><t-icon name="notification">
                             </t-icon> 已发布的公告
@@ -20,11 +19,11 @@
                                         visible1 = false
                                     }
                                 }" :cancel-btn="{
-    content: '我再想想',
-    theme: 'default',
-    variant: 'outline',
-    onClick: () => { visible1 = false }
-}">
+                                    content: '我再想想',
+                                    theme: 'default',
+                                    variant: 'outline',
+                                    onClick: () => { visible1 = false }
+                                }">
                                     <t-button size="small" style="margin-left: 5px;" @click="visible1 = true"
                                         theme="warning"><t-icon name="delete-time"></t-icon></t-button>
                                 </t-popconfirm>
@@ -35,16 +34,15 @@
                                 <t-notification v-for="(message, index) in store.noticesDataPublished" :key="index"
                                     :title="message.header" :message="message.content" :content="message.content"
                                     theme="warning" :footer="formatDate(message.createtime || '')"
-                                    style="width: 460px;margin-bottom: 5px;" :max-line="2" />
+                                    style="width: 100%;margin-bottom: 5px;" :max-line="2" />
                             </el-scrollbar>
                         </div>
                     </div>
                 </t-col>
             </transition>
             <transition name="m1-trans" appear>
-
-
-                <t-col :span="7">
+                
+                <t-col :span="12">
                     <div class="msgTable">
                         <p class="title"><t-icon name="root-list">
                             </t-icon> 所有公告
@@ -57,13 +55,13 @@
                                     @click="store.deleteSelectedNoticesData"><t-icon name="delete"></t-icon></t-button>
                             </t-tooltip>
                         </p>
-                        <t-card>
-                            <el-table :data="store.filterTableData" max-height="265" style="margin-top: 3px;"
+                        <t-card style="margin: 10px;">
+                            <el-table :data="store.filterTableData" height="380"
                                 @selection-change="store.handleSelectionChange" stripe border>
-                                <el-table-column type="selection" width="30" />
-                                <el-table-column prop="header" label="标题" width="120"
+                                <el-table-column type="selection" width="40" />
+                                <el-table-column prop="header" label="标题" width="250"
                                     show-overflow-tooltip></el-table-column>
-                                <el-table-column prop="content" label="内容" width="180"
+                                <el-table-column prop="content" label="内容" width="300"
                                     show-overflow-tooltip></el-table-column>
                                 <el-table-column prop="createtime" label="创建时间" width="120" show-overflow-tooltip
                                     column-key="createtime" sortable>
@@ -104,6 +102,15 @@
                                     </template>
                                 </el-table-column>
                             </el-table>
+                            <t-pagination
+                                v-model="store.currentPage"
+                                v-model:pageSize="store.pageSize"
+                                :total="store.noticesData.length"
+                                size="small"
+                                theme="simple"
+                                @page-size-change="onPageSizeChange"
+                                @current-change="onCurrentChange"
+                            />
                         </t-card>
                     </div>
                 </t-col>
@@ -121,7 +128,6 @@ import addNotice from '../components/noticesPage/addNotice.vue'
 import editNotice from '../components/noticesPage/editNotice.vue'
 import { ref, onMounted } from 'vue';
 import type { NoticesData } from '@/stores/notices-store';
-import importantMsg from '@/components/areaControlPage/msgTool/importantMsg.vue';
 
 const store = useNoticesStore();
 const addVisible = ref(false)
@@ -133,8 +139,16 @@ const handleAddVisibleChange = () => {
 const handleEditVisibleChange = () => {
     editVisible.value = !editVisible.value
 }
+const onPageSizeChange = (pageSize: number) => {
+    store.pageSize = pageSize
+    store.getPage()
+}
+const onCurrentChange = (page: number) => {
+    store.currentPage = page
+    store.getPage()
+}
 onMounted(() => {
-    store.fetchAllNoticesData()
+    store.getPage()
 })
 </script>
 <style lang="scss" scoped>
@@ -149,8 +163,7 @@ onMounted(() => {
 }
 
 .msg {
-    height: 375px;
-    background-color: rgba(255, 166, 0, 0.5);
+    background-color: rgb(255, 166, 0, 0.5);
     display: flex;
     border-radius: 8px;
     flex-direction: column;
@@ -161,12 +174,12 @@ onMounted(() => {
     background-color: rgb(255, 166, 0, 0.7);
     transition-duration: 0.5s;
     box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
-    transform: scale(1.01);
-
+    transform: scale(1.001);
 }
 
 .title {
     margin: 15px;
+    margin-bottom: 0px;
     font-weight: bold;
     font-size: large;
     color: rgb(255, 255, 255);
@@ -174,19 +187,19 @@ onMounted(() => {
 
 .msgTable {
     display: flex;
-    background-color: rgb(141, 141, 141, 0.5);
-    padding: 10px;
+    background-color: rgba(141, 141, 141, 0.5);
+    margin-top: 10px;
     border-radius: 8px;
     flex-direction: column;
-    height: 355px;
+    height: 500px;
     transition-duration: 0.5s;
 }
 
 .msgTable:hover {
-    background-color: rgb(141, 141, 141, 0.8);
+    background-color: rgba(141, 141, 141, 0.8);
     transition-duration: 0.5s;
     box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
-    transform: scale(1.01);
+    transform: scale(1.001);
 
 }
 

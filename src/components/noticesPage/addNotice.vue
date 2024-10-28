@@ -2,8 +2,8 @@
     <!-- 添加新公告 -->
     <userEdit :visible="visible" header="添加新公告" @update:visible="handleAddVisibleChange">
         <template #main>
-            <t-form ref="form" :data="store.noticeAddFormData" :rules="store.noticeADD_FORM_RULES"
-                :label-width="70" @submit="store.addNoticeSubmit">
+            <t-form ref="form" :data="store.noticeAddFormData" :rules="store.noticeADD_FORM_RULES" :label-width="70"
+                @submit="addNoticeSubmit">
                 <t-form-item label="标题" name="header">
                     <t-input v-model="store.noticeAddFormData.header" placeholder="请输入标题" />
                 </t-form-item>
@@ -22,15 +22,12 @@
                         :autosize="{ minRows: 1, maxRows: 100 }" />
                 </t-form-item>
 
-                <!-- 提交和取消按钮 -->
-                <t-form-item>
-                    <t-button theme="primary" type="submit" @click="addButton" block>提交</t-button>
-                    <t-button theme="default" @click="cancelButton" block style="margin-left: 10px;">取消</t-button>
-                </t-form-item>
+
             </t-form>
         </template>
         <template #footer>
-
+            <t-button theme="primary" type="submit" @click="addButton" block>提交</t-button>
+            <t-button theme="default" @click="cancelButton" block style="margin-left: 10px;">取消</t-button>
         </template>
     </userEdit>
 </template>
@@ -38,26 +35,44 @@
 import userEdit from '../userManage/userEdit.vue'
 import { ref } from 'vue'
 import { useNoticesStore } from '@/stores/notices-store'
+import type { FormInstanceFunctions, FormProps } from 'tdesign-vue-next';
+import { MessagePlugin } from 'tdesign-vue-next';
 
+
+const form = ref<FormInstanceFunctions>();
 const store = useNoticesStore()
 const props = defineProps<{
     visible: boolean;
 }>();
-// 定义通知父组件事件
+
 const emit = defineEmits(['update:visible']);
-// visible更新后通知父组件
+
 const handleAddVisibleChange = () => {
     emit('update:visible');
 };
 
 const cancelButton = () => {
-    store.noticeAddFormData = {};
+    form.value?.reset();
     handleAddVisibleChange();
 };
 const addButton = () => {
+    form.value?.submit()
     handleAddVisibleChange();
 };
-
+const addNoticeSubmit: FormProps['onSubmit'] = async ({ validateResult, firstError }) => {
+    if (validateResult === true) {
+        await store.addNoticeData().then(() => {
+            form.value?.reset();
+        })
+    } else {
+        console.log('Validate Errors: ', firstError, validateResult);
+        if (firstError) {
+            MessagePlugin.warning(firstError);
+        } else {
+            MessagePlugin.warning('验证失败');
+        }
+    }
+};
 
 </script>
 <style lang="scss" scoped></style>

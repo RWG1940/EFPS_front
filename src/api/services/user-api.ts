@@ -14,7 +14,7 @@ export const fetchUserDataPages = async (page: number, pageSize: number) => {
 
 // 更新用户信息
 export const updateUser = async (user: any) => {
-  return apiClient.put('/emps/${user.id}', user);
+  return apiClient.put(`/emps/${user.emp.id}`, user);
 };
 
 // 删除用户

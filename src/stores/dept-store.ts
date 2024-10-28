@@ -1,10 +1,11 @@
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
+import { ref, reactive } from 'vue';
 import type { TableColumnCtx } from 'element-plus'
 import { computed } from 'vue';
 import { MessagePlugin } from 'tdesign-vue-next';
-import type { UploadInstanceFunctions, DropdownProps, UploadProps } from 'tdesign-vue-next';
 import { fetchDeptDataBySearch, fetchDeptDataPages, deleteDepts, deleteDept, addDept, updateDept, fetchDeptData } from '@/api/services/dept-api';
+import type { UploadInstanceFunctions, DropdownProps, UploadProps, FormProps } from 'tdesign-vue-next';
+
 
 
 // 定义部门数据类型
@@ -23,8 +24,6 @@ export const useDeptStore = defineStore('dept', () => {
   *状态
   */
   // 部门单条数据及集合，用于管理面板的修改
-  const deptData = ref<DeptData>({});
-  const emptyDeptData = ref<DeptData>({});
   const tableData = ref<DeptData[]>([]);
   const createTime1 = ref('');
   const createTime2 = ref('');
@@ -48,8 +47,9 @@ export const useDeptStore = defineStore('dept', () => {
   const disabled = ref(false);
   const uploadAllFilesInOneRequest = ref(false);
   const file1 = ref<UploadProps['value']>([]);
-  const file2 = ref<UploadProps['value']>([]);
+  const Nullfile1 = ref<UploadProps['value']>([]);
   const avatarUrl = ref(`${import.meta.env.VITE_API_BASE_URL}/upload`);
+  const avatarPath = ref(null)
   const uploadRef = ref<UploadInstanceFunctions>();
   // 过滤出每个部门名字对应的员工人数
   const deptTotal = computed(() => {
@@ -61,6 +61,20 @@ export const useDeptStore = defineStore('dept', () => {
       }
     })
   })
+  const deptAddFormData: FormProps['data'] = reactive({
+    dName: null,
+    dAvatarpath: null,
+  });
+  const DEPT_FORM_RULES = {
+    dName: [{ required: true, message: '部门名不能为空', trigger: 'blur' },
+     { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }],
+  }
+  const deptEditFormData: FormProps['data'] = reactive({
+    id: null,
+    dName: null,
+    dAvatarpath: null,
+  });
+
   /*
   *动作
   */
@@ -70,7 +84,6 @@ export const useDeptStore = defineStore('dept', () => {
       tableData.value = resp.data.result;
     })
   };
-  // 部门数据查找
 
   // 部门分页数据获取
   const handlePageChange = async () => {
@@ -114,7 +127,7 @@ export const useDeptStore = defineStore('dept', () => {
   };
   const handleSuccess = (response: any, file: File) => {
     if (response.response.code == 1) {
-      deptData.value.dAvatarpath = response.response.result;
+      avatarPath.value = response.response.result;
     } else {
       console.error('Unexpected upload response format:', response.response);
       MessagePlugin.error('图片上传失败: 响应格式不正确');
@@ -129,26 +142,27 @@ export const useDeptStore = defineStore('dept', () => {
     size: 5500,
     unit: 'KB',
   });
-  // 修改部门保存按钮
-  const saveButton = async () => {
-    await updateDept(deptData.value).then(() => {
+  // 修改部门
+  const handleEditDept = async () => {
+    deptEditFormData.dAvatarpath = avatarPath.value
+    await updateDept(deptEditFormData).then(() => {
+      file1.value = Nullfile1.value;
+      avatarPath.value = null
       MessagePlugin.success('修改部门成功');
       handlePageChange();
     })
   }
-  // 添加部门添加按钮
-  const submitButton = async () => {
-    await addDept(deptData.value).then(() => {
+  // 添加部门
+  const handleAddDept = async () => {
+    deptAddFormData.dAvatarpath = avatarPath.value
+    await addDept(deptAddFormData).then(() => {
+      file1.value = Nullfile1.value;
+      avatarPath.value = null
       MessagePlugin.success('添加部门成功');
       handlePageChange();
     })
   }
 
-  // 清除暂存的部门数据
-  const cleanDeptData = () => {
-    deptData.value = emptyDeptData.value;
-    file1.value = file2.value
-  }
 
   // 搜索部门
   const searchDept = async () => {
@@ -166,8 +180,8 @@ export const useDeptStore = defineStore('dept', () => {
     }
     total.value = tableData.value.length;
   }
-  
-  
+
+
   // 搜索部门数据体重置
   const searchDeptDataRefresh = async () => {
     await handlePageChange().then(() => {
@@ -193,11 +207,15 @@ export const useDeptStore = defineStore('dept', () => {
     showImageFileName,
     autoUpload,
     uploadRef,
-    deptData,
     deptTotal,
     createTime1,
     createTime2,
     searchData,
+    Nullfile1,
+    deptAddFormData,
+    deptEditFormData,
+    avatarPath,
+    DEPT_FORM_RULES,
 
 
     handlePageChange,
@@ -205,13 +223,12 @@ export const useDeptStore = defineStore('dept', () => {
     handleDelete,
     handleSelectionChange,
     handleFail,
-    saveButton,
-    submitButton,
     handleSuccess,
-    cleanDeptData,
     getAllDeptData,
     searchDept,
-    searchDeptDataRefresh
-    
+    searchDeptDataRefresh,
+    handleEditDept,
+    handleAddDept
+
   };
 });

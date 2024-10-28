@@ -1,5 +1,5 @@
 <template>
-  <el-table :data="store.tableData" stripe border style="width: 175vh" height="55vh"
+  <el-table :data="store.tableData" stripe border style="width: 175vh" height="61vh"
     @selection-change="store.handleSelectionChange">
     <el-table-column type="selection" width="55" />
     <el-table-column fixed prop="dAvatarpath" label="部门图" width="80">
@@ -85,8 +85,7 @@ const handleEditVisibleChange = () => {
 
 // 修改按钮回调
 const handleEditClick = (row: any) => {
-  console.log('edit', row);
-  store.deptData = { ...row };
+  store.deptEditFormData = { ...row };
   editVisible.value = true;
 
 };

@@ -61,7 +61,6 @@ const onChange: DateRangePickerProps['onChange'] = (value: any, context) => {
 //新增用户面板的可视化以及回调
 const addVisible = ref(false)
 const addButton = () => {
-  store.cleanDeptData();
   addVisible.value = true
 }
 const handleUpdateAddVisible = () => {

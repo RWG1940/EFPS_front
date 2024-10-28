@@ -2,7 +2,7 @@
     <div class="wrap">
         <t-row :gutter="20">
             <transition name="m-trans" appear>
-                <t-col :span="4.5">
+                <t-col :span="12">
                     <div class="msg">
                         <p class="title"><t-icon name="notification">
                             </t-icon> 已发布的航班动态
@@ -19,22 +19,29 @@
                                         visible1 = false
                                     }
                                 }" :cancel-btn="{
-    content: '我再想想',
-    theme: 'default',
-    variant: 'outline',
-    onClick: () => { visible1 = false }
-}">
+                                    content: '我再想想',
+                                    theme: 'default',
+                                    variant: 'outline',
+                                    onClick: () => { visible1 = false }
+                                }">
                                     <t-button size="small" style="margin-left: 5px;" @click="visible1 = true"><t-icon
                                             name="delete-time"></t-icon></t-button>
                                 </t-popconfirm>
                             </t-tooltip>
                         </p>
-                        <aircraftsTrends />
+                        <div style="padding: 10px;">
+                            <el-scrollbar height="300px" style="border-radius: 10px;">
+                                <t-notification v-for="(message, index) in store.aircraftsTrendsDataPublished" :key="index"
+                                    :title="message.header" :content="message.content"
+                                    :footer="formatDate(message.createtime || '')" :theme="message.theme"
+                                    style="width: 100%;margin-bottom: 5px;" :max-line="2" />
+                            </el-scrollbar>
+                        </div>
                     </div>
                 </t-col>
             </transition>
             <transition name="m1-trans" appear>
-                <t-col :span="7">
+                <t-col :span="12">
                     <div class="msgTable">
                         <p class="title"><t-icon name="root-list">
                             </t-icon> 所有动态
@@ -48,68 +55,80 @@
                                         name="delete"></t-icon></t-button>
                             </t-tooltip>
                         </p>
-                        <t-card>
-                        <el-table :data="store.filterTableData" max-height="265" style="margin-top: 3px;"
-                            @selection-change="store.handleSelectionChange" stripe border>
-                            <el-table-column type="selection" width="30" />
-                            <el-table-column prop="theme" label="主题" width="70" show-overflow-tooltip :filters="[
-                                { text: '通知', value: 'info' },
-                                { text: '警告', value: 'warning' },
-                                { text: '严重', value: 'error' },
-                                { text: '成功', value: 'success' },
-                            ]"
-                                :filter-method="(value: string, row: AircraftsTrendsData) => { return row.theme === value }"
-                                filter-placement="bottom-end">
-                                <template #default="scope">
-                                    <el-tag
-                                        :type="scope.row.theme == 'error' ? 'danger' : scope.row.theme == 'info' ? 'primary' : scope.row.theme == 'warning' ? 'warning' : 'success'"
-                                        effect="dark" size="small">
-                                        {{ scope.row.theme == 'error' ? '严重' : scope.row.theme == 'info' ? '通知' :
-                                            scope.row.theme == 'warning' ? '警告' : '成功' }}
-                                    </el-tag>
-                                </template>
-                            </el-table-column>
-                            <el-table-column prop="header" label="标题" width="120" show-overflow-tooltip></el-table-column>
-                            <el-table-column prop="content" label="内容" width="180" show-overflow-tooltip></el-table-column>
-                            <el-table-column prop="createtime" label="创建时间" width="120" show-overflow-tooltip
-                                column-key="createtime" sortable>
-                                <template #default="scope">
-                                    {{ formatDate(scope.row.createtime) }}
-                                </template>
-                            </el-table-column>
-                            <el-table-column prop="updatetime" label="更新时间" width="120" show-overflow-tooltip
-                                column-key="updatetime" sortable>
-                                <template #default="scope">
-                                    {{ formatDate(scope.row.updatetime) }}
-                                </template>
-                            </el-table-column>
-                            <el-table-column prop="status" label="状态" width="80" :filters="[
-                                { text: '已发布', value: 1 },
-                                { text: '未发布', value: 0 },
+                        <t-card style="margin: 10px;">
+                            <el-table :data="store.filterTableData" height="380"
+                                @selection-change="store.handleSelectionChange" stripe border>
+                                <el-table-column type="selection" width="40" />
+                                <el-table-column prop="theme" label="主题" width="70" show-overflow-tooltip :filters="[
+                                    { text: '通知', value: 'info' },
+                                    { text: '警告', value: 'warning' },
+                                    { text: '严重', value: 'error' },
+                                    { text: '成功', value: 'success' },
+                                ]"
+                                    :filter-method="(value: string, row: AircraftsTrendsData) => { return row.theme === value }"
+                                    filter-placement="bottom-end" fixed>
+                                    <template #default="scope">
+                                        <el-tag
+                                            :type="scope.row.theme == 'error' ? 'danger' : scope.row.theme == 'info' ? 'primary' : scope.row.theme == 'warning' ? 'warning' : 'success'"
+                                            effect="dark" size="small">
+                                            {{ scope.row.theme == 'error' ? '严重' : scope.row.theme == 'info' ? '通知' :
+                                                scope.row.theme == 'warning' ? '警告' : '成功' }}
+                                        </el-tag>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column prop="header" label="标题" width="200"
+                                    show-overflow-tooltip fixed></el-table-column>
+                                <el-table-column prop="content" label="内容" width="350"
+                                    show-overflow-tooltip></el-table-column>
+                                <el-table-column prop="createtime" label="创建时间" width="120" show-overflow-tooltip
+                                    column-key="createtime" sortable>
+                                    <template #default="scope">
+                                        {{ formatDate(scope.row.createtime) }}
+                                    </template>
+                                </el-table-column>
+                                <el-table-column prop="updatetime" label="更新时间" width="120" show-overflow-tooltip
+                                    column-key="updatetime" sortable>
+                                    <template #default="scope">
+                                        {{ formatDate(scope.row.updatetime) }}
+                                    </template>
+                                </el-table-column>
+                                <el-table-column prop="status" label="状态" width="80" :filters="[
+                                    { text: '已发布', value: 1 },
+                                    { text: '未发布', value: 0 },
 
-                            ]"
-                                :filter-method="(value: number, row: AircraftsTrendsData) => { return row.status === value }"
-                                filter-placement="bottom-end">
-                                <template #default="scope">
-                                    <el-tag :type="scope.row.status == 1 ? 'success' : 'danger'" size="small">
-                                        {{ scope.row.status == 1 ? '已发布' : '未发布' }}
-                                    </el-tag>
-                                </template>
-                            </el-table-column>
-                            <el-table-column prop="author" label="作者" width="80" show-overflow-tooltip></el-table-column>
-                            <el-table-column fixed="right" min-width="120">
-                                <template #header>
-                                    <el-input v-model="store.search" size="small" placeholder="搜索" />
-                                </template>
-                                <template #default="scope">
-                                    <t-button size="small" theme="default"
-                                        @click="() => { store.aircraftsTrendEditFormData = scope.row; handleEditVisibleChange() }">编辑</t-button>
-                                    <t-button size="small" theme="danger" style="margin-left: 5px;"
-                                        @click="store.deleteAircraftsTrendsData([scope.row.id])">删除</t-button>
-                                </template>
-                            </el-table-column>
-                        </el-table>
-                    </t-card>
+                                ]"
+                                    :filter-method="(value: number, row: AircraftsTrendsData) => { return row.status === value }"
+                                    filter-placement="bottom-end">
+                                    <template #default="scope">
+                                        <el-tag :type="scope.row.status == 1 ? 'success' : 'danger'" size="small">
+                                            {{ scope.row.status == 1 ? '已发布' : '未发布' }}
+                                        </el-tag>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column prop="author" label="作者" width="80"
+                                    show-overflow-tooltip></el-table-column>
+                                <el-table-column fixed="right" min-width="120">
+                                    <template #header>
+                                        <el-input v-model="store.search" size="small" placeholder="搜索" />
+                                    </template>
+                                    <template #default="scope">
+                                        <t-button size="small" theme="default"
+                                            @click="() => { store.aircraftsTrendEditFormData = scope.row; handleEditVisibleChange() }">编辑</t-button>
+                                        <t-button size="small" theme="danger" style="margin-left: 5px;"
+                                            @click="store.deleteAircraftsTrendsData([scope.row.id])">删除</t-button>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                            <t-pagination
+                                v-model="store.currentPage"
+                                v-model:pageSize="store.pageSize"
+                                :total="store.filterTableData.length"
+                                size="small"
+                                theme="simple"
+                                @page-size-change="onPageSizeChange"
+                                @current-change="onCurrentChange"
+                            />
+                        </t-card>
                     </div>
                 </t-col>
             </transition>
@@ -120,12 +139,11 @@
     </div>
 </template>
 <script setup lang="ts">
-import aircraftsTrends from '@/components/areaControlPage/trendsTool/aircraftsTrends.vue';
 import { useAircraftsTrendsStore } from '@/stores/aircraftsTrends-store';
 import { formatDate } from '@/utils/moment'
 import addAircraftsTrend from '../components/aircraftsTrendsPage/addAircraftsTrend.vue'
 import editAircraftsTrend from '../components/aircraftsTrendsPage/editAircraftsTrend.vue'
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import type { AircraftsTrendsData } from '@/stores/aircraftsTrends-store';
 
 const store = useAircraftsTrendsStore();
@@ -138,6 +156,19 @@ const handleAddVisibleChange = () => {
 const handleEditVisibleChange = () => {
     editVisible.value = !editVisible.value
 }
+const onPageSizeChange = (size: number) => {
+    store.pageSize = size
+    store.getPage()
+};
+
+const onCurrentChange = (index: number) => {
+    store.currentPage = index
+    store.getPage()
+};
+onMounted(() => {
+    store.getPage()
+    store.fetchAllAircraftsTrendsData()
+})
 </script>
 <style lang="scss" scoped>
 .wrap {
@@ -162,11 +193,12 @@ const handleEditVisibleChange = () => {
     background-color: rgba(93, 120, 255, 0.8);
     transition-duration: 0.5s;
     box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
-    transform: scale(1.01);
+    transform: scale(1.001);
 }
 
 .title {
     margin: 15px;
+    margin-bottom: 0px;
     font-weight: bold;
     font-size: large;
     color: rgb(255, 255, 255);
@@ -175,10 +207,10 @@ const handleEditVisibleChange = () => {
 .msgTable {
     display: flex;
     background-color: rgba(141, 141, 141, 0.5);
-    padding: 10px;
+    margin-top: 10px;
     border-radius: 8px;
     flex-direction: column;
-    height: 355px;
+    height: 500px;
     transition-duration: 0.5s;
 }
 
@@ -186,7 +218,7 @@ const handleEditVisibleChange = () => {
     background-color: rgba(141, 141, 141, 0.8);
     transition-duration: 0.5s;
     box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
-    transform: scale(1.01);
+    transform: scale(1.001);
 
 }
 

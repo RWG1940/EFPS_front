@@ -7,8 +7,13 @@ export const fetchNoticesData = async () => {
 
 // 获取分页后的公告数据
 export const fetchNoticesDataPages = async (page: number, pageSize: number) => {
-  return apiClient.get('/notices/pages?page=${page}&pageSize=${pageSize}')
-};
+  return apiClient.get('/notices/pages', {
+    params: {
+      page: page,
+      pageSize: pageSize
+    }
+  });
+}
 
 // 获取搜索后的公告数据
 export const fetchNoticesDataBySearch = async (notices: any) => {

@@ -6,8 +6,13 @@ export const fetchAircraftsTrendsData = async () => {
 };
 // 获取分页后的航班动态数据
 export const fetchAircraftsTrendsDataPages = async (page: number, pageSize: number) => {
-  return apiClient.get(`/aircraftsTrends/pages?page=${page}&pageSize=${pageSize}`);
-};
+  return apiClient.get('/aircraftsTrends/pages', {
+    params: {
+      page,
+      pageSize,
+    },
+  })
+}
 // 获取搜索后的航班动态数据
 export const fetchAircraftsTrendsDataBySearch = async (aircraftsTrends: any) => {
   return apiClient.post('/aircraftsTrends/search', aircraftsTrends);

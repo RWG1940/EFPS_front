@@ -2,8 +2,8 @@
     <!-- 编辑公告 -->
     <userEdit :visible="visible" header="编辑新公告" @update:visible="handleEditVisibleChange">
         <template #main>
-            <t-form ref="form" :data="store.noticeEditFormData" :rules="store.noticeEDIT_FORM_RULES"
-                :label-width="70" @submit="store.editNoticeSubmit">
+            <t-form ref="form" :data="store.noticeEditFormData" :rules="store.noticeEDIT_FORM_RULES" :label-width="70"
+                @submit="editNoticeSubmit">
                 <t-form-item label="标题" name="header">
                     <t-input v-model="store.noticeEditFormData.header" placeholder="请输入标题" />
                 </t-form-item>
@@ -22,15 +22,11 @@
                         :autosize="{ minRows: 1, maxRows: 100 }" />
                 </t-form-item>
 
-                <!-- 提交和取消按钮 -->
-                <t-form-item>
-                    <t-button theme="primary" type="submit" @click="addButton" block>提交</t-button>
-                    <t-button theme="default" @click="cancelButton" block style="margin-left: 10px;">取消</t-button>
-                </t-form-item>
             </t-form>
         </template>
         <template #footer>
-
+            <t-button theme="primary" type="submit" @click="addButton" block>提交</t-button>
+            <t-button theme="default" @click="cancelButton" block style="margin-left: 10px;">取消</t-button>
         </template>
     </userEdit>
 </template>
@@ -38,24 +34,43 @@
 import userEdit from '../userManage/userEdit.vue'
 import { ref } from 'vue'
 import { useNoticesStore } from '@/stores/notices-store'
+import type { FormInstanceFunctions, FormProps } from 'tdesign-vue-next';
+import { MessagePlugin } from 'tdesign-vue-next';
 
+const form = ref<FormInstanceFunctions>();
 const store = useNoticesStore()
 const props = defineProps<{
     visible: boolean;
 }>();
-// 定义通知父组件事件
+
 const emit = defineEmits(['update:visible']);
-// visible更新后通知父组件
+
 const handleEditVisibleChange = () => {
     emit('update:visible');
 };
 
 const cancelButton = () => {
-    store.noticeEditFormData = {};
+    form.value?.reset();
+    store.getPage()
     handleEditVisibleChange();
 };
 const addButton = () => {
+    form.value?.submit()
     handleEditVisibleChange();
+};
+const editNoticeSubmit:FormProps['onSubmit'] = async ({ validateResult, firstError }) => {
+    if (validateResult === true) {
+        await store.updateNoticeData(store.noticeEditFormData).then(() => {
+            form.value?.reset();
+        })
+    } else {
+        console.log('Validate Errors: ', firstError, validateResult);
+        if (firstError) {
+            MessagePlugin.warning(firstError);
+        } else {
+            MessagePlugin.warning('验证失败');
+        }
+    }
 };
 
 

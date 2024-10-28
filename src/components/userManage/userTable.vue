@@ -63,8 +63,9 @@
     <el-table-column prop="role.rInfo" label="角色" width="120" :filters="roleFilters"
       :filter-method="(value: number, row: UserData) => { return row.role.rId === value }" filter-placement="bottom-end"
       show-overflow-tooltip>
-      <template #default="scope"><el-tag :type="scope.row.role.rId == 3 ? 'info' : 'warning'">{{ scope.row.role.rInfo
-      }}</el-tag></template>
+      <template #default="scope"><el-tag :type="scope.row.role.rId == 1 ? 'danger' :
+        scope.row.role.rId == 2 ? 'warning' : 'info'">{{ scope.row.role.rInfo
+  }}</el-tag></template>
     </el-table-column>
     <el-table-column prop="dept.dName" label="部门" width="120" show-overflow-tooltip :filters="deptFilters"
       :filter-method="(value: number, row: UserData) => { return row.dept.id === value }" filter-placement="bottom-end">
@@ -104,7 +105,7 @@
     </el-table-column>
   </el-table>
   <userDataEdit :visible="editVisible" @update:visible="handleEditVisibleChange" />
-  <userDataAdd :visible="addVisible" @update:visible="handleAddVisibleChange" @userAdded="store.handlePageChange" />
+  <userDataAdd :visible="addVisible" @update:visible="handleAddVisibleChange" />
 
   <userEdit v-model:visible="confirmVisible" header="确认删除？" top="250px" theme="warning">
     <template #main>
@@ -166,7 +167,7 @@ const handleEditVisibleChange = () => {
 }
 
 const handleEditClick = (row: any) => {
-  store.userData = { ...row };
+  store.userDataFormData = { ...row };
   editVisible.value = true;
 
 };

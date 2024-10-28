@@ -67,14 +67,12 @@
                             <t-input v-model="store.routeEditFormData.redirect" clearable />
                         </t-input-adornment>
                     </t-form-item>
-
-                    <t-form-item>
-                        <t-button theme="primary" type="submit" block>提交</t-button>
-                        <t-button theme="default" type="reset" block style="margin-left: 10px;">取消</t-button>
-                    </t-form-item>
-
                 </t-form>
             </el-scrollbar>
+        </template>
+        <template #footer>
+            <t-button theme="default" variant="base" @click="cancelButton">取消</t-button>
+            <t-button theme="primary" variant="base" @click="submitBtn">提交</t-button>
         </template>
     </userEdit>
 </template>
@@ -98,8 +96,12 @@ const handleEditVisibleChange = () => {
     emit('update:visible');
 };
 const cancelButton: FormProps['onReset'] = () => {
+    form.value?.reset();
     emit('update:visible')
 }
+const submitBtn: FormProps['onSubmit'] = () => {
+    form.value?.submit();
+};
 // 提交用户数据
 const handleEditFormSubmit: FormProps['onSubmit'] = async ({ validateResult, firstError }) => {
     if (validateResult === true) {

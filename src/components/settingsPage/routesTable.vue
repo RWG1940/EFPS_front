@@ -139,6 +139,15 @@ const onCurrentChange = (index: number) => {
 };
 //重置筛选
 const resetSearch = async () => {
+    resetSearchRoute.value = {
+        alias: null,
+        id: null,
+        name: null,
+        redirect: null,
+        state: null,
+        type: null,
+        value: null
+    };
     route.value = resetSearchRoute.value
     await store.getPage();
 };

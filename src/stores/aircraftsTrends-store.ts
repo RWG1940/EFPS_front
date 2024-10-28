@@ -1,9 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref, reactive } from 'vue';
-import type { TableColumnCtx } from 'element-plus'
 import { computed } from 'vue';
 import { MessagePlugin } from 'tdesign-vue-next';
-import type { UploadInstanceFunctions, DropdownProps, UploadProps, FormProps } from 'tdesign-vue-next';
 import { fetchAircraftsTrendsData, fetchAircraftsTrendsDataPages, fetchAircraftsTrendsDataBySearch, deleteAircraftsTrends, updateAircraftsTrends, addAircraftsTrends } from '@/api/services/aircraftsTrends-api';
 
 // 定义航班动态数据类型
@@ -23,21 +21,11 @@ export const useAircraftsTrendsStore = defineStore('aircraftsTrends', () => {
     */
     // aircraftsTrends数据体
     const aircraftsTrendsData = ref<AircraftsTrendsData[]>([]);
-    // aircraftsTrends单条数据
-    const aircraftsTrendData = ref<AircraftsTrendsData>({});
-    // aircraftsTrends单条空数据
-    const emptyAircraftsTrendData = ref<AircraftsTrendsData>({});
     // aircraftsTrends分页数据体
     const aircraftsTrendsDataPages = ref<AircraftsTrendsData[]>([]);
-    // aircraftsTrends分页数据总数
-    const aircraftsTrendsDataPagesTotal = ref<number>(0);
-    // aircraftsTrends分页数据当前页
-    const aircraftsTrendsDataPagesCurrent = ref<number>(1);
-    // aircraftsTrends分页数据每页数据条数
-    const aircraftsTrendsDataPagesSize = ref<number>(10);
-    // 添加、修改航班动态表单数据
+    const pageSize = ref(10);
+    const currentPage = ref(1);
     const aircraftsTrendAddFormData = ref<AircraftsTrendsData>({});
-
     const aircraftsTrendADD_FORM_RULES = {
         header: [{ required: true, message: '标题必填' }],
         content: [{ required: true, message: '内容必填' }],
@@ -78,63 +66,36 @@ export const useAircraftsTrendsStore = defineStore('aircraftsTrends', () => {
         aircraftsTrendsData.value = res.data.result;
     }
     // 获取航班动态数据分页数据
-    const fetchAircraftsTrendsDataPagesData = async (page: number, pageSize: number) => {
-        const res = await fetchAircraftsTrendsDataPages(page, pageSize);
-        aircraftsTrendsDataPages.value = res.data.result.list;
-        aircraftsTrendsDataPagesTotal.value = res.data.result.total;
-        aircraftsTrendsDataPagesCurrent.value = res.data.result.page;
+    const getPage = async () => {
+        const res = await fetchAircraftsTrendsDataPages(currentPage.value, pageSize.value);
+        aircraftsTrendsDataPages.value = res.data.result.rows;
     }
-    // 根据搜索条件获取航班动态数据
-    const fetchAircraftsTrendsDataBySearchData = async (aircraftsTrends: any) => {
-        const res = await fetchAircraftsTrendsDataBySearch(aircraftsTrends);
-        aircraftsTrendsData.value = res.data;
-    }
+
     // 删除航班动态数据
     const deleteAircraftsTrendsData = async (ids: number[]) => {
         await deleteAircraftsTrends(ids).then(() => {
-            fetchAllAircraftsTrendsData();
+            getPage()
             MessagePlugin.success("删除成功");
         });
     }
     // 更新航班动态数据
-    const updateAircraftsTrendData = async (aircraftsTrends: AircraftsTrendsData) => {
-        await updateAircraftsTrends(aircraftsTrends).then(() => {
-            fetchAllAircraftsTrendsData();
+    const updateAircraftsTrendData = async () => {
+        await updateAircraftsTrends(aircraftsTrendEditFormData.value).then(() => {
+            getPage()
             MessagePlugin.success("更新成功");
         })
 
     }
     // 添加航班动态数据
-    const addAircraftsTrendData = async (aircraftsTrendData: AircraftsTrendsData) => {
-        await addAircraftsTrends(aircraftsTrendData).then(() => {
+    const addAircraftsTrendData = async () => {
+        await addAircraftsTrends(aircraftsTrendAddFormData.value).then(() => {
             fetchAllAircraftsTrendsData();
             MessagePlugin.success("添加成功");
+            getPage()
         })
     }
-    // 添加航班动态数据提交添加 验证
-    const addAircraftsTrendSubmit: FormProps['onSubmit'] = async ({ validateResult, firstError }) => {
-        if (validateResult === true) {
-            await addAircraftsTrendData(aircraftsTrendAddFormData.value);
-        } else {
-            console.log('Validate Errors: ', firstError, validateResult);
-            if (firstError) {
-                MessagePlugin.warning(firstError);
-            } else {
-                MessagePlugin.warning('验证失败');
-            }
-        }
-    };
-    // 更新航班动态数据提交修改 验证
-    const editAircraftsTrendSubmit: FormProps['onSubmit'] = async ({ validateResult, firstError }) => {
-        if (validateResult === true) {
-            await updateAircraftsTrendData(aircraftsTrendEditFormData.value);
-        } else {
-            console.log('Validate Errors: ', firstError, validateResult);
-            if (firstError) {
-                MessagePlugin.warning(firstError);
-            }
-        }
-    }
+
+
     // 删除过期的航班动态数据
     const deleteExpiredAircraftsTrendsData = async () => {
         // 过期时间 当前时间减去24小时
@@ -168,7 +129,7 @@ export const useAircraftsTrendsStore = defineStore('aircraftsTrends', () => {
         selectedIds.value = selection.map(item => item.id!);
     };
     const filterTableData = computed(() =>
-        aircraftsTrendsData.value.filter(
+        aircraftsTrendsDataPages.value.filter(
             (data) =>
                 !search.value ||
                 data.header?.toLowerCase().includes(search.value.toLowerCase()) ||
@@ -180,12 +141,7 @@ export const useAircraftsTrendsStore = defineStore('aircraftsTrends', () => {
 
     return {
         aircraftsTrendsData,
-        emptyAircraftsTrendData,
         aircraftsTrendsDataPages,
-        aircraftsTrendsDataPagesTotal,
-        aircraftsTrendsDataPagesCurrent,
-        aircraftsTrendsDataPagesSize,
-        aircraftsTrendData,
         aircraftsTrendAddFormData,
         aircraftsTrendADD_FORM_RULES,
         aircraftsTrendEditFormData,
@@ -194,18 +150,17 @@ export const useAircraftsTrendsStore = defineStore('aircraftsTrends', () => {
         aircraftsTrendThemeOptions,
         search,
         aircraftsTrendsDataPublished,
+        pageSize,
+        currentPage,
 
         fetchAllAircraftsTrendsData,
-        fetchAircraftsTrendsDataPagesData,
-        fetchAircraftsTrendsDataBySearchData,
+        getPage,
         deleteAircraftsTrendsData,
         updateAircraftsTrendData,
         addAircraftsTrendData,
-        addAircraftsTrendSubmit,
         deleteExpiredAircraftsTrendsData,
         handleSelectionChange,
         deleteSelectedAircraftsTrendsData,
-        editAircraftsTrendSubmit,
         filterTableData,
 
     }

@@ -74,7 +74,6 @@ const menuRoutes = router.getRoutes().find((route) => route.path === '/home')?.c
 const routeStore = useRouteStore();
 const handleMenuClick = (path: string) => {
   routeStore.aimRoutePath = path;
-  console.log(routeStore.aimRoutePath)
   router.push('/home/' + path);
 };
 onMounted(() => {

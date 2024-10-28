@@ -26,7 +26,9 @@
         <t-col style="font-weight: bold;border-bottom: 5px solid blue;">权限设置
         </t-col>
       </t-row>
-      <t-row>设置所有权限列表</t-row>
+      <t-row>
+        <permissionsTable />
+      </t-row>
       <t-row>
         <t-col style="font-weight: bold;border-bottom: 5px solid blue;">用户-权限设置
         </t-col>
@@ -44,6 +46,7 @@
 import routesTable from '@/components/settingsPage/routesTable.vue'
 import rolesTable from '@/components/settingsPage/rolesTable.vue'
 import roleRoutesTable from '@/components/settingsPage/roleRoutesTable.vue'
+import permissionsTable from '@/components/settingsPage/permissionsTable.vue'
 
 </script>
 <style lang="scss" scoped>
