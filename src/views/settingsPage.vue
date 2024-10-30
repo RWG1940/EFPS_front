@@ -33,12 +33,10 @@
         <t-col style="font-weight: bold;border-bottom: 5px solid blue;">用户-权限设置
         </t-col>
       </t-row>
-      <t-row>设置各个用户所具有的权限，用于访问后端端口时检测，该权限用于管理员管理分配，颗粒度的权限分配</t-row>
       <t-row>
-        <t-col style="font-weight: bold;border-bottom: 5px solid blue;">角色-权限设置
-        </t-col>
+        <EmpPermissionsTable />
       </t-row>
-      <t-row>最基础的权限分配</t-row>
+     
     </div>
   </div>
 </template>
@@ -47,6 +45,7 @@ import routesTable from '@/components/settingsPage/routesTable.vue'
 import rolesTable from '@/components/settingsPage/rolesTable.vue'
 import roleRoutesTable from '@/components/settingsPage/roleRoutesTable.vue'
 import permissionsTable from '@/components/settingsPage/permissionsTable.vue'
+import EmpPermissionsTable from '@/components/settingsPage/empPermissionsTable.vue';
 
 </script>
 <style lang="scss" scoped>

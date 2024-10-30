@@ -32,13 +32,13 @@
             @selection-change="store.handleSelectionChange">
             <el-table-column type="selection" width="55" fixed />
             <el-table-column fixed prop="mId" label="ID" width="70" sortable></el-table-column>
-            <el-table-column prop="mName" label="权限名称" width="120" show-overflow-tooltip>
+            <el-table-column prop="mName" label="权限名称" width="250" show-overflow-tooltip>
                 <template #default="scope">
                     <el-tag>{{ scope.row.mName == '' ? '' : scope.row.mName }}</el-tag> 
                 </template>
             </el-table-column>
-            <el-table-column prop="mUrl" label="权限地址" width="120" show-overflow-tooltip></el-table-column>
-            <el-table-column prop="mSign" label="权限标志" width="120" show-overflow-tooltip></el-table-column>
+            <el-table-column prop="mUrl" label="权限地址" width="200" show-overflow-tooltip></el-table-column>
+            <el-table-column prop="mSign" label="权限标志" width="200" show-overflow-tooltip></el-table-column>
             <el-table-column fixed="right" label="操作" width="150">
                 <template #default="scope">
                     <el-button size="small" @click="handleEdit(scope.row)">编辑</el-button>

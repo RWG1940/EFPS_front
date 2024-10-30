@@ -62,6 +62,10 @@ const dialogVisibleAdd = ref(false);
 
 const handleChange = async () => {
     await routeStore.getAllRoutes();
+    if (roleName.value == undefined) {
+        roleRoutesList.value = [];
+        return;
+    }
     await roleRouteStore.getRoleRoutesList(roleName.value);
     roleRouteStore.roleRoutesList.forEach(rr => {
         routeStore.allRoutes.forEach(ro => {
