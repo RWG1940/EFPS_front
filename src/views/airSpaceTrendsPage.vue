@@ -1,25 +1,30 @@
 <template>
     <div class="wrap">
         <el-affix :offset="120">
-            <t-button style="margin-left: 1000px;" theme="default" @click="operateBtn">
+            <t-button style="position: absolute;margin-left: 1000px;" theme="default" @click="operateBtn">
                 <t-icon :name="iconName" class="icon"></t-icon>空域操作
             </t-button>
         </el-affix>
-        <t-row>
-            <p class="hp">空域动态概览</p>
-        </t-row>
-        <t-row style="margin: 10px;">
+
+        <t-row :gutter="35">
             <t-col :span="6">
-                <airspace />
+                <t-row>
+                    <p class="hp">空域动态概览</p>
+                </t-row>
+                <t-row style="margin: 10px;">
+                    <airspace />
+                </t-row>
             </t-col>
-            <t-col :span="6"></t-col>
+            <t-col :span="6">
+                <t-row>
+                    <p class="hp">各空域流量明细</p>
+                </t-row>
+                <t-row>
+                    <airSpaceFlowView />
+                </t-row>
+            </t-col>
         </t-row>
-        <t-row>
-            <p class="hp">各空域流量明细</p>
-        </t-row>
-        <t-row>
-            <airSpaceFlowView />
-        </t-row>
+
         <t-row>
             <p class="hp">各空域天气明细</p>
         </t-row>
@@ -32,50 +37,88 @@
         <t-row style="justify-content: center;align-items: center;padding: 10px;margin: 10px;border-radius: 10px;">
             <airSpaceEventTable />
         </t-row>
-        <t-drawer v-model:visible="visible" header="空域操作"
-            :on-overlay-click="() => { visible = false, iconName = 'setting-1' }" :show-overlay="false" placement="bottom"
-            @cancel="() => { visible = false, iconName = 'setting-1' }"
-            @confirm="() => { visible = false, iconName = 'setting-1' }">
+        <t-drawer v-model:visible="store.operationPanelVisible" header="空域操作"
+            :on-overlay-click="() => { store.operationPanelVisible = false }" placement="bottom"
+            @cancel="() => { store.operationPanelVisible = false; store.operateAirSpace = {} }" @confirm="operateConfirm">
             <t-row :gutter="16">
                 <t-col :span="2">
                     空域：
-                    <t-select placeholder="请选择空域" clearable></t-select>
+                    <t-select v-model="store.operateAirSpace.name" placeholder="请选择空域" :options="store.airSpaceNameOptions"
+                        clearable></t-select>
                 </t-col>
                 <t-col :span="2">
                     操作：
-                    <t-select placeholder="请选择操作" clearable></t-select>
+                    <t-select v-model="store.operateAirSpace.title" placeholder="请选择操作" :options="store.operationOptions"
+                        clearable></t-select>
                 </t-col>
                 <t-col :span="2">
                     起止日期：
-                    <t-date-range-picker enable-time-picker allow-input clearable @pick="" @change="" />
+                    <t-date-range-picker :value="[store.operateAirSpace.startTime, store.operateAirSpace.endTime]"
+                        enable-time-picker allow-input clearable @pick="onPick" @change="onChange" />
                 </t-col>
             </t-row>
             <t-row :gutter="16">
-                <t-col :span="2">
-                    <t-card style="margin-top: 16px;">该空域目前状态：</t-card>
+                <t-col :span="6">
+                    <t-card style="margin-top: 16px;">该空域目前状态：
+                        <t-tag size="large" style="margin: 5px;" v-for="(item, index) in airSpace" :key="index"
+                            effect="dark">状态：{{ item.title }},持续期间：{{ item.starttime }}到{{ item.endtime }} 
+                            <el-button @click="store.endAirSpaceEvent(item)" type="danger" size="small">结束该状态</el-button></t-tag>
+                    </t-card>
                 </t-col>
             </t-row>
         </t-drawer>
     </div>
 </template>
 <script setup lang="ts">
-import { formatDate } from '@/utils/moment'
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import airspace from '@/components/areaControlPage/trendsTool/airspace.vue';
 import airSpaceFlowView from '@/components/airSpaceTrendsPage/airSpaceFlowView.vue';
 import airSpaceWeather from '@/components/airSpaceTrendsPage/airSpaceWeather.vue';
 import airSpaceEventTable from '@/components/airSpaceTrendsPage/airSpaceEventTable.vue';
+import { useAirSpaceEventStore } from '@/stores/airSpaceEvent-store';
+import type { DateRangePickerProps } from 'tdesign-vue-next';
+import { DialogPlugin, MessagePlugin } from 'tdesign-vue-next';
+import type { AirSpaceEventData } from '@/stores/airSpaceEvent-store';
 
-const visible = ref(false);
-const iconName = ref('setting-1')
-const operateBtn = () => {
-    visible.value = !visible.value;
-    if (visible.value) {
-        iconName.value = 'close'
-    } else {
-        iconName.value = 'setting-1'
-    }
+
+const store = useAirSpaceEventStore();
+const airSpaceEventStatusNow = ref<AirSpaceEventData[]>([]);
+const onPick: DateRangePickerProps['onPick'] = (value: any, context) => {
+    store.operateAirSpace.startTime = value[0]
+    store.operateAirSpace.endTime = value[1]
 }
+const onChange: DateRangePickerProps['onChange'] = (value: any, context) => {
+    store.operateAirSpace.startTime = value[0]
+    store.operateAirSpace.endTime = value[1]
+};
+const iconName = computed(() => {
+    return store.operationPanelVisible ? 'close' : 'setting-1';
+});
+const operateBtn = () => {
+    store.operationPanelVisible = !store.operationPanelVisible;
+}
+const operateConfirm = () => {
+    const c = DialogPlugin({
+        theme: 'warning',
+        header: '警告',
+        body: '你确定发布该空域的管制指令?',
+        confirmBtn: '确认',
+        cancelBtn: '取消',
+        onConfirm: () => {
+            store.addAirSpaceEventData(store.operateAirSpace);
+            store.operationPanelVisible = false;
+            store.operateAirSpace = {}
+            c.destroy();
+        },
+        onClose: () => {
+            c.destroy();
+        },
+    });
+}
+
+const airSpace = computed(() => {
+    return store.airSpaceEventPage.filter((item: any) => item.name === store.operateAirSpace.name && item.status === '进行中' && item.type === 1);
+});
 
 </script>
 <style lang="scss" scoped>

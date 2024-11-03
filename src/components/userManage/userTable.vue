@@ -81,12 +81,12 @@
           }}</el-tag>
       </template>
     </el-table-column>
-    <el-table-column prop="emp.eCreatetime" label="入职日期" width="120" show-overflow-tooltip>
+    <el-table-column prop="emp.eCreatetime" label="入职日期" width="120" show-overflow-tooltip sortable>
       <template #default="scope">
         {{ formatDate(scope.row.emp.eCreatetime) }}
       </template>
     </el-table-column>
-    <el-table-column prop="emp.eUpdatetime" label="更新日期" width="120" show-overflow-tooltip>
+    <el-table-column prop="emp.eUpdatetime" label="更新日期" width="120" show-overflow-tooltip sortable>
       <template #default="scope">
         {{ formatDate(scope.row.emp.eUpdatetime) }}
       </template>

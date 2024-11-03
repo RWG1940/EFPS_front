@@ -11,7 +11,8 @@ const userStore = useUserStore()
 const deptStore = useDeptStore()
 onBeforeMount(async () => {
   await deptStore.getAllDeptData();
-  // 初始化 dOnlineTotal
+  const u = echarts.init(document.getElementById('users') as HTMLDivElement)
+  u.showLoading();
   deptStore.tableData.forEach((item) => {
     item.dOnlineTotal = item.dOnlineTotal || 0;
   });
@@ -26,8 +27,6 @@ onBeforeMount(async () => {
         deptItem.dOnlineTotal++;
       }
     });
-    const u = echarts.init(document.getElementById('users') as HTMLDivElement)
-    u.showLoading();
     const option0 = {
       title: {
         text: '员工概览',
@@ -42,10 +41,8 @@ onBeforeMount(async () => {
         }
       ]
     };
-    setTimeout(() => {
-      u.hideLoading();
-      u.setOption(option0);
-    }, 800);
+    u.hideLoading();
+    u.setOption(option0);
   })
 })
 

@@ -15,10 +15,11 @@ import { ChevronDownIcon } from 'tdesign-icons-vue-next';
 import { useUserStore } from "@/stores/user-store";
 import type { DropdownProps } from 'tdesign-vue-next';
 import { MessagePlugin } from 'tdesign-vue-next';
-
+import { useAirSpaceEventStore } from "@/stores/airSpaceEvent-store";
 
 const userStore = useUserStore()
 const homeStore = useHomeStore()
+const airSpaceEventStore = useAirSpaceEventStore()
 
 // 下拉框点击事件
 const clickHandler: DropdownProps['onClick'] = (data) => {
@@ -27,6 +28,7 @@ const clickHandler: DropdownProps['onClick'] = (data) => {
     userStore.logout()
   } else if (data.value == 1){
     homeStore.myInfoVisible = true
+    airSpaceEventStore.operationPanelVisible = false
   }
 };
 onMounted(() => {

@@ -19,7 +19,7 @@
       Powered By JDZU
     </p>
     <my-info />
-    <t-back-top container=".rwg" :visible-height="500" style="position: absolute" :offset="['24px', '80px']"
+    <t-back-top container=".rwg" :visible-height="200" style="position: absolute" :offset="['24px', '80px']"
       :duration="500" shape="circle"></t-back-top>
   </div>
 </template>

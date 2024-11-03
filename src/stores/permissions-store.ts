@@ -73,6 +73,7 @@ export const usePermissionStore = defineStore('permissions', () => {
     const searchPermissions = async (permission: any) => {
         await searchPermission(permission).then((res: any) => {
             permissionsTableData.value = res.data.result;
+            total.value = res.data.result.length;
         });
     };
     // 获取所有权限

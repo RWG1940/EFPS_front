@@ -184,6 +184,7 @@ export const useRouteStore = defineStore('routes', () => {
   const searchRoutes = async (route: any) => {
     await searchRoute(route).then(res => {
       routesTableData.value = res.data.result;
+      total.value = res.data.result.length;
     });
   };
   // 获取所有路由

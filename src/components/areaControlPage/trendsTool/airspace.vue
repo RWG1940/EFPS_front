@@ -6,13 +6,13 @@
                     <transition name="e-trans" appear>
                         <el-col class="ec1">
                             <p class="p-title">东高空</p>
-                            <airspaceInfo />
+                            <airspaceInfo :data="store.EHairspaceInfo" />
                         </el-col>
                     </transition>
                     <transition name="e-trans" appear>
                     <el-col class="ec11">
                         <p class="p-title">西高空</p>
-                        <airspaceInfo />
+                        <airspaceInfo :data="store.WHairspaceInfo" />
                     </el-col>
                 </transition>
                 </el-row>
@@ -20,13 +20,13 @@
                     <transition name="e-trans" appear>
                     <el-col class="ec21">
                         <p class="p-title">南高空</p>
-                        <airspaceInfo />
+                        <airspaceInfo :data="store.NHairspaceInfo" />
                     </el-col>
                 </transition>
                 <transition name="e-trans" appear>
                     <el-col class="ec2">
                         <p class="p-title">北高空</p>
-                        <airspaceInfo />
+                        <airspaceInfo :data="store.NHairspaceInfo" />
                     </el-col>
                 </transition>
                 </el-row>
@@ -36,13 +36,13 @@
                     <transition name="e1-trans" appear>
                     <el-col class="ec1">
                         <p class="p-title">东低空</p>
-                        <airspaceInfo />
+                        <airspaceInfo :data="store.ELairspaceInfo" />
                     </el-col>
                 </transition>
                 <transition name="e1-trans" appear>
                     <el-col class="ec11">
                         <p class="p-title">西低空</p>
-                        <airspaceInfo />
+                        <airspaceInfo :data="store.WLairspaceInfo" />
                     </el-col>
                 </transition>
                 </el-row>
@@ -50,13 +50,13 @@
                     <transition name="e1-trans" appear>
                     <el-col class="ec21">
                         <p class="p-title">南低空</p>
-                        <airspaceInfo />
+                        <airspaceInfo :data="store.SLairspaceInfo" />
                     </el-col>
                 </transition>
                 <transition name="e1-trans" appear>
                     <el-col class="ec2">
                         <p class="p-title">北低空</p>
-                        <airspaceInfo />
+                        <airspaceInfo :data="store.NLairspaceInfo" />
                     </el-col>
                 </transition>
                 </el-row>
@@ -66,6 +66,10 @@
 </template>
 <script lang="ts" setup>
 import airspaceInfo from './airspaceInfo.vue'
+import { onMounted } from 'vue'
+import { useAirspaceInfoStore } from '@/stores/airspaceInfo-store'
+
+const store = useAirspaceInfoStore()
 
 </script>
 <style lang="scss" scoped>

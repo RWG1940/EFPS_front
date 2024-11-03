@@ -2,35 +2,45 @@
     <div class="wrap">
         <el-row>
             <el-col :span="6">
-                <p class="p-content">流量:<span style="background-color: green;color: white;">低</span></p>
+                <p class="p-content">流量:<span>{{ data.flow }}</span></p>
             </el-col>
             <el-col :span="6">
-                <p class="p-content">数量:2</p>
+                <p class="p-content">数量:{{ data.quantity }}</p>
             </el-col>
             <el-col :span="12">
-                <p class="p-content">告警:<span style="background-color: rgb(255, 0, 0);color: white;">受限：5</span></p>
+                <p class="p-content">告警:<span>{{ data.alertMess }}</span></p>
             </el-col>
         </el-row>
         <el-row>
             <el-col :span="12">
-                <p class="p-content">风速:15m/s</p>
+                <p class="p-content">风速:{{ data.windSpeed }}m/s</p>
             </el-col>
             <el-col :span="12">
-                <p class="p-content">风向:270°</p>
+                <p class="p-content">风向:{{ data.windDirection }}°</p>
             </el-col>
         </el-row>
         <el-row>
             <el-col :span="12">
-                <p class="p-content">能见度:5km</p>
+                <p class="p-content">能见度:{{ data.visibility }}km</p>
             </el-col>
             <el-col :span="12">
-                <p class="p-content">云高层高度:1500m</p>
+                <p class="p-content">云高层高度:{{ data.ceiling }}m</p>
             </el-col>
         </el-row>
+
     </div>
 </template>
 <script lang="ts" setup>
+import { ref, onMounted } from 'vue'
+import type{ AirspaceInfoData } from '@/stores/airspaceInfo-store'
 
+// 定义prop接收
+const props = defineProps({
+    data: {
+        type: Object as () => AirspaceInfoData,
+        default: () => ({})
+    }
+})
 </script>
 <style lang="scss" scoped>
 .wrap {
