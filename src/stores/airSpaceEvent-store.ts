@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia';
 import { MessagePlugin } from 'tdesign-vue-next';
 import type { FormProps } from 'tdesign-vue-next';
-import { ref, reactive } from 'vue';
-import { fetchAirSpaceEventData, fetchAirSpaceEventPages, fetchAirSpaceEventBySearch, addAirSpaceEvent, deleteAirSpaceEvent, updateAirSpaceEvent } from '@/api/services/airSpaceEvent-api';
+import { ref, reactive,computed } from 'vue';
+import { airSpaceEventApi } from '@/api/services/airSpaceEvent-api';
 
 
 export interface AirSpaceEventData {
@@ -85,6 +85,7 @@ export const useAirSpaceEventStore = defineStore('airSpaceEvent', () => {
         status: '进行中',
         detail: '请各个管制席、航班机长做好准备，该空域目前正在实施管制'
     });
+    const operateAirSpaceNum = ref('')
     const airSpaceNameOptions = [
         { label: '东高空', value: '东高空' },
         { label: '西高空', value: '西高空' },
@@ -130,51 +131,97 @@ export const useAirSpaceEventStore = defineStore('airSpaceEvent', () => {
     const updateTime2 = ref('');
 
     const operationPanelVisible = ref(false);
+    // 东高管制状态
+    const eastAirSpaceStatus = computed(() => {
+        return airSpaceEventList.value.find(item => item.name === '东高空' && item.status == '进行中' && item.type == 1 )?.title
+    });
+    // 西高管制状态
+    const westAirSpaceStatus = computed(() => {
+        return airSpaceEventList.value.find(item => item.name === '西高空' && item.status == '进行中' && item.type == 1 )?.title
+    });
+    // 南高高制状态
+    const southAirSpaceStatus = computed(() => {
+        return airSpaceEventList.value.find(item => item.name === '南高空' && item.status == '进行中' && item.type == 1 )?.title
+    });
+    // 北高管制状态
+    const northAirSpaceStatus = computed(() => {
+        return airSpaceEventList.value.find(item => item.name === '北高空' && item.status == '进行中' && item.type == 1 )?.title
+    });
+    // 东低空制状态
+    const eastLowAirSpaceStatus = computed(() => {
+        return airSpaceEventList.value.find(item => item.name === '东低空' && item.status == '进行中' && item.type == 1 )?.title
+    });
+    // 西低空制状态
+    const westLowAirSpaceStatus = computed(() => {
+        return airSpaceEventList.value.find(item => item.name === '西低空' && item.status == '进行中' && item.type == 1 )?.title
+    });
+    // 南低空制状态
+    const southLowAirSpaceStatus = computed(() => {
+        return airSpaceEventList.value.find(item => item.name === '南低空' && item.status == '进行中' && item.type == 1 )?.title
+    });
+    // 北低空制状态
+    const northLowAirSpaceStatus = computed(() => {
+        return airSpaceEventList.value.find(item => item.name === '北低空' && item.status == '进行中' && item.type == 1 )?.title
+    });
+    
     /**
      * 方法
      */
     // 获取所有的空域事件数据
     const getAllAirSpaceEventList = async () => {
-        await fetchAirSpaceEventData().then((res: any) => {
-            airSpaceEventList.value = res.data;
+        await airSpaceEventApi.getAll().then((res: any) => {
+            airSpaceEventList.value = res.data.result;
         })
     };
 
     // 获取分页数据
     const getAirSpaceEventPage = async () => {
-        await fetchAirSpaceEventPages(currentPage.value, pageSize.value).then((res: any) => {
+        await airSpaceEventApi.getPages(currentPage.value, pageSize.value).then((res: any) => {
             airSpaceEventPage.value = res.data.result.rows;
-            total.value = res.total;
+            total.value = res.data.result.total;
         })
     };
 
     // 添加
     const addAirSpaceEventData = async (data: any) => {
-        await addAirSpaceEvent(data).then((res: any) => {
+        await airSpaceEventApi.add(data).then((res: any) => {
             MessagePlugin.success('添加成功');
             getAirSpaceEventPage()
+            getAllAirSpaceEventList()
+        })
+    };
+
+    // 管制添加
+    const addAirSpaceEventOperate = async (data: any) => {
+        const requestData = { ...data, title: data.title + operateAirSpaceNum.value };
+        await airSpaceEventApi.add(requestData).then((res: any) => {
+            MessagePlugin.success('添加成功');
+            getAirSpaceEventPage()
+            getAllAirSpaceEventList()
         })
     };
 
     // 删除
     const deleteAirSpaceEventById = async (ids: number[]) => {
-        await deleteAirSpaceEvent(ids).then((res: any) => {
+        await airSpaceEventApi.delete(ids).then((res: any) => {
             MessagePlugin.success('删除成功');
             getAirSpaceEventPage()
+            getAllAirSpaceEventList()
         })
     };
 
     // 更新
     const updateAirSpaceEventData = async (data: any) => {
-        await updateAirSpaceEvent(data).then((res: any) => {
+        await airSpaceEventApi.update(data).then((res: any) => {
             MessagePlugin.success('更新成功');
             getAirSpaceEventPage()
+            getAllAirSpaceEventList()
         })
     };
 
     // 查询
     const searchAirSpaceEvent = async (data: any) => {
-        await fetchAirSpaceEventBySearch(data).then((res: any) => {
+        await airSpaceEventApi.search(data).then((res: any) => {
             airSpaceEventPage.value = res.data.result;
             // 按照创建时间过滤
             if (createTime1.value != '' && createTime2.value != '') {
@@ -223,9 +270,9 @@ export const useAirSpaceEventStore = defineStore('airSpaceEvent', () => {
         updateAirSpaceEventForm.title = item.title;
         updateAirSpaceEventForm.name = item.name;
         updateAirSpaceEventForm.status = '已完成';
-        await updateAirSpaceEvent(updateAirSpaceEventForm).then(() => {
+        await airSpaceEventApi.update(updateAirSpaceEventForm).then(() => {
             MessagePlugin.success('操作成功');
-            getAirSpaceEventPage()
+            getAllAirSpaceEventList()
         });
     };
 
@@ -258,6 +305,15 @@ export const useAirSpaceEventStore = defineStore('airSpaceEvent', () => {
         operationPanelVisible,
         operationOptions,
         operateAirSpace,
+        eastAirSpaceStatus,
+        westAirSpaceStatus,
+        southAirSpaceStatus,
+        northAirSpaceStatus,
+        eastLowAirSpaceStatus,
+        westLowAirSpaceStatus,
+        southLowAirSpaceStatus,
+        northLowAirSpaceStatus,
+        operateAirSpaceNum,
 
         getAllAirSpaceEventList,
         getAirSpaceEventPage,
@@ -266,7 +322,8 @@ export const useAirSpaceEventStore = defineStore('airSpaceEvent', () => {
         updateAirSpaceEventData,
         searchAirSpaceEvent,
         handleSelectionChange,
-        endAirSpaceEvent
+        endAirSpaceEvent,
+        addAirSpaceEventOperate
 
 
     }

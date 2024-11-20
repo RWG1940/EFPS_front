@@ -1,7 +1,7 @@
 <template>
   <t-row>
     <t-col :span="12">
-      <div id="airFlow" style=" height: 300px;width: 500px;"></div>
+      <div id="airFlow" style=" height: 400px;width: 500px;"></div>
     </t-col>
   </t-row>
 </template>

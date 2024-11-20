@@ -6,13 +6,13 @@
                     <transition name="e-trans" appear>
                         <el-col class="ec1">
                             <p class="p-title">东高空</p>
-                            <airspaceInfo :data="store.EHairspaceInfo" />
+                            <airspaceInfo :data="store.EHairspaceInfo" :status="airSpaceEventStore.eastAirSpaceStatus" />
                         </el-col>
                     </transition>
                     <transition name="e-trans" appear>
                     <el-col class="ec11">
                         <p class="p-title">西高空</p>
-                        <airspaceInfo :data="store.WHairspaceInfo" />
+                        <airspaceInfo :data="store.WHairspaceInfo" :status="airSpaceEventStore.westAirSpaceStatus" />
                     </el-col>
                 </transition>
                 </el-row>
@@ -20,13 +20,13 @@
                     <transition name="e-trans" appear>
                     <el-col class="ec21">
                         <p class="p-title">南高空</p>
-                        <airspaceInfo :data="store.NHairspaceInfo" />
+                        <airspaceInfo :data="store.NHairspaceInfo" :status="airSpaceEventStore.southAirSpaceStatus" />
                     </el-col>
                 </transition>
                 <transition name="e-trans" appear>
                     <el-col class="ec2">
                         <p class="p-title">北高空</p>
-                        <airspaceInfo :data="store.NHairspaceInfo" />
+                        <airspaceInfo :data="store.NHairspaceInfo"  :status="airSpaceEventStore.northAirSpaceStatus" />
                     </el-col>
                 </transition>
                 </el-row>
@@ -36,13 +36,13 @@
                     <transition name="e1-trans" appear>
                     <el-col class="ec1">
                         <p class="p-title">东低空</p>
-                        <airspaceInfo :data="store.ELairspaceInfo" />
+                        <airspaceInfo :data="store.ELairspaceInfo" :status="airSpaceEventStore.eastLowAirSpaceStatus" />
                     </el-col>
                 </transition>
                 <transition name="e1-trans" appear>
                     <el-col class="ec11">
                         <p class="p-title">西低空</p>
-                        <airspaceInfo :data="store.WLairspaceInfo" />
+                        <airspaceInfo :data="store.WLairspaceInfo" :status="airSpaceEventStore.westLowAirSpaceStatus" />
                     </el-col>
                 </transition>
                 </el-row>
@@ -50,13 +50,13 @@
                     <transition name="e1-trans" appear>
                     <el-col class="ec21">
                         <p class="p-title">南低空</p>
-                        <airspaceInfo :data="store.SLairspaceInfo" />
+                        <airspaceInfo :data="store.SLairspaceInfo" :status="airSpaceEventStore.southLowAirSpaceStatus" />
                     </el-col>
                 </transition>
                 <transition name="e1-trans" appear>
                     <el-col class="ec2">
                         <p class="p-title">北低空</p>
-                        <airspaceInfo :data="store.NLairspaceInfo" />
+                        <airspaceInfo :data="store.NLairspaceInfo" :status="airSpaceEventStore.northLowAirSpaceStatus" />
                     </el-col>
                 </transition>
                 </el-row>
@@ -66,10 +66,12 @@
 </template>
 <script lang="ts" setup>
 import airspaceInfo from './airspaceInfo.vue'
-import { onMounted } from 'vue'
+import { onMounted,computed } from 'vue'
 import { useAirspaceInfoStore } from '@/stores/airspaceInfo-store'
+import { useAirSpaceEventStore } from '@/stores/airSpaceEvent-store';
 
 const store = useAirspaceInfoStore()
+const airSpaceEventStore = useAirSpaceEventStore()
 
 </script>
 <style lang="scss" scoped>

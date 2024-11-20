@@ -8,7 +8,7 @@
                 <p class="p-content">数量:{{ data.quantity }}</p>
             </el-col>
             <el-col :span="12">
-                <p class="p-content">告警:<span>{{ data.alertMess }}</span></p>
+                <p class="p-content">管制:<span>{{ status }}</span></p>
             </el-col>
         </el-row>
         <el-row>
@@ -39,6 +39,10 @@ const props = defineProps({
     data: {
         type: Object as () => AirspaceInfoData,
         default: () => ({})
+    },
+    status: {
+        type: String,
+        default: ''
     }
 })
 </script>

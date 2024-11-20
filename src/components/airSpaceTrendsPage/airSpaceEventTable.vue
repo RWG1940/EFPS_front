@@ -93,7 +93,7 @@
             </el-table-column>
         </el-table>
         <t-pagination style="margin-top: 10px;" v-model="store.currentPage" v-model:pageSize="store.pageSize"
-            :total="store.airSpaceEventPage.length" size="small" theme="simple" @page-size-change="onPageSizeChange"
+            :total="store.total" size="small" theme="simple" @page-size-change="onPageSizeChange"
             @current-change="onCurrentChange" />
 
         <airSpaceEventAdd v-model:visible="addVisible" @update:visible="handleAddVisibleChange" />

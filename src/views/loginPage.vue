@@ -1,30 +1,41 @@
 <template>
   <div class="wrap">
-    <div class="content">
-      <div class="header">
-        <span>EFPS system</span>
+    <transition name="l-trans" appear>
+      <div class="content">
+        <div class="header">
+          <span>EFPS system</span>
+        </div>
+        <t-tabs v-model="value" theme="card" class="tab">
+          <t-tab-panel value="first" label="登录">
+            <transition name="c-trans" appear>
+              <userLogin />
+            </transition>
+          </t-tab-panel>
+          <t-tab-panel value="second" label="注册">
+            <transition name="c-trans" appear>
+              <el-scrollbar height="330px">
+                <userReg />
+              </el-scrollbar>
+            </transition>
+          </t-tab-panel>
+          <t-tab-panel value="third" label="找回">
+            <transition name="c-trans" appear>
+              <el-scrollbar height="330px">
+                <foundMe />
+              </el-scrollbar>
+            </transition>
+          </t-tab-panel>
+        </t-tabs>
       </div>
-      <t-tabs v-model="value" theme="card" class="tab">
-        <t-tab-panel value="first" label="登录">
-          <userLogin/>
-        </t-tab-panel>
-        <t-tab-panel value="second" label="注册">
-          <el-scrollbar height="300px">
-            <userReg/>
-          </el-scrollbar>
-          
-        </t-tab-panel>
-        <t-tab-panel value="third" label="找回">
-            开发中。。。
-        </t-tab-panel>
-      </t-tabs>
-    </div>
+    </transition>
   </div>
 </template>
 <script setup lang="ts">
 import { ref } from "vue";
 import userLogin from '@/components/loginPage/userLogin.vue'
 import userReg from '@/components/loginPage/userReg.vue'
+import foundMe from '@/components/loginPage/foundMe.vue'
+
 
 const value = ref('first');
 </script>
@@ -71,5 +82,29 @@ const value = ref('first');
   border-bottom-right-radius: 5px;
   background-color: rgba(255, 255, 255, 0.737);
   backdrop-filter: blur(25px);
+  height: 400px;
+}
+
+
+.l-trans-enter-from,
+.l-trans-leave-to {
+  transform: translateX(-100px) scale(0.1) rotateY(-20deg) rotateX(20deg);
+  opacity: 0;
+}
+
+.l-trans-enter-active,
+.l-trans-leave-active {
+  transition: all 0.8s ease;
+}
+
+.c-trans-enter-from,
+.c-trans-leave-to {
+  transform:  scale(0.5) rotateY(-20deg) rotateX(20deg) translateY(300px);
+  opacity: 0;
+}
+
+.c-trans-enter-active,
+.c-trans-leave-active {
+  transition: all 0.8s ease;
 }
 </style>

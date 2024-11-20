@@ -1,6 +1,4 @@
 import apiClient from '../index'
 import { createCRUDService } from '../utils/createCRUDService'
 
-export const aircraftsTrendsApi = createCRUDService('/aircraftsTrends');
-
-
+export const foundMeApi = createCRUDService('/foundMe');

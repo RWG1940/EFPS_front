@@ -131,7 +131,8 @@ export const useUserStore = defineStore('user', () => {
   const LOGIN_FORM_RULES = { account: [{ required: true, message: '账户必填' }], password: [{ required: true, message: '密码必填' }] };
   const loginFormData: FormProps['data'] = reactive({
     account: '',
-    password: ''
+    password: '',
+    rememberMe:false
   });
   // 注册表单
   const REG_FORM_RULES = { account: [{ required: true, message: '账户必填' }], password: [{ required: true, message: '密码必填' }], eid: [{ required: true, message: '身份证号必填' }], phone: [{ required: true, message: '手机号必填' }] };
@@ -163,7 +164,7 @@ export const useUserStore = defineStore('user', () => {
   // 用户添加表单
   const userAddFormData: FormProps['data'] = reactive({
     emp: {
-      eAvatarpath:'',
+      eAvatarpath: '',
       eUsername: '',
       ePassword: '',
       eName: '',
@@ -198,8 +199,8 @@ export const useUserStore = defineStore('user', () => {
   // 用户修改表单
   const userDataFormData: FormProps['data'] = reactive({
     emp: {
-      id:'',
-      eAvatarpath:'',
+      id: '',
+      eAvatarpath: '',
       eUsername: '',
       ePassword: '',
       eName: '',
@@ -212,7 +213,7 @@ export const useUserStore = defineStore('user', () => {
       rId: ''
     },
   });
-  
+
   // 个人信息修改
   const MYDATA_FORM_RULES = {
     emp: {
@@ -251,6 +252,9 @@ export const useUserStore = defineStore('user', () => {
   const offlineUserLength = computed(() => {
     return tableData.value.filter((item) => item.isOnline == '0').length;
   });
+  let sidentifyMode = ref('') //输入框验证码
+  let identifyCode = ref('') //图形验证码
+  let identifyCodes = ref('1234567890abcdefjhijklinopqrsduvwxyz') //验证码出现的数字和字母
   // 
   /*
   *动作
@@ -354,13 +358,39 @@ export const useUserStore = defineStore('user', () => {
     unit: 'KB',
   });
 
-
+  // 更新验证码
+  const refreshCode = () => {
+    identifyCode.value = ''
+    makeCode(identifyCodes.value, 4)
+  }
+  // 生成随机数
+  const randomNum = (min: number, max: number) => {
+    max = max + 1
+    return Math.floor(Math.random() * (max - min) + min)
+  }
+  // 随机生成验证码字符串
+  const makeCode = (o: any, l: any) => {
+    for (let i = 0; i < l; i++) {
+      identifyCode.value += o[randomNum(0, o.length)]
+    }
+  }
   // 手动登录提交按钮
   const loginOnSubmit: FormProps['onSubmit'] = async ({ validateResult, firstError }) => {
     const msg = MessagePlugin.loading('登陆中')
     await new Promise(resolve => setTimeout(resolve, 200));
+    //验证验证码不为空
+    if (!sidentifyMode.value) {
+      MessagePlugin.warning('请输入验证码')
+      return
+    }
+    //验证验证码是否正确
+    if (sidentifyMode.value != identifyCode.value) {
+      MessagePlugin.error('验证码不正确')
+      refreshCode()
+      return
+    }
     if (validateResult === true) {
-      const user = { eUsername: loginFormData.account, ePassword: loginFormData.password };
+      const user = { emp:{ eUsername: loginFormData.account, ePassword: loginFormData.password },rememberMe:loginFormData.rememberMe};
       await userLogin(user).then((resp) => {
         MessagePlugin.close(msg)
         token.value = resp.data.result;
@@ -417,6 +447,17 @@ export const useUserStore = defineStore('user', () => {
   const regOnSubmit: FormProps['onSubmit'] = async ({ validateResult, firstError }) => {
     const msg = MessagePlugin.loading('注册中');
     await new Promise(resolve => setTimeout(resolve, 200));
+    //验证验证码不为空
+    if (!sidentifyMode.value) {
+      MessagePlugin.warning('请输入验证码')
+      return
+    }
+    //验证验证码是否正确
+    if (sidentifyMode.value != identifyCode.value) {
+      MessagePlugin.error('验证码不正确')
+      refreshCode()
+      return
+    }
     if (validateResult === true) {
       const user = { eUsername: regFormData.account, ePassword: regFormData.password, eId: regFormData.eid, ePhone: regFormData.phone };
       const response = await regUser(user);
@@ -445,7 +486,7 @@ export const useUserStore = defineStore('user', () => {
       MessagePlugin.warning('退出登录失败');
     }
   };
- 
+
   // 修改个人信息头像
   const myInfoEditHandleSuccess = (response: any, file: File) => {
     if (response.response.code == 1) {
@@ -468,7 +509,7 @@ export const useUserStore = defineStore('user', () => {
   const cleanUserData = () => {
     userData.value = emptyUserData.value;
   }
-  
+
 
   // 搜索用户
   const searchUser = async () => {
@@ -540,9 +581,14 @@ export const useUserStore = defineStore('user', () => {
     createTime2,
     avatarPath,
     Nullfile1,
+    sidentifyMode,
+    identifyCode,
+    identifyCodes,
 
 
     // 方法
+    makeCode,
+    refreshCode,
     handlePageChange,
     handleBatchDelete,
     handleDelete,

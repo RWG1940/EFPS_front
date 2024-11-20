@@ -15,7 +15,7 @@
                                     content: '确认',
                                     theme: 'warning',
                                     onClick: () => {
-                                        store.deleteExpiredAircraftsTrendsData()
+                                        deleteExpiredAircraftsTrendsData()
                                         visible1 = false
                                     }
                                 }" :cancel-btn="{
@@ -31,7 +31,7 @@
                         </p>
                         <div style="padding: 10px;">
                             <el-scrollbar height="300px" style="border-radius: 10px;">
-                                <t-notification v-for="(message, index) in store.aircraftsTrendsDataPublished" :key="index"
+                                <t-notification v-for="(message, index) in aircraftsTrendsDataPublished" :key="index"
                                     :title="message.header" :content="message.content"
                                     :footer="formatDate(message.createtime || '')" :theme="message.theme"
                                     style="width: 100%;margin-bottom: 5px;" :max-line="2" />
@@ -51,13 +51,13 @@
                             </t-tooltip>
                             <t-tooltip content="删除选中的动态">
                                 <t-button size="small" theme="default" style="margin-left: 5px;"
-                                    @click="store.deleteSelectedAircraftsTrendsData"><t-icon
+                                    @click="aircraftsTrendsStore.deleteSelectedData"><t-icon
                                         name="delete"></t-icon></t-button>
                             </t-tooltip>
                         </p>
                         <t-card style="margin: 10px;">
-                            <el-table :data="store.filterTableData" height="380"
-                                @selection-change="store.handleSelectionChange" stripe border>
+                            <el-table :data="aircraftsTrendsStore.filterTableData" height="380"
+                                @selection-change="aircraftsTrendsStore.handleSelectionChange" stripe border>
                                 <el-table-column type="selection" width="40" />
                                 <el-table-column prop="theme" label="主题" width="70" show-overflow-tooltip :filters="[
                                     { text: '通知', value: 'info' },
@@ -109,20 +109,20 @@
                                     show-overflow-tooltip></el-table-column>
                                 <el-table-column fixed="right" min-width="120">
                                     <template #header>
-                                        <el-input v-model="store.search" size="small" placeholder="搜索" />
+                                        <el-input v-model="aircraftsTrendsStore.search" size="small" placeholder="搜索" />
                                     </template>
                                     <template #default="scope">
                                         <t-button size="small" theme="default"
-                                            @click="() => { store.aircraftsTrendEditFormData = scope.row; handleEditVisibleChange() }">编辑</t-button>
+                                            @click="() => { editFormData = scope.row; handleEditVisibleChange() }">编辑</t-button>
                                         <t-button size="small" theme="danger" style="margin-left: 5px;"
-                                            @click="store.deleteAircraftsTrendsData([scope.row.id])">删除</t-button>
+                                            @click="aircraftsTrendsStore.deleteData([scope.row.id])">删除</t-button>
                                     </template>
                                 </el-table-column>
                             </el-table>
                             <t-pagination
-                                v-model="store.currentPage"
-                                v-model:pageSize="store.pageSize"
-                                :total="store.filterTableData.length"
+                                v-model="aircraftsTrendsStore.currentPage"
+                                v-model:pageSize="aircraftsTrendsStore.pageSize"
+                                :total="aircraftsTrendsStore.filterTableData.length"
                                 size="small"
                                 theme="simple"
                                 @page-size-change="onPageSizeChange"
@@ -139,14 +139,14 @@
     </div>
 </template>
 <script setup lang="ts">
-import { useAircraftsTrendsStore } from '@/stores/aircraftsTrends-store';
+import { aircraftsTrendsStore,deleteExpiredAircraftsTrendsData,aircraftsTrendsDataPublished,editFormData } from '@/stores/aircraftsTrends-store';
 import { formatDate } from '@/utils/moment'
 import addAircraftsTrend from '../components/aircraftsTrendsPage/addAircraftsTrend.vue'
 import editAircraftsTrend from '../components/aircraftsTrendsPage/editAircraftsTrend.vue'
-import { ref, onMounted } from 'vue';
-import type { AircraftsTrendsData } from '@/stores/aircraftsTrends-store';
 
-const store = useAircraftsTrendsStore();
+import { ref, onMounted } from 'vue';
+import type { AircraftsTrendsData } from '@/types/aircraftsTrendsTypes.ts';
+
 const addVisible = ref(false)
 const editVisible = ref(false)
 const visible1 = ref(false)
@@ -157,17 +157,17 @@ const handleEditVisibleChange = () => {
     editVisible.value = !editVisible.value
 }
 const onPageSizeChange = (size: number) => {
-    store.pageSize = size
-    store.getPage()
+    aircraftsTrendsStore.pageSize = size
+    aircraftsTrendsStore.fetchPageData()
 };
 
 const onCurrentChange = (index: number) => {
-    store.currentPage = index
-    store.getPage()
+    aircraftsTrendsStore.currentPage = index
+    aircraftsTrendsStore.fetchPageData()
 };
 onMounted(() => {
-    store.getPage()
-    store.fetchAllAircraftsTrendsData()
+    aircraftsTrendsStore.fetchPageData()
+    aircraftsTrendsStore.fetchAllData()
 })
 </script>
 <style lang="scss" scoped>

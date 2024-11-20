@@ -29,6 +29,21 @@
                     </template>
                 </t-input>
             </t-form-item>
+            <t-form-item name="验证码">
+                <t-input placeholder="请输入验证码" v-model="store.sidentifyMode" @click="identifyCodeVisible = true" width="30"
+                    clearable></t-input>
+
+            </t-form-item>
+            <div @click="store.refreshCode" v-if="identifyCodeVisible">
+                <t-row>
+                    <t-col :span="4">
+                        验证码：
+                    </t-col>
+                    <t-col :span="8">
+                        <SIdentify :identifyCode="store.identifyCode"></SIdentify>
+                    </t-col>
+                </t-row>
+            </div>
             <t-form-item>
                 <t-button theme="primary" type="submit" block>注册</t-button>
             </t-form-item>
@@ -37,7 +52,10 @@
 </template>
 <script lang="ts" setup>
 import { useUserStore } from '@/stores/user-store'
+import SIdentify from '@/components/loginPage/Sidentify.vue'
+import { ref} from 'vue'
 
+const identifyCodeVisible = ref(false)
 const store = useUserStore()
 
 </script>

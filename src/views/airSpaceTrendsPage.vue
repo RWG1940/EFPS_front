@@ -1,7 +1,7 @@
 <template>
     <div class="wrap">
         <el-affix :offset="120">
-            <t-button style="position: absolute;margin-left: 1000px;" theme="default" @click="operateBtn">
+            <t-button style="position: absolute;margin-left: 1000px;background-color: rgba(141, 141, 141, 0.397);" theme="default" @click="operateBtn">
                 <t-icon :name="iconName" class="icon"></t-icon>空域操作
             </t-button>
         </el-affix>
@@ -51,6 +51,10 @@
                     <t-select v-model="store.operateAirSpace.title" placeholder="请选择操作" :options="store.operationOptions"
                         clearable></t-select>
                 </t-col>
+                <t-col :span="1">
+                    数值：
+                    <t-input v-model="store.operateAirSpaceNum" placeholder="请输入数值" clearable></t-input>
+                </t-col>
                 <t-col :span="2">
                     起止日期：
                     <t-date-range-picker :value="[store.operateAirSpace.startTime, store.operateAirSpace.endTime]"
@@ -70,7 +74,7 @@
     </div>
 </template>
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed,onMounted } from 'vue';
 import airspace from '@/components/areaControlPage/trendsTool/airspace.vue';
 import airSpaceFlowView from '@/components/airSpaceTrendsPage/airSpaceFlowView.vue';
 import airSpaceWeather from '@/components/airSpaceTrendsPage/airSpaceWeather.vue';
@@ -82,7 +86,6 @@ import type { AirSpaceEventData } from '@/stores/airSpaceEvent-store';
 
 
 const store = useAirSpaceEventStore();
-const airSpaceEventStatusNow = ref<AirSpaceEventData[]>([]);
 const onPick: DateRangePickerProps['onPick'] = (value: any, context) => {
     store.operateAirSpace.startTime = value[0]
     store.operateAirSpace.endTime = value[1]
@@ -96,7 +99,9 @@ const iconName = computed(() => {
 });
 const operateBtn = () => {
     store.operationPanelVisible = !store.operationPanelVisible;
+    store.getAllAirSpaceEventList()
 }
+
 const operateConfirm = () => {
     const c = DialogPlugin({
         theme: 'warning',
@@ -105,7 +110,7 @@ const operateConfirm = () => {
         confirmBtn: '确认',
         cancelBtn: '取消',
         onConfirm: () => {
-            store.addAirSpaceEventData(store.operateAirSpace);
+            store.addAirSpaceEventOperate(store.operateAirSpace);
             store.operationPanelVisible = false;
             store.operateAirSpace = {}
             c.destroy();
@@ -117,9 +122,11 @@ const operateConfirm = () => {
 }
 
 const airSpace = computed(() => {
-    return store.airSpaceEventPage.filter((item: any) => item.name === store.operateAirSpace.name && item.status === '进行中' && item.type === 1);
+    return store.airSpaceEventList.filter((item: any) => item.name === store.operateAirSpace.name && item.status === '进行中' && item.type === 1);
 });
-
+onMounted(() => {
+    store.getAllAirSpaceEventList()
+})
 </script>
 <style lang="scss" scoped>
 .wrap {

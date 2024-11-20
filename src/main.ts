@@ -10,7 +10,7 @@ import router from './router'
 import * as TDesignIconsVue from 'tdesign-icons-vue-next'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import * as echarts from 'echarts'
-import './mock/index.ts'
+import './mock/index'
 
 const app = createApp(App)
 
