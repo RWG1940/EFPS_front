@@ -6,16 +6,31 @@
         </t-col>
       </t-row>
       <t-row style="margin-top: 5px;">
-        <el-scrollbar height="300px" style="border-radius: 5px;">
-          <t-notification v-for="(message, index) in noticesStore.noticesDataPublished" :key="index"
-            :title="message.header" :message="message.content" :content="message.content" theme="warning"
-            :footer="formatDate(message.createtime || '')" class="notice-item" :max-line="2" />
+        <el-scrollbar v-if="noticesDataPublished.length > 0" height="300px" style="border-radius: 5px;">
+          <t-notification v-for="(message, index) in noticesDataPublished" :key="index"
+            :title="message.header" :content="message.content" theme="warning"
+            :footer="formatDate(message.createtime || '')" class="notice-item" />
         </el-scrollbar>
+        <t-card v-else="sysMsgStore.data.length = 0">
+          <p style="color: gray;">无消息😊</p>
+        </t-card>
       </t-row>
 
       <t-row>
         <t-col style="font-weight: bold;border-bottom: 5px solid blue;">系统消息
         </t-col>
+      </t-row>
+      <t-row style="margin-top: 5px;">
+        
+        <el-scrollbar v-if="sysMsgStore.data.length > 0" height="300px" style="border-radius: 5px;">
+          <t-alert close v-for="(message, index) in sysMsgStore.data" :key="index" :title="message.header"
+            :message="message.content+'---🔔时间：'+message.createtime" :theme="message.theme" class="notice-item">
+          </t-alert>
+            
+        </el-scrollbar>
+        <t-card v-else="sysMsgStore.data.length = 0">
+          <p style="color: gray;">无消息😊</p>
+        </t-card>
       </t-row>
 
       <t-row>
@@ -32,16 +47,22 @@
 import { MessagePlugin } from 'tdesign-vue-next';
 import type { DrawerProps, ButtonProps } from 'tdesign-vue-next';
 import { ref, onMounted } from 'vue';
-import { useNoticesStore } from '@/stores/notices-store'
+import { useNoticesStore,noticesDataPublished } from '@/stores/notices-store'
 import { formatDate } from '@/utils/moment'
 import { useHomeStore } from "@/stores/home-store";
 import { useAirSpaceEventStore } from '@/stores/airSpaceEvent-store';
+import { usesysMsgStore } from '@/stores/sysMsg-store';
 
+const sysMsgStore = usesysMsgStore()
 const noticesStore = useNoticesStore()
 const homeStore = useHomeStore()
 const airSpaceEventStore = useAirSpaceEventStore()
 onMounted(() => {
-  noticesStore.fetchAllNoticesData()
+  noticesStore.fetchAllData()
+  sysMsgStore.fetchAllData()
+  homeStore.getMyInfo()
+
+
 })
 
 const visible = ref(false);
@@ -55,15 +76,15 @@ const handleClick: ButtonProps['onClick'] = () => {
 </script>
 <style scoped>
 .notice-item {
-  width: 265px;
+  width: 260px;
   margin-bottom: 5px;
   transition: all 0.3s ease-in-out;
 }
+
 .notice-item:hover {
   cursor: pointer;
   border-radius: 5px;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.514);
   transition: all 0.3s ease-in-out;
   transform: scale(0.95);
-}
-</style>
+}</style>

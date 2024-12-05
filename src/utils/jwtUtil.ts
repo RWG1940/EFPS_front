@@ -2,10 +2,12 @@ import {jwtDecode} from 'jwt-decode';
 
 // 定义 token 中的 claims 接口
 interface Claims {
-  id: number;
-  name: string;
-  username: string;
-  avatar: string;
+  emp:{
+    eAvatarpath: string;
+    id: number;
+    eName: string;
+    eUsername: string;
+  }
 }
 
 // 解析 token 并提取字段

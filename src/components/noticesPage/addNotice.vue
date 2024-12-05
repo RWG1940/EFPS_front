@@ -2,23 +2,23 @@
     <!-- 添加新公告 -->
     <userEdit :visible="visible" header="添加新公告" @update:visible="handleAddVisibleChange">
         <template #main>
-            <t-form ref="form" :data="store.noticeAddFormData" :rules="store.noticeADD_FORM_RULES" :label-width="70"
+            <t-form ref="form" :data="noticeAddFormData" :rules="noticeADD_FORM_RULES" :label-width="70"
                 @submit="addNoticeSubmit">
                 <t-form-item label="标题" name="header">
-                    <t-input v-model="store.noticeAddFormData.header" placeholder="请输入标题" />
+                    <t-input v-model="noticeAddFormData.header" placeholder="请输入标题" />
                 </t-form-item>
                 <t-form-item label="作者" name="author">
-                    <t-input v-model="store.noticeAddFormData.author" placeholder="请输入作者" />
+                    <t-input v-model="noticeAddFormData.author" placeholder="请输入作者" />
                 </t-form-item>
                 <t-form-item label="状态" name="status">
-                    <t-select v-model="store.noticeAddFormData.status" placeholder="请选择状态">
-                        <t-option v-for="item in store.noticeStatusOptions" :value="item.value" :label="item.label"
+                    <t-select v-model="noticeAddFormData.status" placeholder="请选择状态">
+                        <t-option v-for="item in noticeStatusOptions" :value="item.value" :label="item.label"
                             :key="item.value">
                         </t-option>
                     </t-select>
                 </t-form-item>
                 <t-form-item label="内容" name="content">
-                    <t-textarea v-model="store.noticeAddFormData.content" placeholder="请输入文案" name="description"
+                    <t-textarea v-model="noticeAddFormData.content" placeholder="请输入文案" name="description"
                         :autosize="{ minRows: 1, maxRows: 100 }" />
                 </t-form-item>
 
@@ -34,7 +34,8 @@
 <script lang="ts" setup>
 import userEdit from '../userManage/userEdit.vue'
 import { ref } from 'vue'
-import { useNoticesStore } from '@/stores/notices-store'
+import { useNoticesStore,noticeAddFormData } from '@/stores/notices-store'
+import { noticeADD_FORM_RULES,noticeStatusOptions } from '@/types/noticesTypes'
 import type { FormInstanceFunctions, FormProps } from 'tdesign-vue-next';
 import { MessagePlugin } from 'tdesign-vue-next';
 
@@ -61,7 +62,7 @@ const addButton = () => {
 };
 const addNoticeSubmit: FormProps['onSubmit'] = async ({ validateResult, firstError }) => {
     if (validateResult === true) {
-        await store.addNoticeData().then(() => {
+        await store.addData(noticeAddFormData.value).then(() => {
             form.value?.reset();
         })
     } else {

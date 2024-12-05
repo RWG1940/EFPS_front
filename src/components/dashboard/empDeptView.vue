@@ -1,5 +1,5 @@
 <template>
-  <div id="users" style=" height: 300px;"></div>
+  <div id="users" style=" height: 200px;"></div>
 </template>
 <script setup lang="ts">
 import * as echarts from 'echarts';
@@ -37,7 +37,7 @@ onBeforeMount(async () => {
         {
           type: 'pie',
           data: formatChartData(deptStore.deptTotal),
-          radius: ['40%', '70%']
+          radius: ['40%', '60%']
         }
       ]
     };

@@ -10,7 +10,7 @@
                                 <t-icon name="flight-landing"></t-icon>进港
                                 <transition name="bt-trans" appear>
                                     <t-button class="rround" theme="default" shape="circle"
-                                        @click="store.fetchAllAreaEfpsData" style="margin-left: 10px;"><t-icon
+                                        @click="store.fetchAllData" style="margin-left: 10px;"><t-icon
                                             name='refresh'></t-icon></t-button>
                                 </transition>
                                 <transition name="bt-trans" appear>
@@ -30,7 +30,7 @@
                             <p class="prep">&ensp;🚦队列中</p>
                         </el-col>
                         <el-col :span="2">
-                            <p class="prep">&ensp;数量：{{ store.filteredArrivalEfps.length }}</p>
+                            <p class="prep">&ensp;数量：{{ filteredArrivalEfps.length }}</p>
                         </el-col>
                     </el-row>
 
@@ -39,13 +39,13 @@
                             <transition name="ar-trans" appear>
                                 <div class="arrival-prepare-container">
                                     <el-scrollbar height="250px" style="border-radius: 10px;">
-                                        <div v-for="item in store.filteredArrivalEfps" :key="item.id"
+                                        <div v-for="item in filteredArrivalEfps" :key="item.id"
                                             style="display: flex; align-items: center; flex-direction: column;margin-bottom: 10px;">
                                             <t-popconfirm theme="default" content="您想要处理该进程单吗"
                                                 :visible="visibleMap[item.id as number]"
                                                 :cancelBtn="{ content: '取消', size: 'small', theme: 'default', onClick: () => { visibleMap[item.id as number] = false } }"
                                                 :confirmBtn="{ content: '确定', size: 'small', theme: 'primary', onClick: () => handleArrivalEfpsProcess(String(item.id as number)) }">
-                                                <areaEfps :BackgroundColor="prepareBackgroundColor" :efpsData="item || {}"
+                                                <towerEfps :BackgroundColor="prepareBackgroundColor" :efpsData="item || {}"
                                                     @click="togglePopconfirm(String(item.id as number))" />
                                             </t-popconfirm>
                                         </div>
@@ -60,7 +60,7 @@
                                     <p class="transp">&ensp;🍀已移交</p>
                                 </el-col>
                                 <el-col :span="4">
-                                    <p class="transp">&ensp;数量：{{ store.filteredTransferredArrivalEfps.length }}</p>
+                                    <p class="transp">&ensp;数量：{{ filteredTransferredArrivalEfps.length }}</p>
                                 </el-col>
                             </el-row>
 
@@ -68,9 +68,9 @@
                             <transition name="ar-trans" appear>
                                 <div class="arrival-handled-container">
                                     <el-scrollbar height="230px" style="border-radius: 10px;">
-                                        <div v-for="item in store.filteredTransferredArrivalEfps"
+                                        <div v-for="item in filteredTransferredArrivalEfps"
                                             style="width: 100%;margin-bottom: 10px;" max-height="230">
-                                            <areaEfps :BackgroundColor="handledBackgroundColor" :efpsData="item || {}" />
+                                            <towerEfps :BackgroundColor="handledBackgroundColor" :efpsData="item || {}" />
                                         </div>
                                     </el-scrollbar>
                                 </div>
@@ -87,7 +87,7 @@
 
 
                                     <t-button class="rround" theme="default" shape="circle"
-                                        @click="store.fetchAllAreaEfpsData" style="margin-left: 10px;"><t-icon
+                                        @click="store.fetchAllData" style="margin-left: 10px;"><t-icon
                                             name='refresh'></t-icon></t-button>
                                 </transition>
                                 <transition name="bt-trans" appear>
@@ -111,7 +111,7 @@
                             <p class="prep">&ensp;🚦队列中</p>
                         </el-col>
                         <el-col :span="2">
-                            <p class="prep">&ensp;数量：{{ store.filteredArrivalEfps.length }}</p>
+                            <p class="prep">&ensp;数量：{{ filteredArrivalEfps.length }}</p>
                         </el-col>
                     </el-row>
                     <el-row>
@@ -119,13 +119,13 @@
                             <transition name="ar-trans" appear>
                                 <div class="departure-prepare-container">
                                     <el-scrollbar height="250px" style="border-radius: 10px;">
-                                        <div v-for="item in store.filteredDepartureEfps" :key="item.id"
+                                        <div v-for="item in filteredDepartureEfps" :key="item.id"
                                             style="display: flex; align-items: center; flex-direction: column;margin-bottom: 10px;">
                                             <t-popconfirm theme="default" content="您想要处理该进程单吗"
                                                 :visible="visibleMap[item.id as number]"
                                                 :cancelBtn="{ content: '取消', size: 'small', theme: 'default', onClick: () => { visibleMap[item.id as number] = false } }"
                                                 :confirmBtn="{ content: '确定', size: 'small', theme: 'primary', onClick: () => handleDepartureEfpsProcess(String(item.id as number)) }">
-                                                <areaEfps :BackgroundColor="prepareBackgroundColor" :efpsData="item || {}"
+                                                <towerEfps :BackgroundColor="prepareBackgroundColor" :efpsData="item || {}"
                                                     @click="togglePopconfirm(String(item.id as number))" />
                                             </t-popconfirm>
                                         </div>
@@ -139,15 +139,15 @@
                                     <p class="transp">&ensp;🍀已移交</p>
                                 </el-col>
                                 <el-col :span="4">
-                                    <p class="transp">&ensp;数量：{{ store.filteredTransferredDepartureEfps.length }}</p>
+                                    <p class="transp">&ensp;数量：{{ filteredTransferredDepartureEfps.length }}</p>
                                 </el-col>
                             </el-row>
                             <transition name="ar-trans" appear>
                                 <div class="departure-handled-container">
                                     <el-scrollbar height="230px" style="border-radius: 10px;">
-                                        <div v-for="item in store.filteredTransferredDepartureEfps"
+                                        <div v-for="item in filteredTransferredDepartureEfps"
                                             style="width: 100%;margin-bottom: 10px;" max-height="230">
-                                            <areaEfps :BackgroundColor="handledBackgroundColor" :efps-data="item || {}" />
+                                            <towerEfps :BackgroundColor="handledBackgroundColor" :efps-data="item || {}" />
                                         </div>
                                     </el-scrollbar>
                                 </div>
@@ -183,19 +183,19 @@
             </transition>
         </el-col>
     </el-row>
-    <areaEfpsDataAdd :visible="addVisible" @update:visible="handleAddVisibleChange" />
+    <towerEfpsDataAdd :visible="addVisible" @update:visible="handleAddVisibleChange" />
 </template>
 <script lang="ts" setup>
 import { ref, reactive } from 'vue'
-import areaEfps from '@/components/areaControlPage/areaEfps.vue'
-import rightControlCenter from '@/components/areaControlPage/rightControlCenter.vue'
+import towerEfps from '@/components/towerControlPage/towerEfps.vue'
+import rightControlCenter from '@/components/towerControlPage/rightControlCenter.vue'
 import msgTool from '@/components/areaControlPage/msgTool.vue'
 import trendsTool from '@/components/areaControlPage/trendsTool.vue'
-import areaEfpsDataAdd from '../areaEfpsDataAdd.vue'
-import { useareaEfpsStore } from '@/stores/areaEfps-store'
+import towerEfpsDataAdd from '../towerEfpsDataAdd.vue'
+import { useTowerEfpsStore,filteredArrivalEfps,filteredDepartureEfps,filteredTransferredArrivalEfps,filteredTransferredDepartureEfps } from '@/stores/towerEfps-store'
 
 const visibleMap = reactive<{ [key: string]: boolean }>({});
-const store = useareaEfpsStore()
+const store = useTowerEfpsStore()
 const addVisible = ref(false)
 const prepareBackgroundColor = ref('antiquewhite')
 const handledBackgroundColor = ref('lightgreen')
@@ -207,21 +207,21 @@ const togglePopconfirm = (id: string) => {
     visibleMap[id] = !visibleMap[id];
 };
 const handleArrivalEfpsProcess = (id: string) => {
-    const areaEfps = {
+    const towerEfps = {
         id: id,
         status: 2,
     };
     console.log(id)
-    store.updateAreaEfpsData(areaEfps);
+    store.updateData(towerEfps);
     visibleMap[id] = false;
 }
 const handleDepartureEfpsProcess = (id: string) => {
-    const areaEfps = {
+    const towerEfps = {
         id: id,
         status: 2,
     };
     console.log(id)
-    store.updateAreaEfpsData(areaEfps);
+    store.updateData(towerEfps);
     visibleMap[id] = false;
 }
 

@@ -65,6 +65,7 @@ import SIdentify from '@/components/loginPage/Sidentify.vue'
 import { FOUND_FORM_RULES } from '@/types/foundMeTypes'
 import { MessagePlugin } from 'tdesign-vue-next';
 import type { FormProps } from 'tdesign-vue-next';
+import { foundMeApi } from '@/api/services/foundMe-api';
 
 const store = useUserStore()
 const foundMeStore = usefoundMeStore();
@@ -77,7 +78,8 @@ onMounted(() => {
 
 const foundSubmit: FormProps['onSubmit'] = async ({ validateResult, firstError }) => {
     if (validateResult === true) {
-        await foundMeStore.updateData(foundMeFormRef).then(() => {
+        console.log(foundMeFormRef.value)
+        await foundMeApi.update(foundMeFormRef.value).then(() => {
             identifyCodeVisible.value = false
             MessagePlugin.success('找回成功，您的密码重置为：1234')
         })

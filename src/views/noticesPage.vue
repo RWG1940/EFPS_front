@@ -15,7 +15,7 @@
                                     content: '确认',
                                     theme: 'warning',
                                     onClick: () => {
-                                        store.deleteExpiredNoticesData()
+                                        deleteExpiredNoticesData()
                                         visible1 = false
                                     }
                                 }" :cancel-btn="{
@@ -31,7 +31,7 @@
                         </p>
                         <div style="padding: 10px;">
                             <el-scrollbar height="300px" style="border-radius: 5px;">
-                                <t-notification v-for="(message, index) in store.noticesDataPublished" :key="index"
+                                <t-notification v-for="(message, index) in noticesDataPublished" :key="index"
                                     :title="message.header" :message="message.content" :content="message.content"
                                     theme="warning" :footer="formatDate(message.createtime || '')"
                                     style="width: 100%;margin-bottom: 5px;" :max-line="2" />
@@ -52,12 +52,12 @@
                             </t-tooltip>
                             <t-tooltip content="删除选中的公告">
                                 <t-button size="small" theme="default" style="margin-left: 5px;"
-                                    @click="store.deleteSelectedNoticesData"><t-icon name="delete"></t-icon></t-button>
+                                    @click="noticesStore.deleteSelectedData()"><t-icon name="delete"></t-icon></t-button>
                             </t-tooltip>
                         </p>
                         <t-card style="margin: 10px;">
-                            <el-table :data="store.filterTableData" height="380"
-                                @selection-change="store.handleSelectionChange" stripe border>
+                            <el-table :data="filterTableData" height="380"
+                                @selection-change="noticesStore.handleSelectionChange" stripe border>
                                 <el-table-column type="selection" width="40" />
                                 <el-table-column prop="header" label="标题" width="250"
                                     show-overflow-tooltip></el-table-column>
@@ -92,20 +92,20 @@
                                     show-overflow-tooltip></el-table-column>
                                 <el-table-column fixed="right" min-width="120">
                                     <template #header>
-                                        <el-input v-model="store.search" size="small" placeholder="搜索" />
+                                        <el-input v-model="noticesStore.search" size="small" placeholder="搜索" />
                                     </template>
                                     <template #default="scope">
                                         <t-button size="small" theme="default"
-                                            @click="() => { store.noticeEditFormData = scope.row; handleEditVisibleChange() }">编辑</t-button>
+                                            @click="() => { noticeEditFormData = scope.row; handleEditVisibleChange() }">编辑</t-button>
                                         <t-button size="small" theme="danger" style="margin-left: 5px;"
-                                            @click="store.deleteNoticesData([scope.row.id])">删除</t-button>
+                                            @click="noticesStore.deleteData([scope.row.id])">删除</t-button>
                                     </template>
                                 </el-table-column>
                             </el-table>
                             <t-pagination
-                                v-model="store.currentPage"
-                                v-model:pageSize="store.pageSize"
-                                :total="store.noticesData.length"
+                                v-model="noticesStore.currentPage"
+                                v-model:pageSize="noticesStore.pageSize"
+                                :total="noticesStore.data.length"
                                 size="small"
                                 theme="simple"
                                 @page-size-change="onPageSizeChange"
@@ -122,14 +122,14 @@
     </div>
 </template>
 <script setup lang="ts">
-import { useNoticesStore } from '@/stores/notices-store';
+import { useNoticesStore,noticeEditFormData,deleteExpiredNoticesData,noticesDataPublished,filterTableData } from '@/stores/notices-store';
 import { formatDate } from '@/utils/moment'
 import addNotice from '../components/noticesPage/addNotice.vue'
 import editNotice from '../components/noticesPage/editNotice.vue'
 import { ref, onMounted } from 'vue';
-import type { NoticesData } from '@/stores/notices-store';
+import type{ NoticesData } from '@/types/noticesTypes'
 
-const store = useNoticesStore();
+const noticesStore = useNoticesStore()
 const addVisible = ref(false)
 const editVisible = ref(false)
 const visible1 = ref(false)
@@ -140,15 +140,15 @@ const handleEditVisibleChange = () => {
     editVisible.value = !editVisible.value
 }
 const onPageSizeChange = (pageSize: number) => {
-    store.pageSize = pageSize
-    store.getPage()
+    noticesStore.pageSize = pageSize
+    noticesStore.fetchPageData()
 }
 const onCurrentChange = (page: number) => {
-    store.currentPage = page
-    store.getPage()
+    noticesStore.currentPage = page
+    noticesStore.fetchPageData()
 }
 onMounted(() => {
-    store.getPage()
+    noticesStore.fetchPageData()
 })
 </script>
 <style lang="scss" scoped>

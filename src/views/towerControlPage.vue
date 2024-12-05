@@ -10,15 +10,15 @@
     </div>
 </template>
 <script lang="ts" setup>
-import pageHeader from '@/components/areaControlPage/layout/pageHeader.vue'
-import pageContent from '@/components/areaControlPage/layout/pageContent.vue'
-import pageFooter from '@/components/areaControlPage/layout/pageFooter.vue'
+import pageHeader from '@/components/towerControlPage/layout/pageHeader.vue'
+import pageContent from '@/components/towerControlPage/layout/pageContent.vue'
+import pageFooter from '@/components/towerControlPage/layout/pageFooter.vue'
 import { onMounted } from 'vue';
-import { useareaEfpsStore } from '@/stores/areaEfps-store'
+import { useTowerEfpsStore } from '@/stores/towerEfps-store'
 
 onMounted(() => {
-    const areaStore = useareaEfpsStore()
-    areaStore.fetchAllAreaEfpsData()
+    const towerStore = useTowerEfpsStore()
+    towerStore.fetchAllData()
 })
 </script>
 <style lang="scss" scoped>
@@ -27,7 +27,7 @@ onMounted(() => {
     height: 100vh;
     display: flex;
     flex-direction: column;
-    background: linear-gradient(to top, #eaf8ff, #9eb9c7);
+    background: linear-gradient(to top, #eaf8ff, #7d99d2);
 }
 
 .pa-trans-enter-from {

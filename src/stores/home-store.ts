@@ -4,10 +4,12 @@ import { ref } from 'vue';
 import type { DropdownProps } from 'tdesign-vue-next';
 // 定义用户数据类型
 interface Claims {
-  id: number;
-  name: string;
-  username: string;
-  avatar: string;
+  emp:{
+    eAvatarpath: string;
+    id: number;
+    eName: string;
+    eUsername: string;
+  }
 }
 // 该模块用于管理home页用户数据
 export const useHomeStore = defineStore('home', () => {
@@ -37,10 +39,10 @@ export const useHomeStore = defineStore('home', () => {
   const getMyInfo = (): Claims | null => {
     const claims = getTokenClaims();
     if (claims != null) {
-      id.value = claims.id;
-      name.value = claims.name;
-      username.value = claims.username;
-      avatar.value = claims.avatar;
+      id.value = claims.emp.id;
+      name.value = claims.emp.eName;
+      username.value = claims.emp.eUsername;
+      avatar.value = claims.emp.eAvatarpath;
     }
     return null;
   }

@@ -30,6 +30,20 @@ onMounted(() => {
                 percentage.value = 0
                 document.getElementById('info')!.innerHTML = '您没有权限访问该页面！'
                 clearInterval(interval);
+            }
+        }
+        if (store.aimRoutePath == 'command-control/towerControl') {
+            if (parseInt(sessionStorage.getItem('userDeptid') as string) == 47) {
+                if (percentage.value < 100) {
+                    percentage.value += 20;
+                } else {
+                    clearInterval(interval);
+                    router.replace('/' + store.aimRoutePath);
+                }
+            } else {
+                percentage.value = 0
+                document.getElementById('info')!.innerHTML = '您没有权限访问该页面！'
+                clearInterval(interval);
 
             }
         } else {
