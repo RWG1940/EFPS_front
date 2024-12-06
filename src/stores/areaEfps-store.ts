@@ -57,6 +57,10 @@ export const useareaEfpsStore = defineStore('areaEfps', () => {
     */
     //areaEfps数据体
     const areaEfpsData = ref<AreaEfpsData[]>([]);
+    //分页数据
+    const areaEfpsDataPages = ref<AreaEfpsData[]>([]);
+    const currentPage = ref(1);
+    const pageSize = ref(10);
     //添加进程单的表单
     const areaEfpsAddFormData: FormProps['data'] = reactive({
         id: undefined,
@@ -295,11 +299,8 @@ export const useareaEfpsStore = defineStore('areaEfps', () => {
     }
     // 获取分页后的areaEfps数据
     const fetchAreaEfpsDataPagesData = async () => {
-        await fetchAreaEfpsDataPages(
-            areaEfpsPage.value.page ?? 1,
-            areaEfpsPage.value.pageSize ?? 10
-        ).then(resp => {
-            areaEfpsData.value = resp.data.result.list;
+        await fetchAreaEfpsDataPages(currentPage.value,pageSize.value).then(resp => {
+            areaEfpsDataPages.value = resp.data.result.list;
         })
     }
     // 添加areaEfps数据
@@ -604,6 +605,7 @@ export const useareaEfpsStore = defineStore('areaEfps', () => {
         flyCommand,
         getOffsetDate,
         filterEfpsByStatusAndDate,
+        areaEfpsDataPages,
 
         
 

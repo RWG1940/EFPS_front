@@ -9,13 +9,16 @@
                                 style="margin-top: 0;text-decoration: underline rgba(0, 0, 255, 0.5) 10px;font-weight: bold;margin-left: 10px;">
                                 <t-icon name="flight-landing"></t-icon>进港
                                 <transition name="bt-trans" appear>
-                                    <t-button class="rround" theme="default" shape="circle"
-                                        @click="store.fetchAllData" style="margin-left: 10px;"><t-icon
-                                            name='refresh'></t-icon></t-button>
+                                    <t-button class="rround" theme="default" shape="circle" @click="store.fetchAllData"
+                                        style="margin-left: 10px;"><t-icon name='refresh'></t-icon></t-button>
                                 </transition>
                                 <transition name="bt-trans" appear>
                                     <t-button class="rround" theme="default" shape="circle"
                                         @click="handleAddVisibleChange"><t-icon name='add'></t-icon></t-button>
+                                </transition>
+                                <transition name="bt-trans" appear>
+                                    <t-button class="rround" theme="default" shape="circle"
+                                        @click="handleFullVisibleChange"><t-icon name='fullscreen-2'></t-icon></t-button>
                                 </transition>
                             </p>
                         </el-col>
@@ -26,12 +29,16 @@
                                     :status="'active'" style="font-size: xx-small;" />
                             </el-col>
                         </transition>
-                        <el-col :span="1.5">
-                            <p class="prep">&ensp;🚦队列中</p>
-                        </el-col>
-                        <el-col :span="2">
-                            <p class="prep">&ensp;数量：{{ filteredArrivalEfps.length }}</p>
-                        </el-col>
+                        <transition name="ba-trans" appear>
+                            <el-col :span="1.5">
+                                <p class="prep">&ensp;🚦队列中</p>
+                            </el-col>
+                        </transition>
+                        <transition name="ba-trans" appear>
+                            <el-col :span="1.5">
+                                <p class="prep">&ensp;数量：{{ filteredArrivalEfps.length }}</p>
+                            </el-col>
+                        </transition>
                     </el-row>
 
                     <el-row>
@@ -56,12 +63,16 @@
                         </el-col>
                         <el-col :span="12">
                             <el-row>
-                                <el-col :span="4">
-                                    <p class="transp">&ensp;🍀已移交</p>
-                                </el-col>
-                                <el-col :span="4">
-                                    <p class="transp">&ensp;数量：{{ filteredTransferredArrivalEfps.length }}</p>
-                                </el-col>
+                                <transition name="ba-trans" appear>
+                                    <el-col :span="4">
+                                        <p class="transp">&ensp;🍀已移交</p>
+                                    </el-col>
+                                </transition>
+                                <transition name="ba-trans" appear>
+                                    <el-col :span="4">
+                                        <p class="transp">&ensp;数量：{{ filteredTransferredArrivalEfps.length }}</p>
+                                    </el-col>
+                                </transition>
                             </el-row>
 
 
@@ -86,14 +97,17 @@
 
 
 
-                                    <t-button class="rround" theme="default" shape="circle"
-                                        @click="store.fetchAllData" style="margin-left: 10px;"><t-icon
-                                            name='refresh'></t-icon></t-button>
+                                    <t-button class="rround" theme="default" shape="circle" @click="store.fetchAllData"
+                                        style="margin-left: 10px;"><t-icon name='refresh'></t-icon></t-button>
                                 </transition>
                                 <transition name="bt-trans" appear>
 
                                     <t-button class="rround" theme="default" shape="circle"
                                         @click="handleAddVisibleChange"><t-icon name='add'></t-icon></t-button>
+                                </transition>
+                                <transition name="bt-trans" appear>
+                                    <t-button class="rround" theme="default" shape="circle"
+                                        @click="handleFullVisibleChange"><t-icon name='fullscreen-2'></t-icon></t-button>
                                 </transition>
 
                             </p>
@@ -107,12 +121,16 @@
                                     :status="'active'" style="font-size: xx-small;" />
                             </el-col>
                         </transition>
-                        <el-col :span="1.5">
-                            <p class="prep">&ensp;🚦队列中</p>
-                        </el-col>
-                        <el-col :span="2">
-                            <p class="prep">&ensp;数量：{{ filteredArrivalEfps.length }}</p>
-                        </el-col>
+                        <transition name="ba-trans" appear>
+                            <el-col :span="1.5">
+                                <p class="prep">&ensp;🚦队列中</p>
+                            </el-col>
+                        </transition>
+                        <transition name="ba-trans" appear>
+                            <el-col :span="1.5">
+                                <p class="prep">&ensp;数量：{{ filteredArrivalEfps.length }}</p>
+                            </el-col>
+                        </transition>
                     </el-row>
                     <el-row>
                         <el-col :span="12">
@@ -135,12 +153,16 @@
                         </el-col>
                         <el-col :span="12">
                             <el-row>
-                                <el-col :span="4">
-                                    <p class="transp">&ensp;🍀已移交</p>
-                                </el-col>
-                                <el-col :span="4">
-                                    <p class="transp">&ensp;数量：{{ filteredTransferredDepartureEfps.length }}</p>
-                                </el-col>
+                                <transition name="ba-trans" appear>
+                                    <el-col :span="4">
+                                        <p class="transp">&ensp;🍀已移交</p>
+                                    </el-col>
+                                </transition>
+                                <transition name="ba-trans" appear>
+                                    <el-col :span="4">
+                                        <p class="transp">&ensp;数量：{{ filteredTransferredDepartureEfps.length }}</p>
+                                    </el-col>
+                                </transition>
                             </el-row>
                             <transition name="ar-trans" appear>
                                 <div class="departure-handled-container">
@@ -192,7 +214,7 @@ import rightControlCenter from '@/components/towerControlPage/rightControlCenter
 import msgTool from '@/components/areaControlPage/msgTool.vue'
 import trendsTool from '@/components/areaControlPage/trendsTool.vue'
 import towerEfpsDataAdd from '../towerEfpsDataAdd.vue'
-import { useTowerEfpsStore,filteredArrivalEfps,filteredDepartureEfps,filteredTransferredArrivalEfps,filteredTransferredDepartureEfps } from '@/stores/towerEfps-store'
+import { useTowerEfpsStore, filteredArrivalEfps, filteredDepartureEfps, filteredTransferredArrivalEfps, filteredTransferredDepartureEfps } from '@/stores/towerEfps-store'
 
 const visibleMap = reactive<{ [key: string]: boolean }>({});
 const store = useTowerEfpsStore()
@@ -393,4 +415,5 @@ const handleDepartureEfpsProcess = (id: string) => {
     background-color: #ffffff00;
     margin: 0;
     padding: 0;
-}</style>
+}
+</style>
