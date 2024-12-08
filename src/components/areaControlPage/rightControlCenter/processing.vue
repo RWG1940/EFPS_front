@@ -10,7 +10,7 @@
                     :confirmBtn="{ content: '确定', size: 'small', theme: 'danger', onClick: handleWithdraw }">
                     <t-button theme="success" size="small" shape="square" @click="visible1 = true"><t-icon
                             name="rollback"></t-icon></t-button>
-                </t-popconfirm>
+                </t-popconfirm> 
             </t-popup>
         </el-col>
         <el-col :span="2">
@@ -28,31 +28,43 @@
                 <t-button theme="warning" size="small" shape="square"><t-icon name="delete-time" @click="recycleVisible = true"></t-icon></t-button>
             </t-popup>
         </el-col>
+        <el-col :span="2">
+            <t-popup content="此操作将会打开所有正在处理的进程单" placement="left" show-arrow destroy-on-close>
+                <t-button variant="outline" size="small" shape="square"><t-icon name="fullscreen-2" @click="processingVisible = true"></t-icon></t-button>
+            </t-popup>
+        </el-col>
         <el-col :span="2"></el-col>
-        <el-scrollbar hight="50px">
-            <areaEfps :BackgroundColor="processingBackgroundColor" :efps-data="store.processingData[0] || {}" />
+        <el-scrollbar id="loveSJM" hight="50px">
+            <areaEfps  :BackgroundColor="processingBackgroundColor" :efps-data="nowProcessingData[0] || lastestProcessingData() || {}" />
         </el-scrollbar>
     </el-row>
     <RecyclePanel :visible="recycleVisible" @update:visible="handleRecycleVisibleChange"/>
+    <ProcessingAreaEfpsPanel :visible="processingVisible" @update:visible="handleProcessingVisibleChange"/>
 </template>
 <script lang="ts" setup>
 import { ref } from 'vue'
 import areaEfps from '../areaEfps.vue'
-import { useareaEfpsStore } from '@/stores/areaEfps-store'
+import { useAreaEfpsStore,withdrawAreaEfps,recycleProcessingAreaEfps,nowProcessingData,lastestProcessingData } from '@/stores/areaEfps-store'
 import RecyclePanel from './recyclePanel.vue';
+import ProcessingAreaEfpsPanel from './processingAreaEfpsPanel.vue'
 
 const recycleVisible = ref(false)
-const store = useareaEfpsStore()
+const store = useAreaEfpsStore()
 const processingBackgroundColor = ref('lightskyblue')
 const visible1 = ref(false)
 const visible2 = ref(false)
+const processingVisible = ref(false)
+
+const handleProcessingVisibleChange = () => {
+    processingVisible.value = !processingVisible.value
+}
 
 const handleWithdraw = () => {
-    store.withdrawAreaEfps()
+    withdrawAreaEfps()
     visible1.value = false
 }
 const handleRecycle = () => {
-    store.recycleProcessingAreaEfps()
+    recycleProcessingAreaEfps()
     visible2.value = false
 }
 const handleRecycleVisibleChange = () => {

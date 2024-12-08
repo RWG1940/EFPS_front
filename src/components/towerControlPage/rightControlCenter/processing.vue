@@ -28,20 +28,27 @@
                 <t-button theme="warning" size="small" shape="square"><t-icon name="delete-time" @click="recycleVisible = true"></t-icon></t-button>
             </t-popup>
         </el-col>
-        <el-col :span="2"></el-col>
-        <el-scrollbar hight="50px">
-            <towerEfps :BackgroundColor="processingBackgroundColor" :efps-data="processingData[0] || {}" />
+        <el-col :span="2">
+            <t-popup content="此操作将会打开所有正在处理的进程单" placement="left" show-arrow destroy-on-close>
+                <t-button variant="outline" size="small" shape="square"><t-icon name="fullscreen-2" @click="processingVisible = true"></t-icon></t-button>
+            </t-popup>
+        </el-col>
+        <el-scrollbar id="loveSJM" hight="50px">
+            <towerEfps :BackgroundColor="processingBackgroundColor" :efps-data="nowProcessingData[0] || lastestProcessingData() || {}" />
         </el-scrollbar>
     </el-row>
     <RecyclePanel :visible="recycleVisible" @update:visible="handleRecycleVisibleChange"/>
+    <ProcessingTowerEfpsPanel :visible="processingVisible" @update:visible="handleProcessingVisibleChange"/>
 </template>
 <script lang="ts" setup>
 import { ref } from 'vue'
 import towerEfps from '../towerEfps.vue'
-import { processingData,withdrawTowerEfps,recycleProcessingTowerEfps } from '@/stores/towerEfps-store'
+import { nowProcessingData,withdrawTowerEfps,recycleProcessingTowerEfps,lastestProcessingData } from '@/stores/towerEfps-store'
 import RecyclePanel from './recyclePanel.vue';
+import ProcessingTowerEfpsPanel from './processingTowerEfpsPanel.vue';
 
 const recycleVisible = ref(false)
+const processingVisible = ref(false)
 const processingBackgroundColor = ref('lightskyblue')
 const visible1 = ref(false)
 const visible2 = ref(false)
@@ -54,9 +61,13 @@ const handleRecycle = () => {
     recycleProcessingTowerEfps()
     visible2.value = false
 }
+const handleProcessingVisibleChange = () => {
+    processingVisible.value = !processingVisible.value
+}
 const handleRecycleVisibleChange = () => {
     recycleVisible.value = !recycleVisible.value
 }
+
 </script>
 <style lang="scss" scoped>
 .processing {

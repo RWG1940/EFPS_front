@@ -2,7 +2,7 @@
     <!-- 区域飞行进程单回收站面板 -->
     <userEdit :visible="visible" header="回收站" @update:visible="handleRecycleVisibleChange">
         <template #main>
-            <el-table :data="store.filteredRecycleEfps" style="width: 100%" max-height="250">
+            <el-table :data="filteredRecycleEfps" style="width: 100%" max-height="250">
                 <el-table-column label="时间" width="480" sortable>
                     <template #default="scope">
                         <div style="display: flex; align-items: center;flex-direction: column;">
@@ -25,13 +25,13 @@
   
 <script lang="ts" setup>
 import userEdit from '@/components/userManage/userEdit.vue'
-import { useareaEfpsStore } from "@/stores/areaEfps-store";
+import { useAreaEfpsStore,filteredRecycleEfps } from "@/stores/areaEfps-store";
 import { ref,reactive } from 'vue'
 import areaEfps from '../areaEfps.vue';
 
 const visibleMap = reactive<{ [key: string]: boolean }>({});
 const prepareBackgroundColor = ref('antiquewhite')
-const store = useareaEfpsStore();
+const store = useAreaEfpsStore();
 const props = defineProps<{
     visible: boolean;
 }>();
@@ -49,11 +49,10 @@ const togglePopconfirm = (id: string) => {
   visibleMap[id] = !visibleMap[id];
 };
 const handleRecycleArrivalEfps = (id: string) => {
-    const areaEfps = {
+    store.updateData({
         id: id,
         status: 1,
-    };
-    store.updateAreaEfpsData(areaEfps);
+    });
     visibleMap[id] = false;
 };
 

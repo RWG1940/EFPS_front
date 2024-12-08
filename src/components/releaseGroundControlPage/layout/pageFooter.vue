@@ -6,7 +6,7 @@
             filteredTransferredArrivalEfps.length + filteredTransferredDepartureEfps.length }}</p>
         <p>🚩&ensp;管制中：{{ processingData.length }}</p>
         <p>🚧&ensp;告警：0</p>
-        <p style="background-color: rgba(155, 155, 155, 0.669);border-radius: 5px;color: rgb(255, 255, 255);font-size: smaller;padding: 2px;">放行地面合并管制页
+        <p style="background-color: rgba(155, 155, 155, 0.669);border-radius: 5px;color: rgb(255, 255, 255);font-size: smaller;padding: 2px;">放行地面页
         </p>
     </div>
 </template>

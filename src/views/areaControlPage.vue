@@ -14,12 +14,9 @@ import pageHeader from '@/components/areaControlPage/layout/pageHeader.vue'
 import pageContent from '@/components/areaControlPage/layout/pageContent.vue'
 import pageFooter from '@/components/areaControlPage/layout/pageFooter.vue'
 import { onMounted } from 'vue';
-import { useareaEfpsStore } from '@/stores/areaEfps-store'
+import { useAreaEfpsStore } from '@/stores/areaEfps-store'
 
-onMounted(() => {
-    const areaStore = useareaEfpsStore()
-    areaStore.fetchAllAreaEfpsData()
-})
+
 </script>
 <style lang="scss" scoped>
 .wrap {

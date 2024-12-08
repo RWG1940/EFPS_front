@@ -177,7 +177,7 @@
 </template>
 <script lang="ts" setup>
 import type { PropType } from 'vue';
-import type { AreaEfpsData } from '@/stores/areaEfps-store';
+import type { AreaEfpsData } from '@/types/areaEfpsDataTypes';
 import { formatDate } from '@/utils/moment'
 
 const handleSelected = () => {

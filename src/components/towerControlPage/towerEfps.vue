@@ -46,8 +46,17 @@
                 <el-col :span="8" class="route-area" :style="{ backgroundColor: BackgroundColor }">
                     <el-row>
                         <el-col :span="12">
-                            <t-tooltip :content="'航空器地面控制指令: ' + efpsData.de3" placement="top" show-arrow destroy-on-close>
-                                <el-row>{{ efpsData.de3 }}</el-row>
+                            <t-tooltip :content="'航空器地面控制指令-退出: ' + efpsData.de31" placement="top" show-arrow destroy-on-close>
+                                <el-row>{{ efpsData.de31 }}</el-row>
+                            </t-tooltip>
+                            <t-tooltip :content="'航空器地面控制指令-开车: ' + efpsData.de32" placement="top" show-arrow destroy-on-close>
+                                <el-row>{{ efpsData.de32 }}</el-row>
+                            </t-tooltip>
+                            <t-tooltip :content="'航空器地面控制指令-滑行: ' + efpsData.de33" placement="top" show-arrow destroy-on-close>
+                                <el-row>{{ efpsData.de33 }}</el-row>
+                            </t-tooltip>
+                            <t-tooltip :content="'航空器地面控制指令-使用跑道: ' + efpsData.de34" placement="top" show-arrow destroy-on-close>
+                                <el-row>{{ efpsData.de34 }}</el-row>
                             </t-tooltip>
                         </el-col>
                         <el-col :span="12">
@@ -65,6 +74,9 @@
                             <t-tooltip :content="'进程单生成日期和时刻: ' + formatDate(efpsData.createtime || '')" placement="top"
                                 show-arrow destroy-on-close>
                                 <el-col class="createtime">{{ formatDate(efpsData.createtime || '').slice(0, 10) }}</el-col>
+                            </t-tooltip>
+                            <t-tooltip :content="'停机位: ' + efpsData.e4" placement="top" show-arrow destroy-on-close>
+                                <el-col>{{ efpsData.e4 }}</el-col>
                             </t-tooltip>
                             <t-tooltip :content="'其他信息: ' + efpsData.c4" placement="bottom" show-arrow destroy-on-close>
                                 <el-col>

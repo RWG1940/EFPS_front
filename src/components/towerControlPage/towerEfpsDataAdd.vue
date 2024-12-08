@@ -43,7 +43,7 @@
 
           <!-- 二次雷达应答机模式及编码 -->
           <t-form-item name="d1Lhalf" label="二次雷达应答机模式">
-            <t-select v-model="towerEfpsAddFormData.d1Lhalf" style="width: 100%;">
+            <t-select v-model="d1Lhalf" style="width: 100%;">
               <t-option v-for="item in towerEfpsSecondaryRadarOptions" :value="item.value" :label="item.label"
                 :key="item.value">
               </t-option>
@@ -51,7 +51,7 @@
           </t-form-item>
 
           <t-form-item name="d1Rhalf" label="应答机编码">
-            <t-input v-model="towerEfpsAddFormData.d1Rhalf" />
+            <t-input v-model="d1Rhalf" />
           </t-form-item>
 
           <!-- 起飞机场 -->
@@ -72,11 +72,11 @@
           <hr>
           <!-- 高度变化数值 -->
           <t-form-item name="b2Lhalf" label="高度变化数值">
-            <t-input v-model="towerEfpsAddFormData.b2Lhalf" />
+            <t-input v-model="b2Lhalf" />
           </t-form-item>
           <!-- 高度变化状态 -->
           <t-form-item name="b2Rhalf" label="高度变化状态">
-            <t-select v-model="towerEfpsAddFormData.b2Rhalf" style="width: 100%;">
+            <t-select v-model="b2Rhalf" style="width: 100%;">
               <t-option v-for="item in towerEfpsHightStatusOptions" :value="item.value" :label="item.label"
                 :key="item.value">
               </t-option>
@@ -90,17 +90,36 @@
 
           航路区
           <hr>
-          <t-form-item name="de3" label="航空器地面控制指令">
-            <t-input v-model="towerEfpsAddFormData.de3" />
+          <t-form-item name="de31" label="航空器地面控制指令-退出">
+            <t-radio-group v-model="towerEfpsAddFormData.de31" variant="primary-filled">
+              <t-radio-button value="P/B">是</t-radio-button>
+              <t-radio-button value=" ">否</t-radio-button>
+            </t-radio-group>
+          </t-form-item>
+          <t-form-item name="de32" label="航空器地面控制指令-开车">
+            <t-radio-group v-model="towerEfpsAddFormData.de32" variant="primary-filled">
+              <t-radio-button value="S/T">是</t-radio-button>
+              <t-radio-button value=" ">否</t-radio-button>
+            </t-radio-group>
+          </t-form-item>
+          <t-form-item name="de33" label="航空器地面控制指令-滑行">
+            <t-radio-group v-model="towerEfpsAddFormData.de33" variant="primary-filled">
+              <t-radio-button value="R/W">是</t-radio-button>
+              <t-radio-button value=" ">否</t-radio-button>
+            </t-radio-group>
+          </t-form-item>
+          <t-form-item name="de34" label="航空器地面控制指令-使用跑道">
+            <t-select v-model="towerEfpsAddFormData.de34" :options="runwayOptions" />
           </t-form-item>
           <t-form-item name="c3" label="程序号">
-            <t-input v-model="towerEfpsAddFormData.c3" />
+            <t-select v-model="towerEfpsAddFormData.c3" :options="programOptions" />
           </t-form-item>
           协调区
           <hr>
           <!-- 进程单生成日期和时刻 -->
           <t-form-item name="b4" label="进程单生成日期和时刻">
-            <t-input v-model="towerEfpsAddFormData.b4" />
+            <t-date-picker v-model="towerEfpsAddFormData.b4" enable-time-picker allow-input clearable
+              format="YYYY-MM-DD HH:mm:ss" />
           </t-form-item>
 
           <!-- 停机位 -->
@@ -149,53 +168,75 @@
       </t-form>
     </template>
     <template #footer>
-            <t-button theme="primary" type="submit" @click="addButton" block>提交</t-button>
-            <t-button theme="default" @click="cancelButton" block style="margin-left: 10px;">取消</t-button>
-        </template>
+      <t-button theme="primary" type="submit" @click="addButton" block>提交</t-button>
+      <t-button theme="default" @click="cancelButton" block style="margin-left: 10px;">取消</t-button>
+    </template>
   </userEdit>
 </template>
 
 <script lang="ts" setup>
 import userEdit from '@/components/userManage/userEdit.vue'
 import { ref } from 'vue'
-import { useTowerEfpsStore, towerEfpsAddFormData } from "@/stores/towerEfps-store";
-import { towerEfpsADD_FORM_RULES, towerEfpsHightStatusOptions, towerEfpsSecondaryRadarOptions, towerEfpsStatusOptions, towerEfpsTypeOptions, towerEfpsWakeOptions } from '@/types/towerEfpsTypes'
+import { useTowerEfpsStore, towerEfpsAddFormData,d1Lhalf,d1Rhalf,b2Lhalf,b2Rhalf } from "@/stores/towerEfps-store";
+import {
+  towerEfpsADD_FORM_RULES, towerEfpsHightStatusOptions, towerEfpsSecondaryRadarOptions, towerEfpsStatusOptions, towerEfpsTypeOptions, towerEfpsWakeOptions
+  , runwayOptions, programOptions
+} from '@/types/towerEfpsTypes'
 import type { FormInstanceFunctions, FormProps } from 'tdesign-vue-next';
 import { MessagePlugin } from 'tdesign-vue-next';
 
 const store = useTowerEfpsStore();
 const form = ref<FormInstanceFunctions>();
 const props = defineProps<{
-    visible: boolean;
+  visible: boolean;
 }>();
 
 const emit = defineEmits(['update:visible']);
 
 const handleAddVisibleChange = () => {
-    emit('update:visible');
+  emit('update:visible');
 };
 
 const cancelButton = () => {
-    form.value?.reset();
-    handleAddVisibleChange();
+  form.value?.reset();
+  handleAddVisibleChange();
 };
 const addButton = () => {
-    form.value?.submit()
-    handleAddVisibleChange();
+  form.value?.submit()
+  handleAddVisibleChange();
 };
 const towerEfpsAddSubmit: FormProps['onSubmit'] = async ({ validateResult, firstError }) => {
-    if (validateResult === true) {
-        await store.addData(towerEfpsAddFormData.value).then(() => {
-            form.value?.reset();
-        })
-    } else {
-        console.log('Validate Errors: ', firstError, validateResult);
-        if (firstError) {
-            MessagePlugin.warning(firstError);
-        } else {
-            MessagePlugin.warning('验证失败');
-        }
+  if (validateResult === true) {
+    towerEfpsAddFormData.value.d1 = d1Lhalf.value + d1Rhalf.value;
+    if(b2Rhalf.value == '1'){
+      towerEfpsAddFormData.value.b2 = b2Lhalf.value
     }
+    if(b2Rhalf.value == '2'){
+      towerEfpsAddFormData.value.b2 = b2Lhalf.value + '↑'
+    }
+    if(b2Rhalf.value == '3'){
+      towerEfpsAddFormData.value.b2 = b2Lhalf.value + '↓'
+    }
+    if(b2Rhalf.value == '4'){
+      towerEfpsAddFormData.value.b2 = 'H'+b2Lhalf.value 
+    }
+    if(b2Rhalf.value == '5'){
+      towerEfpsAddFormData.value.b2 = 'H'+b2Lhalf.value+'↑'
+    }
+    if(b2Rhalf.value == '6'){
+      towerEfpsAddFormData.value.b2 = 'H'+b2Lhalf.value+'↓'
+    }
+    await store.addData(towerEfpsAddFormData.value).then(() => {
+      form.value?.reset();
+    })
+  } else {
+    console.log('Validate Errors: ', firstError, validateResult);
+    if (firstError) {
+      MessagePlugin.warning(firstError);
+    } else {
+      MessagePlugin.warning('验证失败');
+    }
+  }
 };
 
 </script>

@@ -11,53 +11,53 @@
 <script setup lang="ts">
 import * as echarts from 'echarts';
 import { onMounted, onBeforeMount } from 'vue'
-import { useareaEfpsStore } from '../../stores/areaEfps-store';
+import { useAreaEfpsStore,filterEfpsByStatusAndDate,getOffsetDate } from '../../stores/areaEfps-store';
 import { ref } from 'vue';
 
-const efpsStore = useareaEfpsStore();
+const efpsStore = useAreaEfpsStore();
 const dataPoints0 = ref<number[]>([]);
 const dataPoints1 = ref<number[]>([]);
 const dataPoints2 = ref<number[]>([]);
 const dataPoints3 = ref<number[]>([]);
 onBeforeMount(async () => {
-  await efpsStore.fetchAllAreaEfpsData().then(() => {
+  await efpsStore.fetchAllData().then(() => {
     const u = echarts.init(document.getElementById('efps1') as HTMLDivElement);
     u.showLoading();
     dataPoints0.value = [
-      efpsStore.filterEfpsByStatusAndDate(1, 1, efpsStore.getOffsetDate(6)).value,
-      efpsStore.filterEfpsByStatusAndDate(1, 1, efpsStore.getOffsetDate(5)).value,
-      efpsStore.filterEfpsByStatusAndDate(1, 1, efpsStore.getOffsetDate(4)).value,
-      efpsStore.filterEfpsByStatusAndDate(1, 1, efpsStore.getOffsetDate(3)).value,
-      efpsStore.filterEfpsByStatusAndDate(1, 1, efpsStore.getOffsetDate(2)).value,
-      efpsStore.filterEfpsByStatusAndDate(1, 1, efpsStore.getOffsetDate(1)).value,
-      efpsStore.filterEfpsByStatusAndDate(1, 1, efpsStore.getOffsetDate(0)).value
+      filterEfpsByStatusAndDate(1, 1, getOffsetDate(6)).value,
+      filterEfpsByStatusAndDate(1, 1, getOffsetDate(5)).value,
+      filterEfpsByStatusAndDate(1, 1, getOffsetDate(4)).value,
+      filterEfpsByStatusAndDate(1, 1, getOffsetDate(3)).value,
+      filterEfpsByStatusAndDate(1, 1, getOffsetDate(2)).value,
+      filterEfpsByStatusAndDate(1, 1, getOffsetDate(1)).value,
+      filterEfpsByStatusAndDate(1, 1, getOffsetDate(0)).value
     ];
     dataPoints1.value = [
-      efpsStore.filterEfpsByStatusAndDate(4, 1, efpsStore.getOffsetDate(6)).value,
-      efpsStore.filterEfpsByStatusAndDate(4, 1, efpsStore.getOffsetDate(5)).value,
-      efpsStore.filterEfpsByStatusAndDate(4, 1, efpsStore.getOffsetDate(4)).value,
-      efpsStore.filterEfpsByStatusAndDate(4, 1, efpsStore.getOffsetDate(3)).value,
-      efpsStore.filterEfpsByStatusAndDate(4, 1, efpsStore.getOffsetDate(2)).value,
-      efpsStore.filterEfpsByStatusAndDate(4, 1, efpsStore.getOffsetDate(1)).value,
-      efpsStore.filterEfpsByStatusAndDate(4, 1, efpsStore.getOffsetDate(0)).value
+      filterEfpsByStatusAndDate(4, 1, getOffsetDate(6)).value,
+      filterEfpsByStatusAndDate(4, 1, getOffsetDate(5)).value,
+      filterEfpsByStatusAndDate(4, 1, getOffsetDate(4)).value,
+      filterEfpsByStatusAndDate(4, 1, getOffsetDate(3)).value,
+      filterEfpsByStatusAndDate(4, 1, getOffsetDate(2)).value,
+      filterEfpsByStatusAndDate(4, 1, getOffsetDate(1)).value,
+      filterEfpsByStatusAndDate(4, 1, getOffsetDate(0)).value
     ];
     dataPoints2.value = [
-      efpsStore.filterEfpsByStatusAndDate(1, 0, efpsStore.getOffsetDate(6)).value,
-      efpsStore.filterEfpsByStatusAndDate(1, 0, efpsStore.getOffsetDate(5)).value,
-      efpsStore.filterEfpsByStatusAndDate(1, 0, efpsStore.getOffsetDate(4)).value,
-      efpsStore.filterEfpsByStatusAndDate(1, 0, efpsStore.getOffsetDate(3)).value,
-      efpsStore.filterEfpsByStatusAndDate(1, 0, efpsStore.getOffsetDate(2)).value,
-      efpsStore.filterEfpsByStatusAndDate(1, 0, efpsStore.getOffsetDate(1)).value,
-      efpsStore.filterEfpsByStatusAndDate(1, 0, efpsStore.getOffsetDate(0)).value
+      filterEfpsByStatusAndDate(1, 0, getOffsetDate(6)).value,
+      filterEfpsByStatusAndDate(1, 0, getOffsetDate(5)).value,
+      filterEfpsByStatusAndDate(1, 0, getOffsetDate(4)).value,
+      filterEfpsByStatusAndDate(1, 0, getOffsetDate(3)).value,
+      filterEfpsByStatusAndDate(1, 0, getOffsetDate(2)).value,
+      filterEfpsByStatusAndDate(1, 0, getOffsetDate(1)).value,
+      filterEfpsByStatusAndDate(1, 0, getOffsetDate(0)).value
     ];
     dataPoints3.value = [
-      efpsStore.filterEfpsByStatusAndDate(4, 0, efpsStore.getOffsetDate(6)).value,
-      efpsStore.filterEfpsByStatusAndDate(4, 0, efpsStore.getOffsetDate(5)).value,
-      efpsStore.filterEfpsByStatusAndDate(4, 0, efpsStore.getOffsetDate(4)).value,
-      efpsStore.filterEfpsByStatusAndDate(4, 0, efpsStore.getOffsetDate(3)).value,
-      efpsStore.filterEfpsByStatusAndDate(4, 0, efpsStore.getOffsetDate(2)).value,
-      efpsStore.filterEfpsByStatusAndDate(4, 0, efpsStore.getOffsetDate(1)).value,
-      efpsStore.filterEfpsByStatusAndDate(4, 0, efpsStore.getOffsetDate(0)).value
+      filterEfpsByStatusAndDate(4, 0, getOffsetDate(6)).value,
+      filterEfpsByStatusAndDate(4, 0, getOffsetDate(5)).value,
+      filterEfpsByStatusAndDate(4, 0, getOffsetDate(4)).value,
+      filterEfpsByStatusAndDate(4, 0, getOffsetDate(3)).value,
+      filterEfpsByStatusAndDate(4, 0, getOffsetDate(2)).value,
+      filterEfpsByStatusAndDate(4, 0, getOffsetDate(1)).value,
+      filterEfpsByStatusAndDate(4, 0, getOffsetDate(0)).value
     ];
     u.hideLoading();
 

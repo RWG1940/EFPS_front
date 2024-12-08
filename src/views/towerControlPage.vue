@@ -16,10 +16,7 @@ import pageFooter from '@/components/towerControlPage/layout/pageFooter.vue'
 import { onMounted } from 'vue';
 import { useTowerEfpsStore } from '@/stores/towerEfps-store'
 
-onMounted(() => {
-    const towerStore = useTowerEfpsStore()
-    towerStore.fetchAllData()
-})
+
 </script>
 <style lang="scss" scoped>
 .wrap {
