@@ -26,20 +26,7 @@
                 </div>
             </el-col>
         </el-row>
-        <el-row style="margin-top: 10px;">
-            <el-col :span="12">
-                <div class="left2">
-                    <t-icon name="map"></t-icon> 跑道动态
-                    <runway />
-                </div>
-            </el-col>
-            <el-col :span="12">
-                <div class="right2">
-                    <t-icon name="location-parking-place"></t-icon> 停机位动态
-                    <parkingplace />
-                </div>
-            </el-col>
-        </el-row>
+
     </div>
 </template>
 <script lang="ts" setup>

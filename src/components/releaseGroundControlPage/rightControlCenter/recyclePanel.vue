@@ -1,5 +1,5 @@
 <template>
-    <userEdit :visible="visible" header="回收站" @update:visible="handleRecycleVisibleChange">
+    <userEdit :visible="visible" header="回收站" @update:visible="handleRecycleVisibleChange" :showOverlay="false">
         <template #main>
             <el-table :data="filteredRecycleEfps" style="width: 100%" max-height="250">
                 <el-table-column label="时间" width="480" sortable>

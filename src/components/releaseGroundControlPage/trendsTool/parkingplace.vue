@@ -1,78 +1,76 @@
 <template>
     <div class="wrap">
-        <el-table :data="tableData" style="height: 220px;border-radius: 5px;font-size: small;">
-            <el-table-column prop="name" label="停机位" width="70" />
-            <el-table-column prop="status" label="状态" width="70">
-                <template #default="scope">
-                    <el-tag :type="scope.row.status === '0' ? 'success' : scope.row.status === '1' ? 'warning' : 'danger'" >
-                        {{ scope.row.status === '0' ? '空闲' : scope.row.status === '1' ? '占用' : '维修' }}
-                    </el-tag>
-                </template>
+        <el-table :data="mergedData" style="height: 250px; border-radius: 5px; font-size: small;" stripe>
+            <el-table-column prop="code" label="停机位编号" width="100" show-overflow-tooltip />
+            <el-table-column prop="size" label="大小" width="70" show-overflow-tooltip />
+            <el-table-column prop="status" label="状态" width="70" show-overflow-tooltip >
+                <template #default="scope"><el-tag :type="scope.row.status == '1'? 'success':scope.row.status == '2'?'warning':'danger'" >{{ scope.row.status == '1'? '空闲':scope.row.status == '2'?'被占用':'已禁用' }}</el-tag></template>
             </el-table-column>
-            <el-table-column prop="type" label="飞机类型" width="100" />
-            <el-table-column prop="company" label="航空公司" width="80" />
-            <el-table-column prop="arn" label="飞机注册号" width="120" />
-            <el-table-column prop="atime" label="计划到达时间" width="110" />
-            <el-table-column prop="ltime" label="计划离开时间" width="110" />
+            <el-table-column prop="location" label="位置" width="100" show-overflow-tooltip />
+            <el-table-column prop="flightNumber" label="航班号" width="100" show-overflow-tooltip />
+            <el-table-column prop="aircraftType" label="机型" width="100" show-overflow-tooltip />
+            <el-table-column prop="airline" label="航空公司" width="140" show-overflow-tooltip />
+            <el-table-column prop="plannedArrival" label="计划到达时间" width="150" show-overflow-tooltip />
+            <el-table-column prop="plannedDeparture" label="计划起飞时间" width="150" show-overflow-tooltip />
         </el-table>
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed, onMounted } from 'vue';
+import { parkingStandStore } from '@/stores/parkingStand-store';
+import { flightInfoStore } from '@/stores/flightInfo-store';
+import { flightParkingStandStore } from '@/stores/flightParkingStand-store';
 
-const tableData = ref([
-    {
-        name: 'A1',
-        status: '0',
-        type: 'Boeing 737',
-        company: '中国国航',
-        arn: 'B-1234',
-        atime: '14:00',
-        ltime: '16:30'
-    },
-    {
-        name: 'A2',
-        status: '0',
-        type: 'Airbus A320',
-        company: '东方航空',
-        arn: 'B-5678',
-        atime: '15:00',
-        ltime: '17:30'
-    },
-    {
-        name: 'B1',
-        status: '1',
-        type: 'Boeing 777',
-        company: '南方航空',
-        arn: 'B-9012',
-        atime: '13:45',
-        ltime: '18:00'
-    },
-    {
-        name: 'B2',
-        status: '2',
-        type: 'Boeing 787',
-        company: '厦门航空',
-        arn: 'B-3456',
-        atime: '12:30',
-        ltime: '15:00'
-    },
-    {
-        name: 'C1',
-        status: '0',
-        type: 'Airbus A350',
-        company: '海南航空',
-        arn: 'B-7890',
-        atime: '16:00',
-        ltime: '19:30'
-    }
-]);
+onMounted(() => {
+    parkingStandStore.fetchAllData();
+    flightInfoStore.fetchAllData();
+    flightParkingStandStore.fetchAllData();
+});
+
+// 计算合并后的数据
+const mergedData = computed(() => {
+    // 遍历停机位数据
+    return parkingStandStore.data.map(parkingStand => {
+        // 找到与当前停机位关联的航班停机位数据
+        const flightParkingStand = flightParkingStandStore.data.find(
+            fps => fps.parkingStandId === parkingStand.id
+        );
+
+        if (flightParkingStand) {
+            // 找到与当前航班停机位数据关联的航班信息
+            const flightInfo = flightInfoStore.data.find(
+                flight => flight.id === flightParkingStand.flightId
+            );
+
+            if (flightInfo) {
+                // 合并数据
+                return {
+                    ...parkingStand,
+                    flightNumber: flightInfo.flightNumber || 'N/A',
+                    aircraftType: flightInfo.aircraftType || 'N/A',
+                    airline: flightInfo.airline || 'N/A',
+                    plannedArrival: flightInfo.scheduledArrivalTime || 'N/A',
+                    plannedDeparture: flightInfo.scheduledDepartureTime || 'N/A',
+                };
+            }
+        }
+
+        // 如果没有关联的航班信息，返回原始数据
+        return {
+            ...parkingStand,
+            flightNumber: '无',
+            aircraftType: '无',
+            airline: '无',
+            plannedArrival: '无',
+            plannedDeparture: '无',
+        };
+    });
+});
 </script>
 
 <style lang="scss" scoped>
 .wrap {
-    margin-top: 5px;
     display: flex;
     justify-content: center;
 }

@@ -16,7 +16,10 @@ export interface ReleaseGroundEfpsData {
     b2Rhalf?: string;
     c2?: string;
     c3?: string;
-    de3?: string;
+    de31?: string;
+    de32?: string;
+    de33?: string;
+    de34?: string;
     e4?: string;
     b4?: string;
     c4?: string;
@@ -29,7 +32,14 @@ export interface ReleaseGroundEfpsData {
 }
 // 表单验证规则
 export const releaseGroundEfpsADD_FORM_RULES = {
+    type: [{ required: true, message: '进程单类型不能为空', trigger: 'blur' }],
+    status: [{ required: true, message: '进程单状态不能为空', trigger: 'blur' }],
     a1: [{ required: true, message: '航空器呼号不能为空', trigger: 'blur' }],
+    b1: [{ required: true, message: '航空器机型不能为空', trigger: 'blur' }],
+    c1: [{ required: true, message: '尾流标志不能为空', trigger: 'blur' }],
+    h1: [{ required: true, message: '目的地机场不能为空', trigger: 'blur' }],
+    fg1: [{ required: true, message: '预计起飞/降落时刻不能为空', trigger: 'blur' }],
+
 }
 // 进程单类型选项
 export const releaseGroundEfpsTypeOptions = [
@@ -39,10 +49,11 @@ export const releaseGroundEfpsTypeOptions = [
 // 进程单状态选项
 export const releaseGroundEfpsStatusOptions = [
     { label: '待处理', value: '1' },
-    { label: '处理中', value: '2' },
+    { label: '处理队列中', value: '2' },
     { label: '已移交', value: '3' },
     { label: '已完成', value: '4' },
     { label: '回收中', value: '5' },
+    { label: '处理中', value: '6' }
 ]
 // 尾流选项
 export const releaseGroundEfpsWakeOptions = [
@@ -108,4 +119,25 @@ export const releaseGroundEfpsRouteOptions = [
     { label: '位置报告点名称2', value: 'a32' },
     { label: '位置报2', value: 'b32' },
 
+]
+export const programOptions = [
+    { label: 'D01', value: 'D01' },
+    { label: 'D02', value: 'D02' },
+    { label: 'D03', value: 'D03' },
+    { label: 'D04', value: 'D04' },
+    { label: 'A05', value: 'A05' },
+    { label: 'A06', value: 'A06' },
+    { label: 'A07', value: 'A07' },
+    { label: 'A08', value: 'A08' },
+    { label: 'C09', value: 'C09' },
+]
+export const stopwayOptions = [
+    { label: 'A', value: 'A' },
+    { label: 'B', value: 'B' },
+
+]
+export const runwayOptions = [
+    { label: '1', value: '1' },
+    { label: '2', value: '2' },
+    { label: '3', value: '3' },
 ]

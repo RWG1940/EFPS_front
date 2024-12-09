@@ -44,8 +44,8 @@
 </template>
 <script lang="ts" setup>
 import airspace from './trendsTool/airspace.vue'
-import parkingplace from './trendsTool/parkingplace.vue'
-import runway from './trendsTool/runway.vue'
+import parkingplace from '@/components/releaseGroundControlPage/trendsTool/parkingplace.vue'
+import runway from '@/components/releaseGroundControlPage/trendsTool/runway.vue'
 import aircraftsTrends from './trendsTool/aircraftsTrends.vue'
 
 
@@ -84,7 +84,7 @@ import aircraftsTrends from './trendsTool/aircraftsTrends.vue'
 .left2 {
     margin-left: 10px;
     width: 480px;
-    height: 250px;
+    height: 280px;
     background-color: rgba(255, 255, 255, 0.5);
     backdrop-filter: blur(15px);
     border-radius: 15px;
@@ -98,7 +98,7 @@ import aircraftsTrends from './trendsTool/aircraftsTrends.vue'
 
 .right2 {
     width: 480px;
-    height: 250px;
+    height: 280px;
     background-color: rgba(255, 255, 255, 0.5);
     backdrop-filter: blur(15px);
     border-radius: 15px;

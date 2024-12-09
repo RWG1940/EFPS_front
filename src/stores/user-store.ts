@@ -426,7 +426,7 @@ export const useUserStore = defineStore('user', () => {
   const updateLoginUserData = async () => {
     await userLoginBytoken()
       .then((resp) => {
-        MessagePlugin.success('🎈🌼欢迎访问EFPS system！❤');
+        MessagePlugin.success('🎈🌼欢迎访问EFPS system！✨💖');
         myData.value = resp.data.result
         myDataFormData.emp = myData.value.emp
       })

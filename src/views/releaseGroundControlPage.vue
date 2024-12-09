@@ -13,13 +13,8 @@
 import pageHeader from '@/components/releaseGroundControlPage/layout/pageHeader.vue'
 import pageContent from '@/components/releaseGroundControlPage/layout/pageContent.vue'
 import pageFooter from '@/components/releaseGroundControlPage/layout/pageFooter.vue'
-import { onMounted } from 'vue';
-import { useReleaseGroundEfpsStore } from '@/stores/releaseGroundEfps-store'
 
-onMounted(() => {
-    const releaseGroundStore = useReleaseGroundEfpsStore()
-    releaseGroundStore.fetchAllData()
-})
+
 </script>
 <style lang="scss" scoped>
 .wrap {

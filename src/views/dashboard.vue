@@ -29,6 +29,9 @@
           
           <t-card style="height: 233px;">
             <p class="pp">🗼塔台</p>
+            <t-row>
+        
+            </t-row>
           </t-card>
       </t-col>
       <t-col :span="2">
