@@ -222,7 +222,7 @@
     <areaEfpsDataTable :visible="fullVisibleChange" @update:visible="handleFullVisibleChange" />
 </template>
 <script lang="ts" setup>
-import { ref, reactive,onMounted } from 'vue'
+import { ref, reactive,onMounted, onUnmounted } from 'vue'
 import areaEfps from '@/components/areaControlPage/areaEfps.vue'
 import rightControlCenter from '@/components/areaControlPage/rightControlCenter.vue'
 import msgTool from '@/components/areaControlPage/msgTool.vue'
@@ -233,6 +233,8 @@ import {
     , handleEfpsProcess
 } from '@/stores/areaEfps-store'
 import areaEfpsDataTable from '../areaEfpsDataTable.vue'
+import { connectWebSocket, closeWebSocket } from '@/hooks/webSocket'; 
+
 
 const visibleMap = reactive<{ [key: string]: boolean }>({});
 const addVisible = ref(false)
@@ -265,9 +267,13 @@ const handleEfpsProcessBtn = (id: string) => {
 onMounted(() => {
     loadingVisible.value = true;
     areaEfpsStore.fetchAllData()
+    connectWebSocket()
     setTimeout(() => {
         loadingVisible.value = false;
     }, 500);
+})
+onUnmounted(() => {
+    closeWebSocket()
 })
 </script>
 <style lang="scss" scoped>

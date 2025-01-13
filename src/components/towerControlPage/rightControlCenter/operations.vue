@@ -82,7 +82,7 @@ const exportToPDFBtn = () => {
 
 const exportToPDF = async () => {
     // 获取需要导出的元素
-    const element = document.querySelector('#loveSJM');
+    const element = document.querySelector('#loveSJM') as HTMLElement;
     if (!element) return;
 
     // 使用 html2canvas 将元素转换为图像

@@ -221,7 +221,7 @@
     <towerEfpsDataTable :visible="tableVisible" @update:visible="handleTableVisibleChange" />
 </template>
 <script lang="ts" setup>
-import { ref, reactive,onMounted } from 'vue'
+import { ref, reactive,onMounted,onUnmounted } from 'vue'
 import towerEfps from '@/components/towerControlPage/towerEfps.vue'
 import rightControlCenter from '@/components/towerControlPage/rightControlCenter.vue'
 import msgTool from '@/components/areaControlPage/msgTool.vue'
@@ -229,6 +229,8 @@ import trendsTool from '@/components/areaControlPage/trendsTool.vue'
 import towerEfpsDataAdd from '../towerEfpsDataAdd.vue'
 import { useTowerEfpsStore, filteredArrivalEfps, filteredDepartureEfps, filteredTransferredArrivalEfps, filteredTransferredDepartureEfps, handleArrivalEfpsProcess, handleDepartureEfpsProcess } from '@/stores/towerEfps-store'
 import towerEfpsDataTable from '../towerEfpsDataTable.vue'
+import { connectWebSocket, closeWebSocket } from '@/hooks/webSocket'; 
+
 
 const visibleMap = reactive<{ [key: string]: boolean }>({});
 const store = useTowerEfpsStore()
@@ -265,6 +267,10 @@ const refreshDataBtn = () => {
 }
 onMounted(() => {
     refreshDataBtn()
+    connectWebSocket()
+})
+onUnmounted(() => {
+    closeWebSocket()
 })
 </script>
 <style lang="scss" scoped>

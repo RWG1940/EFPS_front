@@ -17,3 +17,8 @@ export const filteredRunwayTableData = computed(() => {
         runway.surfaceType.toLowerCase().includes(search.value.toLowerCase())
     )
 })
+export const runwayTableData = computed(() => {
+    return filteredRunwayTableData.value.filter((runway: any) =>
+        2>0
+    )as RunwayData[]
+})

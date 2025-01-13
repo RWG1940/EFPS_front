@@ -14,7 +14,7 @@ export const addFormData = ref<AircraftsTrendsData>({});
 export const editFormData = ref<AircraftsTrendsData>({});
 // 过滤出已发布的航班动态数据
 export const aircraftsTrendsDataPublished = computed(() => {
-    return aircraftsTrendsStore.data.filter((item:any) => item.status == 1);
+    return aircraftsTrendsStore.data.filter((item:any) => item.status == 1)  as AircraftsTrendsData[];
 });
 
 

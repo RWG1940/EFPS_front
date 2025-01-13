@@ -23,7 +23,7 @@
       <t-row style="margin-top: 5px;">
         
         <el-scrollbar v-if="sysMsgStore.data.length > 0" height="300px" style="border-radius: 5px;">
-          <t-alert close v-for="(message, index) in sysMsgStore.data" :key="index" :title="message.header"
+          <t-alert close v-for="(message, index) in sysMsgData" :key="index" :title="message.header"
             :message="message.content+'---🔔时间：'+message.createtime" :theme="message.theme" class="notice-item">
           </t-alert>
             
@@ -51,7 +51,7 @@ import { useNoticesStore,noticesDataPublished } from '@/stores/notices-store'
 import { formatDate } from '@/utils/moment'
 import { useHomeStore } from "@/stores/home-store";
 import { useAirSpaceEventStore } from '@/stores/airSpaceEvent-store';
-import { usesysMsgStore } from '@/stores/sysMsg-store';
+import { usesysMsgStore,sysMsgData } from '@/stores/sysMsg-store';
 
 const sysMsgStore = usesysMsgStore()
 const noticesStore = useNoticesStore()

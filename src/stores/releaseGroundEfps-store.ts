@@ -22,10 +22,10 @@ export const b2Lhalf = ref('');
 export const b2Rhalf = ref('');
 //过滤后的表格数据
 export const filteredArrivalEfps = computed(() => {
-    return releaseGroundEfpsStore.data.filter((efps: any) => efps.status === 1 && efps.type === 1);
+    return releaseGroundEfpsStore.data.filter((efps: any) => efps.status === 1 && efps.type === 1) as ReleaseGroundEfpsData[];
 });
 export const filteredDepartureEfps = computed(() => {
-    return releaseGroundEfpsStore.data.filter((efps: any) => efps.status === 1 && efps.type === 0);
+    return releaseGroundEfpsStore.data.filter((efps: any) => efps.status === 1 && efps.type === 0) as ReleaseGroundEfpsData[];
 });
 export const filteredEfps = computed(() => {
     return releaseGroundEfpsStore.data.filter((efps: any) =>
@@ -44,29 +44,29 @@ export const filteredEfps = computed(() => {
             efps.h1.toLowerCase().includes(search.value.toLowerCase())
         )
         &&
-        efps.status === 1 && (efps.type === 0 || efps.type === 1));
+        efps.status === 1 && (efps.type === 0 || efps.type === 1)) as ReleaseGroundEfpsData[];
 });
 export const filteredTransferredArrivalEfps = computed(() => {
-    return releaseGroundEfpsStore.data.filter((efps: any) => efps.status === 3 && efps.type === 1);
+    return releaseGroundEfpsStore.data.filter((efps: any) => efps.status === 3 && efps.type === 1) as ReleaseGroundEfpsData[];
 });
 export const filteredTransferredDepartureEfps = computed(() => {
-    return releaseGroundEfpsStore.data.filter((efps: any) => efps.status === 3 && efps.type === 0);
+    return releaseGroundEfpsStore.data.filter((efps: any) => efps.status === 3 && efps.type === 0) as ReleaseGroundEfpsData[];
 });
 export const filteredRecycleEfps = computed(() => {
-    return releaseGroundEfpsStore.data.filter((efps: any) => efps.status === 5);
+    return releaseGroundEfpsStore.data.filter((efps: any) => efps.status === 5) as ReleaseGroundEfpsData[];
 });
 export const filteredCompletedEfps = computed(() => {
-    return releaseGroundEfpsStore.data.filter((efps: any) => efps.status === 4);
+    return releaseGroundEfpsStore.data.filter((efps: any) => efps.status === 4) as ReleaseGroundEfpsData[];
 });
 
 
 //正在处理队列中的进程单数据
 export const processingData = computed(() => {
-    return releaseGroundEfpsStore.data.filter((efps: any) => efps.status === 2 && (efps.type === 0 || efps.type === 1));
+    return releaseGroundEfpsStore.data.filter((efps: any) => efps.status === 2 && (efps.type === 0 || efps.type === 1))  as ReleaseGroundEfpsData[];
 });
 // 正在处理的进程单数据
 export const nowProcessingData = computed(() => {
-    return releaseGroundEfpsStore.data.filter((efps: any) => efps.status === 6 && (efps.type === 0 || efps.type === 1));
+    return releaseGroundEfpsStore.data.filter((efps: any) => efps.status === 6 && (efps.type === 0 || efps.type === 1))  as ReleaseGroundEfpsData[];
 });
 export const filterTableData = computed(() => {
     return releaseGroundEfpsStore.data.filter(
@@ -87,7 +87,7 @@ export const filterTableData = computed(() => {
             )
             &&
             efps.status === 2 && (efps.type === 0 || efps.type === 1)
-    )
+    ) as ReleaseGroundEfpsData[]
 })
 export const handleArrivalEfpsProcess = (id: string) => {
     const processingEfps = nowProcessingData.value[0];

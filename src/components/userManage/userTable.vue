@@ -120,7 +120,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted,onUnmounted } from 'vue';
 import { formatDate } from "@/utils/moment";
 import userDataEdit from './userDataEdit.vue';
 import userDataAdd from './userDataAdd.vue';
@@ -129,6 +129,8 @@ import { useUserStore } from "@/stores/user-store";
 import type { UserData } from "@/stores/user-store"
 import { useRoleStore } from "@/stores/role-store";
 import { useDeptStore } from "@/stores/dept-store";
+import { connectWebSocket, closeWebSocket } from '@/hooks/webSocket'; 
+
 
 const store = useUserStore()
 const roleStore = useRoleStore()
@@ -184,7 +186,12 @@ onMounted(async () => {
   await deptStore.getAllDeptData().then(() => {
     deptFilters.value = deptStore.tableData.map(dept => ({ text: dept.dName, value: dept.id }))
   })
+  connectWebSocket(); // 初始化 WebSocket 连接
 })
+
+onUnmounted(() => {
+  closeWebSocket(); // 关闭 WebSocket 连接
+});
 
 </script>
 

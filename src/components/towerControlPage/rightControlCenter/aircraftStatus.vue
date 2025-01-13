@@ -20,7 +20,7 @@
             </t-row>
             <t-row>
                 <t-col>管制指令:
-                    巡航高度层：<span>{{ nowProcessingData[0]?.a2 }}</span>
+                
                     高度：<span>{{ nowProcessingData[0]?.b2 }}</span>
                     其他：<span>{{ nowProcessingData[0]?.c2 }}</span>
                 </t-col>

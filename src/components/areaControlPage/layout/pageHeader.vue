@@ -53,7 +53,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted,onBeforeMount } from 'vue';
 import { useUserStore } from '@/stores/user-store';
 
 const userStore = useUserStore();
@@ -83,7 +83,7 @@ const toggleTimezone = () => {
     updateTime();
 };
 
-onMounted(() => {
+onBeforeMount(() => {
     userStore.updateLoginUserData()
     updateTime();
     const interval = setInterval(updateTime, 1000);

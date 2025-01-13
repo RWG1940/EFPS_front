@@ -71,8 +71,8 @@ const handleEditClick = () => {
 
 const calculateDays = (dateString: any) => {
   if (!dateString) return 0;
-  const startDate = new Date(dateString);
-  const currentDate = new Date();
+  const startDate = new Date(dateString) as any;
+  const currentDate = new Date() as any;
   const diffTime = currentDate - startDate;
   const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
   return diffDays;

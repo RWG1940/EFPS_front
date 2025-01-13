@@ -18,11 +18,11 @@
                         <template #default="{ row }">
                             <t-row :gutter="5">
                                 <t-col>
-                                    <t-button theme="default" size="small" @click="handleEditClick(row.id)">修改</t-button>
+                                    <t-button theme="default" size="small" @click="">修改</t-button>
                                 </t-col>
                                 <t-col>
                                     <t-button theme="danger" size="small"
-                                        @click="handleDeleteClick(row.id)">删除</t-button>
+                                        @click="">删除</t-button>
                                 </t-col>
                             </t-row>
                         </template>

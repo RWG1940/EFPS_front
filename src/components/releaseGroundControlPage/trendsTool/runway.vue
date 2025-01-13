@@ -1,7 +1,7 @@
 <template>
     <div class="wrap">
         <t-list class="runwayList">
-            <div v-for="item in store.data" :key="item.id">
+            <div v-for="item in runwayTableData" :key="item.id">
                 <t-row style="margin: 5px;">
                     <t-col :span="3">
                         跑道号：<el-tag round>{{ item.code }}</el-tag>
@@ -17,14 +17,14 @@
                     </t-col>
                 </t-row>
                 <div class="runway">
-                    <div v-if="hasPlane(item.id)" class="plane">
+                    <div v-if="hasPlane(item.id!)" class="plane">
                         <el-tag style="margin-left: 80px;" type="warning">当前状态：，预计离开时间：</el-tag>
                     </div>
-                    <el-row v-if="hasPlane(item.id)" style="margin-top: 5px;">
+                    <el-row v-if="hasPlane(item.id!)" style="margin-top: 5px;">
                         <el-tag type="danger" round effect="dark">占用</el-tag>
                         <el-tag type="info" effect="dark">呼号：，航班号：，机型：，航空公司：</el-tag>
                     </el-row>
-                    <el-tag v-if="!hasPlane(item.id)" round type="success" effect="dark">空闲</el-tag>
+                    <el-tag v-if="!hasPlane(item.id!)" round type="success" effect="dark">空闲</el-tag>
                 </div>
                 
             </div>
@@ -34,7 +34,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
-import { runwayStore, useRunwayStore } from '@/stores/runway-store';
+import { runwayStore, useRunwayStore,runwayTableData } from '@/stores/runway-store';
 import { flightRunwayStore } from '@/stores/flightRunway-store';
 
 
@@ -47,7 +47,7 @@ onMounted(() => {
 
 
 const hasPlane = (runwayId: number) => {
-    return flightRunwayStore.data.some(flight => flight.runwayId === runwayId);
+    return flightRunwayStore.data.some((flight:any) => flight.runwayId === runwayId);
 };
 </script>
 

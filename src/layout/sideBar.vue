@@ -2,7 +2,7 @@
   <div style="border-top: 1px solid rgba(220, 220, 220, 0.765)">
     <transition name="m-trans" appear>
       <t-menu theme="light" default-value="" :collapsed="collapsed">
-        <template v-for="route in menuRoutes" :key="route.id">
+        <template v-for="route in menuRoutes" :key="route.name || route.path">
           <t-menu-item v-if="!route.children || route.children.length === 0" :value="route.path"
             @click="handleMenuClick(route.path)">
             <template #icon>
@@ -20,7 +20,7 @@
             </template>
 
             <!-- 递归渲染子菜单 -->
-            <template v-for="childRoute in route.children" :key="childRoute.id">
+            <template v-for="childRoute in route.children" :key="childRoute.name || childRoute.path">
               <t-menu-item v-if="!childRoute.children || childRoute.children.length === 0" :value="childRoute.path"
                 @click="handleMenuClick(route.path + '/' + childRoute.path)">
                 {{ childRoute.name }}

@@ -23,10 +23,10 @@ export const b2Lhalf = ref('');
 export const b2Rhalf = ref('');
 //过滤后的表格数据
 export const filteredArrivalEfps = computed(() => {
-    return towerEfpsStore.data.filter((efps: any) => efps.status === 1 && efps.type === 1);
+    return towerEfpsStore.data.filter((efps: any) => efps.status === 1 && efps.type === 1) as TowerEfpsData[];
 });
 export const filteredDepartureEfps = computed(() => {
-    return towerEfpsStore.data.filter((efps: any) => efps.status === 1 && efps.type === 0);
+    return towerEfpsStore.data.filter((efps: any) => efps.status === 1 && efps.type === 0) as TowerEfpsData[];
 });
 export const filteredEfps = computed(() => {
     return towerEfpsStore.data.filter((efps: any) =>
@@ -45,29 +45,29 @@ export const filteredEfps = computed(() => {
             efps.h1.toLowerCase().includes(search.value.toLowerCase())
         )
         &&
-        efps.status === 1 && (efps.type === 0 || efps.type === 1));
+        efps.status === 1 && (efps.type === 0 || efps.type === 1)) as TowerEfpsData[];
 });
 export const filteredTransferredArrivalEfps = computed(() => {
-    return towerEfpsStore.data.filter((efps: any) => efps.status === 3 && efps.type === 1);
+    return towerEfpsStore.data.filter((efps: any) => efps.status === 3 && efps.type === 1) as TowerEfpsData[];
 });
 export const filteredTransferredDepartureEfps = computed(() => {
-    return towerEfpsStore.data.filter((efps: any) => efps.status === 3 && efps.type === 0);
+    return towerEfpsStore.data.filter((efps: any) => efps.status === 3 && efps.type === 0) as TowerEfpsData[];
 });
 export const filteredRecycleEfps = computed(() => {
-    return towerEfpsStore.data.filter((efps: any) => efps.status === 5);
+    return towerEfpsStore.data.filter((efps: any) => efps.status === 5) as TowerEfpsData[];
 });
 export const filteredCompletedEfps = computed(() => {
-    return towerEfpsStore.data.filter((efps: any) => efps.status === 4);
+    return towerEfpsStore.data.filter((efps: any) => efps.status === 4) as TowerEfpsData[];
 });
 
 
 //正在处理队列中的进程单数据
 export const processingData = computed(() => {
-    return towerEfpsStore.data.filter((efps: any) => efps.status === 2 && (efps.type === 0 || efps.type === 1));
+    return towerEfpsStore.data.filter((efps: any) => efps.status === 2 && (efps.type === 0 || efps.type === 1))  as TowerEfpsData[];
 });
 // 正在处理的进程单数据
 export const nowProcessingData = computed(() => {
-    return towerEfpsStore.data.filter((efps: any) => efps.status === 6 && (efps.type === 0 || efps.type === 1));
+    return towerEfpsStore.data.filter((efps: any) => efps.status === 6 && (efps.type === 0 || efps.type === 1))  as TowerEfpsData[];
 });
 export const filterTableData = computed(() => {
     return towerEfpsStore.data.filter(
@@ -88,7 +88,7 @@ export const filterTableData = computed(() => {
             )
             &&
             efps.status === 2 && (efps.type === 0 || efps.type === 1)
-    )
+    ) as TowerEfpsData[]
 })
 export const handleArrivalEfpsProcess = (id: string) => {
     const processingEfps = nowProcessingData.value[0];

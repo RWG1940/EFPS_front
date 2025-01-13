@@ -12,7 +12,9 @@ export interface AreaEfpsData {
     fg1?: string;
     h1?: string;
     a2?: string;
-    b2?: string;
+    b21?: string;
+    b22?: string;
+    b23?: string;
     b2Lhalf?: string;
     b2Rhalf?: string;
     c2?: string;
@@ -105,9 +107,9 @@ export const areaEfpsTagOptions = [
 ];
 // 指令区选项
 export const areaEfpsInstructionOptions = [
-    { label: '高度变化', value: 'a2' },
-    { label: '其他指令', value: 'b2' },
-    { label: '申请的巡航高度层', value: 'c2' },
+    { label: '高度变化', value: 'b2' },
+    { label: '其他指令', value: 'c2' },
+    { label: '申请的巡航高度层', value: 'a2' },
 ]
 //航路区选项
 export const areaEfpsRouteOptions = [

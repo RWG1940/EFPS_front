@@ -31,22 +31,22 @@ export const locationReport = ref('');
 export const flyCommand = ref('');
 //过滤后的表格数据
 export const filteredArrivalEfps = computed(() => {
-    return areaEfpsStore.data.filter((efps: any) => efps.status === 1 && efps.type === 1);
+    return areaEfpsStore.data.filter((efps: any) => efps.status === 1 && efps.type === 1) as AreaEfpsData[];
 });
 export const filteredDepartureEfps = computed(() => {
-    return areaEfpsStore.data.filter((efps: any) => efps.status === 1 && efps.type === 0);
+    return areaEfpsStore.data.filter((efps: any) => efps.status === 1 && efps.type === 0) as AreaEfpsData[];
 });
 export const filteredTransferredArrivalEfps = computed(() => {
-    return areaEfpsStore.data.filter((efps: any) => efps.status === 3 && efps.type === 1);
+    return areaEfpsStore.data.filter((efps: any) => efps.status === 3 && efps.type === 1) as AreaEfpsData[];
 });
 export const filteredTransferredDepartureEfps = computed(() => {
-    return areaEfpsStore.data.filter((efps: any) => efps.status === 3 && efps.type === 0);
+    return areaEfpsStore.data.filter((efps: any) => efps.status === 3 && efps.type === 0) as AreaEfpsData[];
 });
 export const filteredRecycleEfps = computed(() => {
-    return areaEfpsStore.data.filter((efps: any) => efps.status === 5);
+    return areaEfpsStore.data.filter((efps: any) => efps.status === 5) as AreaEfpsData[];
 });
 export const filteredCompletedEfps = computed(() => {
-    return areaEfpsStore.data.filter((efps: any) => efps.status === 4);
+    return areaEfpsStore.data.filter((efps: any) => efps.status === 4) as AreaEfpsData[];
 });
 export const filteredEfps = computed(() => {
     return areaEfpsStore.data.filter((efps: any) =>
@@ -65,7 +65,7 @@ export const filteredEfps = computed(() => {
             efps.h1.toLowerCase().includes(search.value.toLowerCase())
         )
         &&
-        efps.status === 1 && (efps.type === 0 || efps.type === 1));
+        efps.status === 1 && (efps.type === 0 || efps.type === 1))  as AreaEfpsData[];
 });
 // 队列中的进程单
 export const filterTableData = computed(() => {
@@ -87,15 +87,15 @@ export const filterTableData = computed(() => {
             )
             &&
             efps.status === 2 && (efps.type === 0 || efps.type === 1)
-    )
+    ) as AreaEfpsData[]
 })
 //正在处理的进程单数据
-export const nowProcessingData = computed(() => {
-    return areaEfpsStore.data.filter((efps: any) => efps.status === 6 && (efps.type === 0 || efps.type === 1));
+export const nowProcessingData  = computed(() => {
+    return areaEfpsStore.data.filter((efps: any) => efps.status === 6 && (efps.type === 0 || efps.type === 1))  as AreaEfpsData[];
 });
 // 队列中的进程单
 export const processingData = computed(() => {
-    return areaEfpsStore.data.filter((efps: any) => efps.status === 2 && (efps.type === 0 || efps.type === 1));
+    return areaEfpsStore.data.filter((efps: any) => efps.status === 2 && (efps.type === 0 || efps.type === 1))  as AreaEfpsData[];
 });
 
 
@@ -162,6 +162,8 @@ export const keepHight = () => {
                 b2: `${inputHightValue.value}`,
             })
         } else {
+            // todo 
+            // 这里弹窗提示选择b21、b22、b23
             areaEfpsStore.updateData({
                 id: nowProcessingData.value[0]?.id,
                 b2: `H${inputHightValue.value}`,
@@ -180,6 +182,8 @@ export const riseHight = () => {
                 b2: `${inputHightValue.value}↑`,
             })
         } else {
+            // todo 
+            // 这里弹窗提示选择b21、b22、b23
             areaEfpsStore.updateData({
                 id: nowProcessingData.value[0]?.id,
                 b2: `H${inputHightValue.value}↑`,
@@ -289,8 +293,6 @@ export const sendFlyCommand = () => {
 }
 
 export const transferEfps = () => {
-        
-
     // 进港进程单
     if (nowProcessingData.value[0]?.type == 1) {
         // 塔台添加进程单
@@ -326,7 +328,7 @@ export const filterEfpsByStatusAndDate = (status: number, type: number, date: Da
             efps.type == type &&
             formatDate(efps.createtime as string || new Date()/*如果时间未定义，则采用当天的时间*/)?.startsWith(formatDate2(date))
         ).length
-    });
+    }) ;
 }
 
 export const handleEfpsProcess = (id: string) => {
@@ -368,7 +370,7 @@ export const withdrawSelectedAreaEfps = async (id: string) => {
 }
 
 export const lastestProcessingData = () => {
-    const lastestProcessingEfps = processingData.value[0];
+    const lastestProcessingEfps = processingData.value[0] ;
     if (lastestProcessingEfps != undefined) {
         const areaEfps = {
             id: lastestProcessingEfps.id,

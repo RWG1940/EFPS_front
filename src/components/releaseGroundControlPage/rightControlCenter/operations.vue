@@ -34,8 +34,8 @@
             <t-col>
                 <t-button shape="round" @click="transferVisible = true">移交</t-button>
                 <t-dialog v-model:visible="transferVisible" header='确认移交？' :on-confirm="handleTransfer" theme="info">
-                    <t-row>将会移交至&ensp;<el-tag :type="nowProcessingData[0]?.type == 1 ? 'error' : 'warning'" effect="dark">{{
-                        nowProcessingData[0]?.type == 1 ? '暂时不能继续移交' : '塔台席' }}</el-tag></t-row>
+                    <t-row>将会移交至&ensp;<el-tag :type="nowProcessingData[0]?.type == 1 ? 'error' :nowProcessingData[0]?.type == 0 ? 'warning':'info'" effect="dark">{{
+                        nowProcessingData[0]?.type == 1 ? '暂时不能继续移交' :nowProcessingData[0]?.type == 0 ? '塔台席':'您没有选择进程单' }}</el-tag></t-row>
                     该操作不可逆，请确认移交进程单的信息：
                     <el-scrollbar hight="50px">
                         <releaseGroundEfps id="printable-efps" BackgroundColor="lightskyblue"
@@ -76,7 +76,7 @@ const exportToPDFBtn = () => {
 
 const exportToPDF = async () => {
     // 获取需要导出的元素
-    const element = document.querySelector('#loveSJM');
+    const element = document.querySelector('#loveSJM')as HTMLElement;
     if (!element) return;
 
     // 使用 html2canvas 将元素转换为图像

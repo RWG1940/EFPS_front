@@ -11,7 +11,7 @@ export const noticeAddFormData = ref<NoticesData>({});
 export const noticeEditFormData = ref<NoticesData>({});
 
 export const noticesDataPublished = computed(() => {
-    return useNoticesStore().data.filter((item:any) => item.status == 1);
+    return useNoticesStore().data.filter((item:any) => item.status == 1) as NoticesData[];
 })
 // 删除过期的Notice数据
 export const deleteExpiredNoticesData = async () => {

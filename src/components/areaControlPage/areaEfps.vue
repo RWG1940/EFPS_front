@@ -37,8 +37,14 @@
                     <t-tooltip :content="'申请的巡航高度层: ' + efpsData.a2" placement="top" show-arrow destroy-on-close>
                         <el-row>{{ efpsData.a2 }}</el-row>
                     </t-tooltip>
-                    <t-tooltip :content="'高度变化: ' + efpsData.b2" placement="left" show-arrow destroy-on-close>
-                        <el-row>{{ efpsData.b2 }}</el-row>
+                    <t-tooltip :content="'高度变化1: ' + efpsData.b21" placement="left" show-arrow destroy-on-close>
+                        <el-row>{{ efpsData.b21 }}</el-row>
+                    </t-tooltip>
+                    <t-tooltip :content="'高度变化2: ' + efpsData.b22" placement="left" show-arrow destroy-on-close>
+                        <el-row>{{ efpsData.b22 }}</el-row>
+                    </t-tooltip>
+                    <t-tooltip :content="'高度变化3: ' + efpsData.b23" placement="left" show-arrow destroy-on-close>
+                        <el-row>{{ efpsData.b23 }}</el-row>
                     </t-tooltip>
                     <t-tooltip :content="'其他指令: ' + efpsData.c2" placement="bottom" show-arrow destroy-on-close>
                         <el-row>{{ efpsData.c2 }}</el-row>
@@ -227,8 +233,8 @@ defineProps({
 }
 
 .wrap {
-    height: 110px;
-    max-height: 110px;
+    height: 120px;
+    max-height: 130px;
     width: 490px;
     transition-duration: 1s;
     font-size: xx-small;

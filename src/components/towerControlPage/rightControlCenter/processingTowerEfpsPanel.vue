@@ -39,7 +39,7 @@ import { ref, reactive, computed } from 'vue'
 import towerEfps from '../towerEfps.vue';
 
 const visibleMap = reactive<{ [key: string]: boolean }>({});
-const prepareBackgroundColor = ref('antiquewhite')
+const prepareBackgroundColor = ref('paleturquoise')
 const store = useTowerEfpsStore();
 const props = defineProps<{
     visible: boolean;
@@ -66,5 +66,9 @@ const handleProcessingEfpsFirstBtn = (id: string) => {
 
 
 </script>
-<style scoped></style>
+<style scoped>
+.k{
+    color:paleturquoise
+}
+</style>
   

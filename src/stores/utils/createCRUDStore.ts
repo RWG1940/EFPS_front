@@ -8,6 +8,7 @@ export function createCRUDStore<T>(storeName: string, api: any) {
         const data = ref<T[]>([]);
         const dataPages = ref<T[]>([]);
         const pageSize = ref(10);
+        const pageDataSum = ref(0);
         const currentPage = ref(1);
         const selectedIds = ref<number[]>([]);
         const search = ref('');
@@ -23,6 +24,7 @@ export function createCRUDStore<T>(storeName: string, api: any) {
         const fetchPageData = async () => {
             const res = await api.getPages(currentPage.value, pageSize.value);
             dataPages.value = res.data.result.rows;
+            pageDataSum.value = res.data.result.total;
         };
 
         // 添加数据
@@ -81,6 +83,7 @@ export function createCRUDStore<T>(storeName: string, api: any) {
             currentPage,
             selectedIds,
             search,
+            pageDataSum,
 
             fetchAllData,
             fetchPageData,

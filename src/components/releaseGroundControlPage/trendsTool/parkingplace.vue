@@ -31,17 +31,17 @@ onMounted(() => {
 // 计算合并后的数据
 const mergedData = computed(() => {
     // 遍历停机位数据
-    return parkingStandStore.data.map(parkingStand => {
+    return parkingStandStore.data.map((parkingStand:any) => {
         // 找到与当前停机位关联的航班停机位数据
         const flightParkingStand = flightParkingStandStore.data.find(
-            fps => fps.parkingStandId === parkingStand.id
-        );
+            (fps:any) => fps.parkingStandId === parkingStand.id
+        ) as any;
 
         if (flightParkingStand) {
             // 找到与当前航班停机位数据关联的航班信息
             const flightInfo = flightInfoStore.data.find(
-                flight => flight.id === flightParkingStand.flightId
-            );
+                (flight:any) => flight.id === flightParkingStand.flightId
+            ) as any;
 
             if (flightInfo) {
                 // 合并数据
