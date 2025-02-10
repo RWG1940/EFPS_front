@@ -31,8 +31,8 @@
 </div>
 </template>
 <script lang="ts" setup>
-import importantMsg from './msgTool/importantMsg.vue';
-import sysMsg from './msgTool/sysMsg.vue';
+import importantMsg from '../areaControlPage/msgTool/importantMsg.vue';
+import sysMsg from '../areaControlPage/msgTool/sysMsg.vue';
 import alertMsg from './msgTool/alertMsg.vue';
 import cooperaMsg from './msgTool/cooperaMsg.vue';
 

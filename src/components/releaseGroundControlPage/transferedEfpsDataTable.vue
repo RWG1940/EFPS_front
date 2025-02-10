@@ -3,14 +3,14 @@
         <template #main>
             <el-scrollbar height="500px" style="border-radius: 10px;background-color: aliceblue;padding: 5px;">
                 <div class="departure-handled-container">
-                    离港
+                    离港--{{ filteredTransferredDepartureEfps.length }}架
                     <el-scrollbar height="225px" style="border-radius: 10px;">
                         <div v-for="item in filteredTransferredDepartureEfps" style="width: 100%;margin-bottom: 10px;"
                             max-height="230">
                             <releaseGroundEfps BackgroundColor="lightgreen" :efps-data="item || {}" />
                         </div>
                     </el-scrollbar>
-                    进港
+                    进港--总计{{ filteredTransferredArrivalEfps.length }}架
                     <el-scrollbar height="225px" style="border-radius: 10px;">
                         <div v-for="item in filteredTransferredArrivalEfps" style="width: 100%;margin-bottom: 10px;"
                             max-height="230">
@@ -21,7 +21,7 @@
             </el-scrollbar>
         </template>
         <template #footer>
-            总计：{{ filteredTransferredArrivalEfps.length + filteredTransferredDepartureEfps.length }}条数据
+            合计：{{ filteredTransferredArrivalEfps.length + filteredTransferredDepartureEfps.length }}条数据
             <t-button theme="default" @click="cancelButton">关闭</t-button>
         </template>
     </userEdit>

@@ -42,7 +42,7 @@
   
 <script lang="ts" setup>
 import userEdit from '@/components/userManage/userEdit.vue'
-import { search, handleProcessingEfpsFirst, filteredEfps, handleArrivalEfpsProcess } from "@/stores/releaseGroundEfps-store";
+import { search, handleProcessingEfpsFirst, filteredEfps, handleEfpsProcess } from "@/stores/releaseGroundEfps-store";
 import { ref, reactive, computed } from 'vue'
 import releaseGroundEfps from '@/components/releaseGroundControlPage/releaseGroundEfps.vue';
 
@@ -64,7 +64,7 @@ const togglePopconfirm = (id: string) => {
     visibleMap[id] = !visibleMap[id];
 };
 const handleProcessingEfpsBtn = (id: string) => {
-    handleArrivalEfpsProcess(id)
+    handleEfpsProcess(id)
     visibleMap[id] = !visibleMap[id];
 }
 const handleProcessingEfpsFirstBtn = (id: string) => {

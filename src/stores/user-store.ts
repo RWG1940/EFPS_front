@@ -104,12 +104,12 @@ export const useUserStore = defineStore('user', () => {
   const createTime1 = ref('')
   const createTime2 = ref('')
   const options2 = ref([
-    { label: '男', value: '0' },
-    { label: '女', value: '1' },
+    { label: '男', value: '1' },
+    { label: '女', value: '0' },
   ])
   const options4 = ref([
-    { label: '正常', value: '0' },
-    { label: '禁用', value: '1' },
+    { label: '正常', value: '1' },
+    { label: '禁用', value: '0' },
   ])
   // 分页数据
   const current = ref<number>(1);
@@ -180,10 +180,9 @@ export const useUserStore = defineStore('user', () => {
 
   // 用户修改表单规则
   const USERDATA_FORM_RULES = {
+   
     emp: {
       eUsername: [{ required: true, message: '账户必填', trigger: 'blur' },
-      { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }],
-      ePassword: [{ required: true, message: '密码必填' },
       { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }],
       eId: [{ required: true, message: '身份证号必填' },
       { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }],
@@ -219,8 +218,6 @@ export const useUserStore = defineStore('user', () => {
     emp: {
       eUsername: [{ required: true, message: '账户必填', trigger: 'blur' },
       { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }],
-      ePassword: [{ required: true, message: '密码必填' },
-      { min: 2, max: 20, message: '长度在 2到 20 个字符', trigger: 'blur' }],
       eName: [{ required: true, message: '姓名必填' },
       { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }],
       eId: [{ required: true, message: '身份证号必填' },
@@ -437,7 +434,7 @@ export const useUserStore = defineStore('user', () => {
   const updateLoginUserDataNoInfo = async () => {
     await userLoginBytoken()
       .then((resp) => {
-        sessionStorage.setItem('userDeptid', resp.data.result.emp.eDeptid);
+        sessionStorage.setItem('userRoleId', resp.data.result.role.rId);
       })
       .catch(() => {
         router.push('/login');

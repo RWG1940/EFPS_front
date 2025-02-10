@@ -2,7 +2,8 @@
   <!-- 修改个人信息 -->
   <userEdit :visible="visible" header="个人资料修改" @update:visible="handleEditVisibleChange">
     <template #main>
-      <div style="display: flex;">
+      <el-scrollbar height="520px" style="margin-right: 50px;">
+      <div style="display: flex;margin-left: 60px;">
         <p style="margin-right: 10px;">头像</p>
         <t-upload ref="store.uploadRef" v-model="store.file1" :image-viewer-props="store.imageViewerProps"
           :size-limit="store.sizeLimit" :action="store.avatarUrl" theme="image" tips="上传头像大小不超过5500KB" accept="image/*"
@@ -14,51 +15,40 @@
           }" @success="store.myInfoEditHandleSuccess" @fail="store.handleFail">
         </t-upload>
       </div>
-      <t-form ref="form" :data="store.myDataFormData" :rules="store.MYDATA_FORM_RULES" :label-width="0"
+      <t-form ref="form" :data="store.myDataFormData" :rules="store.MYDATA_FORM_RULES" :label-width="100"
         @submit="addBtn">
 
-        <t-form-item name="emp.eUsername">
-          <t-input-adornment prepend="账号">
+        <t-form-item name="emp.eUsername" label="账号：">
             <t-input v-model="store.myDataFormData.emp.eUsername" disabled clearable />
-          </t-input-adornment>
         </t-form-item>
 
-        <t-form-item name="emp.ePassword">
-          <t-input-adornment prepend="密码">
-            <t-input v-model="store.myDataFormData.emp.ePassword" type="password" clearable />
-          </t-input-adornment>
-        </t-form-item>
+        <t-form-item name="emp.ePassword" label="密码：">
+              <t-input v-model="confirmPwd" type="password" placeholder="请输入后确认" clearable />
+              <t-button style="margin-left: 5px;" :theme="confirmPwd.length > 2 ? 'primary':'default'" size="medium" @click="store.myDataFormData.emp.ePassword = confirmPwd">确认</t-button>
+          </t-form-item>
 
-        <t-form-item name="emp.eName">
-          <t-input-adornment prepend="姓名">
+
+        <t-form-item name="emp.eName" label="姓名：">
             <t-input v-model="store.myDataFormData.emp.eName" clearable />
-          </t-input-adornment>
         </t-form-item>
 
-        <t-form-item name="emp.eId">
-          <t-input-adornment prepend="身份证号">
+        <t-form-item name="emp.eId" label="身份证号：">
             <t-input v-model="store.myDataFormData.emp.eId" clearable />
-          </t-input-adornment>
         </t-form-item>
 
-        <t-form-item name="emp.ePhone">
-          <t-input-adornment prepend="手机号">
+        <t-form-item name="emp.ePhone" label="手机号：">
             <t-input v-model="store.myDataFormData.emp.ePhone" clearable />
-          </t-input-adornment>
         </t-form-item>
 
-        <t-form-item name="emp.eAge">
-          <t-input-adornment prepend="年龄">
+        <t-form-item name="emp.eAge" label="年龄：">
             <t-input v-model="store.myDataFormData.emp.eAge" clearable />
-          </t-input-adornment>
         </t-form-item>
 
-        <t-form-item name="emp.eGender">
-          <t-input-adornment prepend="性别">
+        <t-form-item name="emp.eGender" label="性别：">
             <t-select v-model="store.myDataFormData.emp.eGender" :options="store.options2" clearable></t-select>
-          </t-input-adornment>
         </t-form-item>
       </t-form>
+    </el-scrollbar>
     </template>
     <template #footer>
       <t-button theme="primary" @click="submitBtn" block>提交</t-button>
@@ -74,6 +64,7 @@ import { MessagePlugin } from 'tdesign-vue-next';
 import { ref } from 'vue';
 
 const store = useUserStore()
+const confirmPwd = ref('')
 const form = ref<FormInstanceFunctions>();
 const props = defineProps<{
   visible: boolean;
@@ -91,6 +82,9 @@ const cancelButton: FormProps['onReset'] = () => {
 }
 
 const submitBtn = async () => {
+  if (confirmPwd.value == '') {
+    store.myDataFormData.emp.ePassword = 'N';
+  }
   form.value?.submit();
 }
 

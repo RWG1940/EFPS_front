@@ -7,12 +7,17 @@ import type { TowerEfpsData } from '@/types/towerEfpsTypes';
 import { formatDate, formatDate2 } from '@/utils/moment';
 import { releaseGroundEfpsStore } from './releaseGroundEfps-store';
 import { areaEfpsStore } from './areaEfps-store';
- 
+import { flightRunwayStore } from './flightRunway-store';
+import { flightParkingStandStore } from './flightParkingStand-store';
+import { flightInfoStore } from './flightInfo-store';
+import { cooperaMsgStore } from '@/stores/cooperaMsg-store';
+import { parkingStandStore } from './parkingStand-store';
+import { runwayStore } from './runway-store';
+
 
 export const useTowerEfpsStore = createCRUDStore('towerEfps', towerEfpsApi);
 export const towerEfpsStore = useTowerEfpsStore();
 export const towerEfpsAddFormData = ref<TowerEfpsData>({});
-export const flyCommand = ref('');
 export const search = ref('');
 export const selectedProgram = ref('');
 export const selectedRunway = ref('');
@@ -23,10 +28,10 @@ export const b2Lhalf = ref('');
 export const b2Rhalf = ref('');
 //过滤后的表格数据
 export const filteredArrivalEfps = computed(() => {
-    return towerEfpsStore.data.filter((efps: any) => efps.status === 1 && efps.type === 1) as TowerEfpsData[];
+    return towerEfpsStore.data.filter((efps: any) => efps.status === 1 && efps.type === 1).sort((a: any, b: any) => a.fg1 - b.fg1) as TowerEfpsData[];
 });
 export const filteredDepartureEfps = computed(() => {
-    return towerEfpsStore.data.filter((efps: any) => efps.status === 1 && efps.type === 0) as TowerEfpsData[];
+    return towerEfpsStore.data.filter((efps: any) => efps.status === 1 && efps.type === 0).sort((a: any, b: any) => a.fg1 - b.fg1) as TowerEfpsData[];
 });
 export const filteredEfps = computed(() => {
     return towerEfpsStore.data.filter((efps: any) =>
@@ -63,11 +68,11 @@ export const filteredCompletedEfps = computed(() => {
 
 //正在处理队列中的进程单数据
 export const processingData = computed(() => {
-    return towerEfpsStore.data.filter((efps: any) => efps.status === 2 && (efps.type === 0 || efps.type === 1))  as TowerEfpsData[];
+    return towerEfpsStore.data.filter((efps: any) => efps.status === 2 && (efps.type === 0 || efps.type === 1)) as TowerEfpsData[];
 });
 // 正在处理的进程单数据
 export const nowProcessingData = computed(() => {
-    return towerEfpsStore.data.filter((efps: any) => efps.status === 6 && (efps.type === 0 || efps.type === 1))  as TowerEfpsData[];
+    return towerEfpsStore.data.filter((efps: any) => efps.status === 6 && (efps.type === 0 || efps.type === 1)) as TowerEfpsData[];
 });
 export const filterTableData = computed(() => {
     return towerEfpsStore.data.filter(
@@ -90,7 +95,7 @@ export const filterTableData = computed(() => {
             efps.status === 2 && (efps.type === 0 || efps.type === 1)
     ) as TowerEfpsData[]
 })
-export const handleArrivalEfpsProcess = (id: string) => {
+export const handleEfpsProcess = (id: string) => {
     const processingEfps = nowProcessingData.value[0];
     if (processingEfps != undefined) {
         const towerEfps = {
@@ -107,23 +112,7 @@ export const handleArrivalEfpsProcess = (id: string) => {
         towerEfpsStore.updateData(towerEfps);
     }
 }
-export const handleDepartureEfpsProcess = (id: string) => {
-    const processingEfps = nowProcessingData.value[0];
-    if (processingEfps != undefined) {
-        const towerEfps = {
-            id: id,
-            status: 2,
-        };
-        towerEfpsStore.updateData(towerEfps);
-        MessagePlugin.info("已进入处理队列");
-    } else {
-        const towerEfps = {
-            id: id,
-            status: 6,
-        };
-        towerEfpsStore.updateData(towerEfps);
-    }
-}
+
 
 export const lastestProcessingData = () => {
     const lastestProcessingEfps = processingData.value[0];
@@ -166,7 +155,7 @@ export const withdrawProcessingEfps = async () => {
 }
 export const handleProcessingEfpsFirst = (id: string) => {
     withdrawProcessingEfps()
-    handleArrivalEfpsProcess(id)
+    handleEfpsProcess(id)
 };
 export const recycleProcessingTowerEfps = async () => {
     const processingEfps = processingData.value[0];
@@ -247,15 +236,8 @@ export const setVIP = () => {
 }
 
 
-export const sendFlyCommand = () => {
-    towerEfpsStore.updateData({
-        id: nowProcessingData.value[0]?.id,
-        c2: flyCommand.value
-    })
-}
-
 export const transferEfps = () => {
-        
+
 
     // 进港进程单
     if (nowProcessingData.value[0]?.type == 1) {
@@ -271,6 +253,12 @@ export const transferEfps = () => {
             id: nowProcessingData.value[0]?.id,
             status: 3
         })
+        cooperaMsgStore.addData({
+            header: `航班：${nowProcessingData.value[0].a1}移交成功`,
+            content: `塔台管制席已移交航班给放行地面合并席`,
+            theme: 'success',
+            status: 0,
+        });
         return
     }
     // 出港进程单
@@ -286,6 +274,29 @@ export const transferEfps = () => {
             id: nowProcessingData.value[0]?.id,
             status: 3
         })
+        // 释放跑道、停机位资源
+        // 1.先通过flightInfo查询到航班id
+        flightInfoStore.searchData({ flightNumber: nowProcessingData.value[0]?.a1 }).then(() => {
+            if(flightInfoStore.searchResultData.length == 0){
+                MessagePlugin.error('未找到该航班')
+            }else{
+                var flight = flightInfoStore.searchResultData[0] as any
+                var flightId = flight.id as number
+                // 2.通过id去删除关联表的数据
+                flightParkingStandStore.deleteData([ flightId ]).then(() => {
+                    MessagePlugin.success('释放停机位资源成功')
+                })
+                flightRunwayStore.deleteData([ flightId ]).then(() => {
+                    MessagePlugin.success('释放跑道资源成功')
+                })
+            }
+            })
+            cooperaMsgStore.addData({
+                header: `航班：${nowProcessingData.value[0].a1}移交成功`,
+                content: `塔台管制席已移交航班给区域管制席`,
+                theme: 'success',
+                status: 0,
+            });
         return
     }
     MessagePlugin.error('未找到正在处理的进程单')
@@ -324,15 +335,58 @@ export const cancelPermit = () => {
     })
 }
 export const saveStopway = () => {
-    towerEfpsStore.updateData({
-        id: nowProcessingData.value[0]?.id,
-        e4: selectedStopway.value
+    if (selectedStopway.value == '') {
+        MessagePlugin.warning('请选择停机位')
+        return
+    }
+    flightParkingStandStore.searchData({ parkingStandId: selectedStopway.value }).then(() => {
+        if (flightParkingStandStore.searchResultData.length == 0) {// 如果停机位没有航班使用
+            flightParkingStandStore.addData({
+                flightId: nowProcessingData.value[0]?.id,
+                parkingStandId: selectedStopway.value
+            })
+            towerEfpsStore.updateData({
+                id: nowProcessingData.value[0]?.id,
+                e4: selectedStopway.value
+            })
+            parkingStandStore.updateData({
+                id: selectedStopway.value,
+                status: 2
+            })
+        } else {
+            MessagePlugin.warning('停机坪已被占用!')
+        }
     })
 }
 export const saveRunway = () => {
+    if (selectedRunway.value == '') {
+        MessagePlugin.warning('请选择跑道号')
+        return
+    }
+    flightRunwayStore.searchData({ runwayId: selectedRunway.value }).then(() => {
+        if (flightRunwayStore.searchResultData.length == 0) {
+            flightRunwayStore.addData({
+                flightId: nowProcessingData.value[0]?.id,
+                runwayId: selectedRunway.value
+            })
+            towerEfpsStore.updateData({
+                id: nowProcessingData.value[0]?.id,
+                de34: selectedRunway.value
+            })
+            runwayStore.updateData({
+                code: selectedRunway.value,
+                status: 2
+            })
+        } else {
+            MessagePlugin.warning('跑道已被占用!')
+        }
+    })
+}
+export const clearStopwayWithRunway = () => {
     towerEfpsStore.updateData({
         id: nowProcessingData.value[0]?.id,
-        de34: selectedRunway.value
+        e4: '',
+        de34: ''
     })
 }
 export const saveExit = () => {
@@ -374,4 +428,5 @@ export const saveTaxi = () => {
         de33: 'R/W'
     })
 }
+
 

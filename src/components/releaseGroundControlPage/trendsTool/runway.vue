@@ -18,15 +18,20 @@
                 </t-row>
                 <div class="runway">
                     <div v-if="hasPlane(item.id!)" class="plane">
-                        <el-tag style="margin-left: 80px;" type="warning">当前状态：，预计离开时间：</el-tag>
+                        <el-tag v-if="flightInfo(item.id!)" style="margin-left: 80px;" type="warning">当前状态：{{ flightInfo(item.id!).flightStatus }}，预计离开时间：{{ flightInfo(item.id!).scheduledDepartureTime }}</el-tag>
                     </div>
                     <el-row v-if="hasPlane(item.id!)" style="margin-top: 5px;">
-                        <el-tag type="danger" round effect="dark">占用</el-tag>
-                        <el-tag type="info" effect="dark">呼号：，航班号：，机型：，航空公司：</el-tag>
+                        <el-tag type="warning" round effect="dark">占用</el-tag>
+                        <el-tag v-if="flightInfo(item.id!)" type="info" effect="dark">
+                            呼号：{{ flightInfo(item.id!).flightNumber }}，
+                            航班号：{{ flightInfo(item.id!).flightNumber }}，
+                            航空公司：{{ flightInfo(item.id!).airline }}
+                        </el-tag>
                     </el-row>
-                    <el-tag v-if="!hasPlane(item.id!)" round type="success" effect="dark">空闲</el-tag>
+                    <el-tag v-if="!hasPlane(item.id!)" round :type="item.status == 2 ? 'danger' : 'success'" effect="dark">{{
+                        item.status == 2 ? '停用' : '空闲' }}</el-tag>
                 </div>
-                
+
             </div>
         </t-list>
     </div>
@@ -34,21 +39,30 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
-import { runwayStore, useRunwayStore,runwayTableData } from '@/stores/runway-store';
+import { runwayStore, useRunwayStore, runwayTableData } from '@/stores/runway-store';
 import { flightRunwayStore } from '@/stores/flightRunway-store';
+import { flightInfoStore } from '@/stores/flightInfo-store';
 
 
 const store = useRunwayStore();
 
 onMounted(() => {
-    runwayStore.fetchAllData(); 
-    flightRunwayStore.fetchAllData(); 
+    runwayStore.fetchAllData();
+    flightRunwayStore.fetchAllData();
+    flightInfoStore.fetchAllData();
 });
 
 
 const hasPlane = (runwayId: number) => {
-    return flightRunwayStore.data.some((flight:any) => flight.runwayId === runwayId);
+    return flightRunwayStore.data.some((flight: any) => flight.runwayId === runwayId);
 };
+const flightInfo = (runwayId: number) => {
+    if (flightRunwayStore.data.some((flight: any) => flight.runwayId === runwayId)) {//若跑道上有航班
+        var thisFlight = flightRunwayStore.data.find((flight: any) => flight.runwayId === runwayId) as any;
+        return flightInfoStore.data.find((flight: any) => flight.id === thisFlight.flightId) as any;
+    }
+}
+
 </script>
 
 <style lang="scss" scoped>

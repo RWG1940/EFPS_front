@@ -1,28 +1,28 @@
 <template>
-    <userEdit :visible="visible" header="添加跑道" @update:visible="handleAddVisibleChange">
+    <userEdit :visible="visible" header="修改跑道" @update:visible="handleEditVisibleChange">
         <template #main>
-            <t-form ref="form" :data="runwayAddFormData" :rules="runwayADD_FORM_RULES" :label-width="100"
-                @submit="runwayAddSubmit">
+            <t-form ref="form" :data="runwayEditFormData" :rules="runwayEDIT_FORM_RULES" :label-width="100"
+                @submit="runwayEditSubmit">
                 <el-scrollbar height="380px" style="padding: 40px;">
 
                     <t-form-item name="code" label="编号">
-                        <t-input v-model="runwayAddFormData.code" />
+                        <t-input v-model="runwayEditFormData.code"  />
                     </t-form-item>
                     <t-form-item name="length" label="长度">
-                        <t-input v-model="runwayAddFormData.length" />
+                        <t-input v-model="runwayEditFormData.length" />
                     </t-form-item>
                     <t-form-item name="width" label="宽度">
-                        <t-input v-model="runwayAddFormData.width" />
+                        <t-input v-model="runwayEditFormData.width" />
                     </t-form-item>
                     <t-form-item name="surfaceType" label="材质">
-                        <t-input v-model="runwayAddFormData.surfaceType" />
+                        <t-input v-model="runwayEditFormData.surfaceType" />
                     </t-form-item>
                     <p style="margin-left: 30%;">（0：空闲，1：占用，2：停用）</p>
                     <t-form-item name="status" label="状态">
-                        <t-input v-model="runwayAddFormData.status" />
+                        <t-input v-model="runwayEditFormData.status" />
                     </t-form-item>
                     <t-form-item name="remarks" label="备注">
-                        <t-input v-model="runwayAddFormData.remarks" />
+                        <t-input v-model="runwayEditFormData.remarks" />
                     </t-form-item>
 
                 </el-scrollbar>
@@ -30,7 +30,7 @@
             </t-form>
         </template>
         <template #footer>
-            <t-button theme="primary" type="submit" @click="addButton" block>提交</t-button>
+            <t-button theme="primary" type="submit" @click="EditButton" block>提交</t-button>
             <t-button theme="default" @click="cancelButton" block style="margin-left: 10px;">取消</t-button>
         </template>
     </userEdit>
@@ -39,8 +39,8 @@
 <script lang="ts" setup>
 import userEdit from '@/components/userManage/userEdit.vue'
 import { ref } from 'vue'
-import { useRunwayStore, runwayAddFormData } from "@/stores/runway-store";
-import { runwayADD_FORM_RULES } from '@/types/runwayTypes'
+import { useRunwayStore, runwayEditFormData } from "@/stores/runway-store";
+import { runwayEDIT_FORM_RULES } from '@/types/runwayTypes'
 import type { FormInstanceFunctions, FormProps } from 'tdesign-vue-next';
 import { MessagePlugin } from 'tdesign-vue-next';
 
@@ -52,21 +52,21 @@ const props = defineProps<{
 
 const emit = defineEmits(['update:visible']);
 
-const handleAddVisibleChange = () => {
+const handleEditVisibleChange = () => {
     emit('update:visible');
 };
 
 const cancelButton = () => {
     form.value?.reset();
-    handleAddVisibleChange();
+    handleEditVisibleChange();
 };
-const addButton = () => {
+const EditButton = () => {
     form.value?.submit()
-    handleAddVisibleChange();
+    handleEditVisibleChange();
 };
-const runwayAddSubmit: FormProps['onSubmit'] = async ({ validateResult, firstError }) => {
+const runwayEditSubmit: FormProps['onSubmit'] = async ({ validateResult, firstError }) => {
     if (validateResult === true) {
-        await store.addData(runwayAddFormData.value).then(() => {
+        await store.updateData(runwayEditFormData.value).then(() => {
             form.value?.reset();
         })
     } else {

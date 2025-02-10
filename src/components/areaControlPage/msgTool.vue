@@ -33,8 +33,8 @@
 <script lang="ts" setup>
 import importantMsg from './msgTool/importantMsg.vue';
 import sysMsg from './msgTool/sysMsg.vue';
-import alertMsg from './msgTool/alertMsg.vue';
-import cooperaMsg from './msgTool/cooperaMsg.vue';
+import alertMsg from '../towerControlPage/msgTool/alertMsg.vue';
+import cooperaMsg from '../towerControlPage/msgTool/cooperaMsg.vue';
 
 
 

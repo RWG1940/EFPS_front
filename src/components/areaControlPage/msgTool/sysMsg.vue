@@ -9,9 +9,17 @@
 <script lang="ts" setup>
 import { ref,onMounted } from 'vue'
 import { usesysMsgStore,sysMsgData } from '@/stores/sysMsg-store';
+import { useUserStore } from '@/stores/user-store';
 
 const store = usesysMsgStore()
 onMounted(() => {
+    store.addData({
+    header: `欢迎~${useUserStore().myData.emp.eName}~登陆成功`,
+    content: Date().toLocaleString(),
+    status: 1,
+    author: '系统提示',
+    theme: 'success',
+})
     store.fetchAllData()
 })
 </script>

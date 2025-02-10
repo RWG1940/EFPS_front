@@ -131,13 +131,3 @@ export const programOptions = [
     { label: 'A08', value: 'A08' },
     { label: 'C09', value: 'C09' },
 ]
-export const stopwayOptions = [
-    { label: 'A', value: 'A' },
-    { label: 'B', value: 'B' },
-
-]
-export const runwayOptions = [
-    { label: '1', value: '1' },
-    { label: '2', value: '2' },
-    { label: '3', value: '3' },
-]

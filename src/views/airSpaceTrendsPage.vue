@@ -1,7 +1,8 @@
 <template>
     <div class="wrap">
         <el-affix :offset="120">
-            <t-button style="position: absolute;margin-left: 1000px;background-color: rgba(141, 141, 141, 0.397);" theme="default" @click="operateBtn">
+            <t-button style="position: absolute;margin-left: 1000px;background-color: rgba(141, 141, 141, 0.397);"
+                theme="default" @click="operateBtn">
                 <t-icon :name="iconName" class="icon"></t-icon>空域操作
             </t-button>
         </el-affix>
@@ -39,7 +40,7 @@
         </t-row>
         <t-drawer v-model:visible="store.operationPanelVisible" header="空域操作"
             :on-overlay-click="() => { store.operationPanelVisible = false }" placement="bottom"
-            @cancel="() => { store.operationPanelVisible = false; store.operateAirSpace = {} }" @confirm="operateConfirm">
+            @cancel="() => { store.operationPanelVisible = false; }" @confirm="operateConfirm">
             <t-row :gutter="16">
                 <t-col :span="2">
                     空域：
@@ -57,16 +58,23 @@
                 </t-col>
                 <t-col :span="2">
                     起止日期：
-                    <t-date-range-picker :value="[store.operateAirSpace.startTime, store.operateAirSpace.endTime]"
-                        enable-time-picker allow-input clearable @pick="onPick" @change="onChange" />
+                    <t-input-adornment prepend="开始时间">
+                        <t-date-picker v-model="store.operateAirSpace.starttime" enable-time-picker allow-input
+                            clearable />
+                    </t-input-adornment>
+                    <t-input-adornment prepend="结束时间">
+                        <t-date-picker v-model="store.operateAirSpace.endtime" enable-time-picker allow-input
+                            clearable />
+                    </t-input-adornment>
                 </t-col>
             </t-row>
             <t-row :gutter="16">
                 <t-col :span="6">
                     <t-card style="margin-top: 16px;">该空域目前状态：
                         <t-tag size="large" style="margin: 5px;" v-for="(item, index) in airSpace" :key="index"
-                            effect="dark">状态：{{ item.title }},持续期间：{{ item.starttime }}到{{ item.endtime }} 
-                            <el-button @click="store.endAirSpaceEvent(item)" type="danger" size="small">结束该状态</el-button></t-tag>
+                            effect="dark">状态：{{ item.title }},持续期间：{{ item.starttime }}到{{ item.endtime }}
+                            <el-button @click="store.endAirSpaceEvent(item)" type="danger"
+                                size="small">结束该状态</el-button></t-tag>
                     </t-card>
                 </t-col>
             </t-row>
@@ -74,7 +82,7 @@
     </div>
 </template>
 <script setup lang="ts">
-import { ref, computed,onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import airspace from '@/components/areaControlPage/trendsTool/airspace.vue';
 import airSpaceFlowView from '@/components/airSpaceTrendsPage/airSpaceFlowView.vue';
 import airSpaceWeather from '@/components/airSpaceTrendsPage/airSpaceWeather.vue';
@@ -112,7 +120,6 @@ const operateConfirm = () => {
         onConfirm: () => {
             store.addAirSpaceEventOperate(store.operateAirSpace);
             store.operationPanelVisible = false;
-            store.operateAirSpace = {}
             c.destroy();
         },
         onClose: () => {
@@ -147,6 +154,5 @@ onMounted(() => {
 
 .icon {
     margin-top: 2px;
-}
-</style>
+}</style>
   

@@ -7,6 +7,7 @@ export const useRunwayStore = createCRUDStore('runway', runwayApi)
 export const runwayStore = useRunwayStore()
 
 export const runwayAddFormData = ref<RunwayData>({})
+export const runwayEditFormData = ref<RunwayData>({})
 
 export const search = ref()
 export const filteredRunwayTableData = computed(() => {
@@ -21,4 +22,12 @@ export const runwayTableData = computed(() => {
     return filteredRunwayTableData.value.filter((runway: any) =>
         2>0
     )as RunwayData[]
+})
+export const runwayOptions = computed(() => {
+    return runwayTableData.value.map((runway: any) => {
+        return {
+            label: runway.code,
+            value: runway.id
+        }
+    })
 })

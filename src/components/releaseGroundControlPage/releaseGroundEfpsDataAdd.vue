@@ -124,7 +124,7 @@
 
           <!-- 停机位 -->
           <t-form-item name="e4" label="停机位">
-            <t-input v-model="releaseGroundEfpsAddFormData.e4" />
+            <t-select v-model="releaseGroundEfpsAddFormData.e4" :options="parkingStandOptions" />
           </t-form-item>
 
           <!-- 其他信息 -->
@@ -180,10 +180,12 @@ import { ref } from 'vue'
 import { useReleaseGroundEfpsStore, releaseGroundEfpsAddFormData,d1Lhalf,d1Rhalf,b2Lhalf,b2Rhalf } from "@/stores/releaseGroundEfps-store";
 import {
   releaseGroundEfpsADD_FORM_RULES, releaseGroundEfpsHightStatusOptions, releaseGroundEfpsSecondaryRadarOptions, releaseGroundEfpsStatusOptions, releaseGroundEfpsTypeOptions, releaseGroundEfpsWakeOptions
-  , runwayOptions, programOptions
+  , programOptions
 } from '@/types/releaseGroundEfpsTypes'
 import type { FormInstanceFunctions, FormProps } from 'tdesign-vue-next';
 import { MessagePlugin } from 'tdesign-vue-next';
+import { runwayStore,runwayOptions } from '@/stores/runway-store';
+import { parkingStandStore,parkingStandOptions } from '@/stores/parkingStand-store';
 
 const store = useReleaseGroundEfpsStore();
 const form = ref<FormInstanceFunctions>();

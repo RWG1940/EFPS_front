@@ -18,8 +18,9 @@ const percentage = ref(0);
 
 onMounted(() => {
     const interval = setInterval(() => {
+        let roleId = parseInt(sessionStorage.getItem('userRoleId') as string)
         if (store.aimRoutePath == 'command-control/areaControl') {
-            if (parseInt(sessionStorage.getItem('userDeptid') as string) == 47) {
+            if (roleId == 1 || roleId == 2 || roleId == 3 ) { 
                 if (percentage.value < 100) {
                     percentage.value += 20;
                 } else {
@@ -33,7 +34,7 @@ onMounted(() => {
             }
         }
         if (store.aimRoutePath == 'command-control/towerControl') {
-            if (parseInt(sessionStorage.getItem('userDeptid') as string) == 47) {
+            if (roleId == 1 || roleId == 2 || roleId == 4 ) {
                 if (percentage.value < 100) {
                     percentage.value += 20;
                 } else {
@@ -48,7 +49,7 @@ onMounted(() => {
             }
         } 
         if (store.aimRoutePath == 'command-control/releaseGroundControl') {
-            if (parseInt(sessionStorage.getItem('userDeptid') as string) == 47) {
+            if (roleId == 1 || roleId == 2 || roleId == 5 ) {
                 if (percentage.value < 100) {
                     percentage.value += 20;
                 } else {

@@ -1,7 +1,8 @@
 <template>
     <div class="table-container">
         <el-scrollbar style="width: 1250px;">
-            <el-table :data="flightPlanStore.dataPages" class="table-style" @selection-change="flightPlanStore.handleSelectionChange" border>
+            <el-table :data="flightPlanStore.dataPages" class="table-style"
+                @selection-change="flightPlanStore.handleSelectionChange" border>
                 <el-table-column type="selection" width="40" fixed />
                 <el-table-column label="航班号" prop="flightNumber" fixed width="100" show-overflow-tooltip />
                 <el-table-column label="机型" prop="aircraftType" width="100" show-overflow-tooltip />
@@ -18,26 +19,77 @@
                 <el-table-column label="备注" prop="remarks" width="100" show-overflow-tooltip />
                 <el-table-column label="操作" width="150" fixed="right">
                     <template #default="scope">
-                        <t-button variant="outline" size="small">编辑</t-button>
-                        <t-button variant="outline" size="small" theme="danger">删除</t-button>
-                        <t-button variant="outline" size="small" theme="warning">转单</t-button>
+                        <t-button variant="outline" size="small" @click="handleEditBtn(scope.row)">编辑</t-button>
+                        <t-popconfirm content="确认删除吗" @confirm="flightPlanStore.deleteData([scope.row.id])" theme="danger"
+                            placement="bottom">
+                            <t-button variant="outline" size="small" theme="danger">删除</t-button>
+                        </t-popconfirm>
+                        <t-button variant="outline" size="small" theme="warning"
+                            @click="handleTransferBtn(scope.row)">转单</t-button>
 
                     </template>
                 </el-table-column>
 
             </el-table>
         </el-scrollbar>
-        <t-pagination style="margin-top: 10px;" v-model="flightPlanStore.currentPage" v-model:pageSize="flightPlanStore.pageSize"
-            :total="flightPlanStore.pageDataSum" show-jumper @page-size-change="flightPlanStore.fetchPageData" @current-change="flightPlanStore.fetchPageData" />
+        <t-pagination style="margin-top: 10px;" v-model="flightPlanStore.currentPage"
+            v-model:pageSize="flightPlanStore.pageSize" :total="flightPlanStore.pageDataSum" show-jumper
+            @page-size-change="flightPlanStore.fetchPageData" @current-change="flightPlanStore.fetchPageData" />
     </div>
+    <flightPlanDataEdit :visible="editVisible" @update:visible="handleEditVisibleChange" />
+    <transferFlightPlanPanel :visible="transferVisible" @update:visible="handleTransferVisibleChange" />
 </template>
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { flightPlanStore } from '@/stores/flightPlan-store'
+import {
+    flightPlanStore, flightPlanEditFormData, flightPlanTransferData, efpsData, flightInfoData, 
+} from '@/stores/flightPlan-store'
+import flightPlanDataEdit from './flightPlanDataEdit.vue';
+import transferFlightPlanPanel from './transferFlightPlanPanel.vue';
+import { formatDate3 } from '@/utils/moment';
 
-onMounted(() => {
-    flightPlanStore.fetchPageData()
-})
+
+const editVisible = ref(false)
+const transferVisible = ref(false)
+const airport = ref(import.meta.env.AIRPORT_CODE)
+
+const handleEditVisibleChange = () => {
+    editVisible.value = !editVisible.value
+}
+const handleTransferVisibleChange = () => {
+    transferVisible.value = !transferVisible.value
+}
+
+const handleEditBtn = (row: any) => {
+    handleEditVisibleChange()
+    flightPlanEditFormData.value = { ...row }
+
+}
+const handleTransferBtn = (row: any) => {
+    handleTransferVisibleChange()
+    flightPlanTransferData.value = { ...row }
+
+    // 转进程单
+    efpsData.value.a1 = flightPlanTransferData.value.flightNumber
+    efpsData.value.b1 = flightPlanTransferData.value.aircraftType
+    efpsData.value.e1 = flightPlanTransferData.value.departureAirport
+    efpsData.value.h1 = flightPlanTransferData.value.arrivalAirport
+    if (flightPlanTransferData.value.arrivalAirport == airport.value) {
+        efpsData.value.fg1 = formatDate3(flightPlanTransferData.value.scheduledArrivalTime as any)
+    } else {
+        efpsData.value.fg1 = formatDate3(flightPlanTransferData.value.scheduledDepartureTime as any)
+    }
+    efpsData.value.e4 = flightPlanTransferData.value.stand
+    // 转航班信息
+    flightInfoData.value.flightNumber = flightPlanTransferData.value.flightNumber
+    flightInfoData.value.arrivalAirport = flightPlanTransferData.value.arrivalAirport
+    flightInfoData.value.departureAirport = flightPlanTransferData.value.departureAirport
+    flightInfoData.value.scheduledArrivalTime = flightPlanTransferData.value.scheduledArrivalTime
+    flightInfoData.value.scheduledDepartureTime = flightPlanTransferData.value.scheduledDepartureTime
+    flightInfoData.value.aircraftType = flightPlanTransferData.value.aircraftType
+}
+
+
 </script>
 <style scoped>
 .table-container {

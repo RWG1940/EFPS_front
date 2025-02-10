@@ -1,41 +1,34 @@
 <template>
     <div class="operations">
         <t-icon name="gesture-press"></t-icon>操作
-        <t-row :gutter="5" style="margin: 5px;background-color:beige;padding: 10px;border-radius: 10px;">
-            <t-col><t-select size="small" v-model="selectedStopway" :options="stopwayOptions" style="width: 100px;"
+        <t-row :gutter="5" class="operation-row">
+            <t-col><t-select size="small" v-model="selectedStopway" :options="parkingStandOptions" style="width: 100px;"
                     clearable placeholder="停机位"></t-select></t-col>
-            <t-col><t-button size="small" @click="saveStopway">确认</t-button></t-col>
+            <t-col><t-button size="small" @click="saveStopway">使用</t-button></t-col>
             <t-col><t-select size="small" v-model="selectedRunway" :options="runwayOptions" style="width: 100px;" clearable
                     placeholder="跑道号"></t-select></t-col>
-            <t-col><t-button size="small" @click="saveRunway">确认</t-button></t-col>
-
-
+            <t-col><t-button size="small" @click="saveRunway">使用</t-button></t-col>
+            &ensp;|&ensp;
+            <t-col><t-button size="small" theme="danger" @click="clearStopwayWithRunway">清除</t-button></t-col>
         </t-row>
-        <t-row :gutter="5" style="margin: 5px;background-color:beige;padding: 10px;border-radius: 10px;">
-            <t-col><t-select size="small"  style="width: 100px;"
-                    clearable placeholder="车辆调度"></t-select></t-col>
+        <t-row :gutter="5" class="operation-row">
+            <t-col><t-select size="small" style="width: 100px;" clearable placeholder="车辆调度"></t-select></t-col>
             <t-col><t-button size="small" @click="saveStopway">确认</t-button></t-col>
-            <t-col><t-select size="small" style="width: 100px;" clearable
-                    placeholder="登机口"></t-select></t-col>
+            <t-col><t-select size="small" style="width: 100px;" clearable placeholder="登机口"></t-select></t-col>
             <t-col><t-button size="small" @click="">确认</t-button></t-col>
 
 
         </t-row>
-
-        <t-row :gutter="5" style="margin: 5px;background-color:beige;padding: 10px;border-radius: 10px;">
-            <t-col>飞行指令：</t-col>
+        <t-row :gutter="5" style="margin-left: 5px;margin-top: 100px;">
             <t-col>
-                <t-input size="small" style="width: 120px;" clearable v-model="flyCommand"></t-input>
-            </t-col>
-            <t-col><t-button size="small" @click="sendFlyCommand">发送</t-button></t-col>
-        </t-row>
-        <t-row :gutter="5" style="margin-left: 5px;">
-            <t-col><t-button theme="success" shape="round">测试</t-button></t-col>
-            <t-col>
-                <t-button shape="round" @click="transferVisible = true">移交</t-button>
-                <t-dialog v-model:visible="transferVisible" header='确认移交？' :on-confirm="handleTransfer" theme="info">
-                    <t-row>将会移交至&ensp;<el-tag :type="nowProcessingData[0]?.type == 1 ? 'error' :nowProcessingData[0]?.type == 0 ? 'warning':'info'" effect="dark">{{
-                        nowProcessingData[0]?.type == 1 ? '暂时不能继续移交' :nowProcessingData[0]?.type == 0 ? '塔台席':'您没有选择进程单' }}</el-tag></t-row>
+                <t-button shape="round" @click="transferVisible = true">放行</t-button>
+                <t-dialog v-model:visible="transferVisible" header='确认放行？' :on-confirm="handleTransfer" theme="info">
+                    <t-row>下一步将&ensp;<el-tag
+                            :type="nowProcessingData[0]?.type == 1 ? 'danger' : nowProcessingData[0]?.type == 0 ? 'warning' : 'info'"
+                            effect="dark">{{
+                                nowProcessingData[0]?.type == 1 ? '飞行器入库' : nowProcessingData[0]?.type == 0 ? '移交至塔台席' :
+                                '您没有选择进程单'
+                            }}</el-tag>{{ nowProcessingData[0]?.type == 1 ? '，将释放跑道资源' :'' }}</t-row>
                     该操作不可逆，请确认移交进程单的信息：
                     <el-scrollbar hight="50px">
                         <releaseGroundEfps id="printable-efps" BackgroundColor="lightskyblue"
@@ -54,17 +47,22 @@
 </template>
 <script lang="ts" setup>
 import {
-    setConflictFlag, setDiversion, setReturnflight, setVIP, flyCommand, sendFlyCommand, transferEfps
-    , permitFly, cancelPermit, selectedProgram, selectedRunway, selectedStopway, saveStopway, saveRunway, saveExit, saveStart, saveTaxi, nowProcessingData
+    clearStopwayWithRunway,
+    transferEfps, selectedRunway, selectedStopway, saveStopway, saveRunway, nowProcessingData
 } from '@/stores/releaseGroundEfps-store';
 import { ref } from 'vue';
 import releaseGroundEfps from '../releaseGroundEfps.vue'
-import { programOptions, stopwayOptions, runwayOptions } from '@/types/releaseGroundEfpsTypes';
+import { programOptions } from '@/types/releaseGroundEfpsTypes';
 import { jsPDF } from "jspdf";
 import html2canvas from 'html2canvas';
+import { runwayStore, runwayOptions } from '@/stores/runway-store';
+import { parkingStandStore, parkingStandOptions } from '@/stores/parkingStand-store';
+
+
 
 const transferVisible = ref(false);
 const printVisible = ref(false)
+
 const handleTransfer = () => {
     transferVisible.value = false;
     transferEfps()
@@ -76,7 +74,7 @@ const exportToPDFBtn = () => {
 
 const exportToPDF = async () => {
     // 获取需要导出的元素
-    const element = document.querySelector('#loveSJM')as HTMLElement;
+    const element = document.querySelector('#loveSJM') as HTMLElement;
     if (!element) return;
 
     // 使用 html2canvas 将元素转换为图像
@@ -110,7 +108,7 @@ const exportToPDF = async () => {
         pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
         heightLeft -= pageHeight;
     }
-    
+
     // 保存 PDF
     pdf.save('nowProcessingData.pdf');
 };
@@ -122,5 +120,27 @@ const exportToPDF = async () => {
     border-radius: 10px;
     margin-top: 10px;
     width: 485px;
+    transition-duration: 0.5s;
+}
+
+.operations:hover {
+    background-color: rgba(255, 255, 255, 0.8);
+    transition-duration: 0.5s;
+}
+
+.operation-row {
+    margin: 5px;
+    background-color: beige;
+    padding: 10px;
+    border-radius: 10px;
+    transition-duration: 0.5s;
+
+}
+
+.operation-row:hover {
+    background-color: lightgrey;
+    color: white;
+    transition-duration: 0.5;
+    text-shadow: 2px 2px 3px rgb(0, 0, 0);
 }
 </style>

@@ -2,9 +2,9 @@
   <!-- 修改用户信息 -->
   <userEdit :visible="visible" header="用户资料修改" @update:visible="handleEditVisibleChange">
     <template #main>
-      <el-scrollbar height="520px" style="margin-bottom: 10px;">
-        <div style="display: flex;">
-          <p style="margin-right: 10px;">头像</p>
+      <el-scrollbar height="520px" style="margin-bottom: 10px;padding: 15px;">
+        <div style="display: flex;margin-left:50px;">
+          <p style="margin-right: 10px;">头像：</p>
           <t-upload ref="store.uploadRef" v-model="store.file1" :image-viewer-props="store.imageViewerProps"
             :size-limit="store.sizeLimit" :action="store.avatarUrl" theme="image" tips="上传头像大小不超过5500KB" accept="image/*"
             :disabled="store.disabled" :auto-upload="store.autoUpload" :show-image-file-name="store.showImageFileName"
@@ -15,80 +15,61 @@
             }" @success="store.handleSuccess" @fail="store.handleFail">
           </t-upload>
         </div>
-        <t-form ref="form" :data="store.userDataFormData" :rules="store.USERDATA_FORM_RULES" :label-width="0"
+        <t-form ref="form" :data="store.userDataFormData" :rules="store.USERDATA_FORM_RULES" :label-width="100"
           @submit="saveButton">
 
-          <t-form-item name="emp.eUsername">
-            <t-input-adornment prepend="账号">
-              <t-input v-model="store.userDataFormData.emp.eUsername" disabled clearable />
-            </t-input-adornment>
+          <t-form-item name="emp.eUsername" label="账号：">
+            <t-input v-model="store.userDataFormData.emp.eUsername" disabled clearable />
           </t-form-item>
 
-          <t-form-item name="emp.ePassword">
-            <t-input-adornment prepend="密码">
-              <t-input v-model="store.userDataFormData.emp.ePassword" type="password" clearable />
-            </t-input-adornment>
+          <t-form-item name="emp.ePassword" label="密码：">
+              <t-input v-model="confirmPwd" type="password" placeholder="请输入后确认" clearable />
+              <t-button style="margin-left: 5px;" :theme="confirmPwd.length > 2 ? 'primary':'info'" size="medium" @click="store.userDataFormData.emp.ePassword = confirmPwd">确认</t-button>
           </t-form-item>
 
-          <t-form-item name="emp.eName">
-            <t-input-adornment prepend="姓名">
+
+          <t-form-item name="emp.eName" label="姓名：">
               <t-input v-model="store.userDataFormData.emp.eName" clearable />
-            </t-input-adornment>
           </t-form-item>
 
-          <t-form-item name="emp.eId">
-            <t-input-adornment prepend="身份证号">
+          <t-form-item name="emp.eId" label="身份证号：">
               <t-input v-model="store.userDataFormData.emp.eId" clearable />
-            </t-input-adornment>
           </t-form-item>
 
-          <t-form-item name="emp.ePhone">
-            <t-input-adornment prepend="手机号">
+          <t-form-item name="emp.ePhone" label="手机号：">
               <t-input v-model="store.userDataFormData.emp.ePhone" clearable />
-            </t-input-adornment>
           </t-form-item>
 
-          <t-form-item name="role.rId">
-            <t-input-adornment prepend="角色">
+          <t-form-item name="role.rId" label="角色：">
               <t-select v-model="store.userDataFormData.role.rId" clearable>
                 <t-option :value="item.rId" :label="item.rInfo" v-for="(item, index) in roleStore.roleList"
                   :key="index"></t-option>
-
               </t-select>
-            </t-input-adornment>
           </t-form-item>
 
-          <t-form-item name="emp.eDeptid">
-            <t-input-adornment prepend="部门">
+          <t-form-item name="emp.eDeptid" label="部门：">
               <t-select v-model="store.userDataFormData.emp.eDeptid" clearable>
                 <t-option :value="item.id" :label="item.dName" v-for="(item, index) in deptStore.tableData"
                   :key="index"></t-option>
               </t-select>
-            </t-input-adornment>
           </t-form-item>
 
-          <t-form-item name="emp.eIsenabled">
-            <t-input-adornment prepend="账号状态">
+          <t-form-item name="emp.eIsenabled" label="是否启用：">
               <t-select v-model="store.userDataFormData.emp.eIsenabled" clearable>
                 <t-option :value="item.value" :label="item.label" v-for="(item, index) in store.options4"
                   :key="index"></t-option>
               </t-select>
-            </t-input-adornment>
           </t-form-item>
 
-          <t-form-item name="emp.eAge">
-            <t-input-adornment prepend="年龄">
+          <t-form-item name="emp.eAge" label="年龄：" >
               <t-input v-model="store.userDataFormData.emp.eAge" clearable />
-            </t-input-adornment>
           </t-form-item>
 
-          <t-form-item name="emp.eGender">
-            <t-input-adornment prepend=" 性别">
+          <t-form-item name="emp.eGender" label="性别：" >
               <t-select v-model="store.userDataFormData.emp.eGender" clearable>
                 <t-option :value="item.value" :label="item.label" v-for="(item, index) in store.options2"
                   :key="index"></t-option>
               </t-select>
-            </t-input-adornment>
           </t-form-item>
         </t-form>
       </el-scrollbar>
@@ -114,6 +95,7 @@ import { updateUser } from '@/api/services/user-api';
 const store = useUserStore()
 const deptStore = useDeptStore()
 const roleStore = useRoleStore()
+const confirmPwd = ref('')
 const form = ref<FormInstanceFunctions>();
 const props = defineProps<{
   visible: boolean;
@@ -124,6 +106,9 @@ const handleEditVisibleChange = () => {
   emit('update:visible');
 }
 const submitButton = async () => {
+  if (confirmPwd.value == '') {
+    store.userDataFormData.emp.ePassword = 'N';
+  }
   form.value?.submit();
 }
 
@@ -136,8 +121,8 @@ const cancelButton: FormProps['onReset'] = () => {
 }
 
 const saveButton: FormProps['onSubmit'] = async ({ validateResult, firstError }) => {
+  
   if (validateResult === true) {
-    console.log("1:" + store.userDataFormData.emp.eUsername)
     await handleUpdateUser().then(() => {
       form.value?.reset();
       emit('update:visible')
@@ -153,7 +138,7 @@ const saveButton: FormProps['onSubmit'] = async ({ validateResult, firstError })
 
 const handleUpdateUser = async () => {
   store.userDataFormData.emp.eAvatarpath = store.avatarPath
-  console.log("2" + store.userDataFormData.emp.eUsername)
+
   await updateUser(store.userDataFormData).then(() => {
     MessagePlugin.success('用户修改成功');
     store.file1 = store.Nullfile1;

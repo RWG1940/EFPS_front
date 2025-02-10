@@ -10,14 +10,7 @@
             <el-col :span="12">
                 <div class="right1">
                     <t-icon name="cloud"></t-icon> 空域动态
-                    <t-button theme="default" size="small" style="margin-left: 60px;"><t-icon
-                            name="swap"></t-icon>空域概览</t-button>
-                    <t-button theme="default" size="small" style="margin-left: 5px;"><t-icon
-                            name="swap"></t-icon>空域天气</t-button>
-                    <t-button theme="default" size="small" style="margin-left: 5px;"><t-icon
-                            name="swap"></t-icon>空域航班</t-button>
-                    <t-button theme="default" size="small" style="margin-left: 5px;"><t-icon
-                            name="swap"></t-icon>图形数据</t-button>
+                
                     <div style="height: 310px;margin-top: 10px;">
                         <el-scrollbar hight="350px" style="border-radius: 10px;">
                             <airspace />
@@ -30,10 +23,8 @@
     </div>
 </template>
 <script lang="ts" setup>
-import airspace from './trendsTool/airspace.vue'
-import parkingplace from './trendsTool/parkingplace.vue'
-import runway from './trendsTool/runway.vue'
-import aircraftsTrends from './trendsTool/aircraftsTrends.vue'
+import airspace from '@/components/areaControlPage/trendsTool/airspace.vue'
+import aircraftsTrends from '@/components/areaControlPage/trendsTool/aircraftsTrends.vue'
 
 
 </script>

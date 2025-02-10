@@ -2,9 +2,15 @@
     <div class="wrap">
         <el-table :data="mergedData" style="height: 250px; border-radius: 5px; font-size: small;" stripe>
             <el-table-column prop="code" label="停机位编号" width="100" show-overflow-tooltip />
-            <el-table-column prop="size" label="大小" width="70" show-overflow-tooltip />
-            <el-table-column prop="status" label="状态" width="70" show-overflow-tooltip >
-                <template #default="scope"><el-tag :type="scope.row.status == '1'? 'success':scope.row.status == '2'?'warning':'danger'" >{{ scope.row.status == '1'? '空闲':scope.row.status == '2'?'被占用':'已禁用' }}</el-tag></template>
+            <el-table-column prop="size" label="大小" width="70" show-overflow-tooltip>
+                <template #default="{ row }">
+                    <el-tag effect="plain" round>{{ row.size == 1 ? '小型' : row.size == 2 ? '中型' : '大型' }}</el-tag>
+                </template>
+            </el-table-column>
+            <el-table-column prop="status" label="状态" width="70" show-overflow-tooltip>
+                <template #default="scope"><el-tag
+                        :type="scope.row.status == '0' ? 'success' : scope.row.status == '1' ? 'warning' : 'danger'">{{
+                            scope.row.status == '0' ? '空闲' : scope.row.status == '1' ? '被占用' : '已禁用' }}</el-tag></template>
             </el-table-column>
             <el-table-column prop="location" label="位置" width="100" show-overflow-tooltip />
             <el-table-column prop="flightNumber" label="航班号" width="100" show-overflow-tooltip />
@@ -31,16 +37,16 @@ onMounted(() => {
 // 计算合并后的数据
 const mergedData = computed(() => {
     // 遍历停机位数据
-    return parkingStandStore.data.map((parkingStand:any) => {
+    return parkingStandStore.data.map((parkingStand: any) => {
         // 找到与当前停机位关联的航班停机位数据
         const flightParkingStand = flightParkingStandStore.data.find(
-            (fps:any) => fps.parkingStandId === parkingStand.id
+            (fps: any) => fps.parkingStandId === parkingStand.id
         ) as any;
 
         if (flightParkingStand) {
             // 找到与当前航班停机位数据关联的航班信息
             const flightInfo = flightInfoStore.data.find(
-                (flight:any) => flight.id === flightParkingStand.flightId
+                (flight: any) => flight.id === flightParkingStand.flightId
             ) as any;
 
             if (flightInfo) {

@@ -107,7 +107,9 @@ export const areaEfpsTagOptions = [
 ];
 // 指令区选项
 export const areaEfpsInstructionOptions = [
-    { label: '高度变化', value: 'b2' },
+    { label: '高度变化1', value: 'b21' },
+    { label: '高度变化2', value: 'b22' },
+    { label: '高度变化3', value: 'b23' },
     { label: '其他指令', value: 'c2' },
     { label: '申请的巡航高度层', value: 'a2' },
 ]
@@ -142,4 +144,9 @@ export const recordAreaOptions = [
     { label: '记录4', value: '4' },
     { label: '记录5', value: '5' },
     { label: '记录6', value: '6' },
+]
+export const instructionRecordOptions = [
+    { label: '记录1', value: 'b21' },
+    { label: '记录2', value: 'b22' },
+    { label: '记录3', value: 'b23' },
 ]

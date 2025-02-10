@@ -215,7 +215,7 @@ defineProps({
 }
 
 .el-col {
-    transition-duration: 0.5s;
+    transition-duration: 0.3s;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -227,9 +227,15 @@ defineProps({
     text-overflow: ellipsis;
 }
 
-.el-col :hover,
+.el-col :hover{
+    background-color: rgba(255, 255, 255, 0.514);
+    color:rgb(0, 0, 0);
+    transition-duration: 0.1s;
+    
+
+}
 .el-row :hover {
-    box-shadow: 1px 1px 10px rgb(30, 0, 255);
+    box-shadow: 1px 1px 10px rgb(138, 138, 138);
 }
 
 .wrap {

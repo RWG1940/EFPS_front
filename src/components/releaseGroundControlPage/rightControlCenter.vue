@@ -1,7 +1,7 @@
 <template>
         <div class="control-center">
         <t-row style="justify-content: center;">
-            <p style="margin-top: 0px;margin-bottom: 2px;font-weight: bold;"><t-icon name="setting"></t-icon>控制中心</p>
+            <p style="margin-top: 0px;margin-bottom: 2px;font-weight: bold;"><t-icon name="command" class="r-icon"></t-icon>控制中心</p>
         </t-row>
         <t-row>
             <el-scrollbar height="290px" style="border-radius: 5px;">
@@ -36,5 +36,18 @@ import aircraftStatus from './rightControlCenter/aircraftStatus.vue';
 .control-center:hover {
     transition-duration: 0.5s;
     box-shadow: 1px 1px 10px grey;
+}
+.r-icon {
+    // 让它一直旋转
+    animation: spin 3s linear infinite;
+    margin-right: 5px;
+}
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }
 </style>

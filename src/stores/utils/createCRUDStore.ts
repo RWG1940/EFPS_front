@@ -12,6 +12,7 @@ export function createCRUDStore<T>(storeName: string, api: any) {
         const currentPage = ref(1);
         const selectedIds = ref<number[]>([]);
         const search = ref('');
+        const searchResultData = ref<T[]>([]);
 
 
         // 获取所有数据
@@ -60,6 +61,12 @@ export function createCRUDStore<T>(storeName: string, api: any) {
             }
         };
 
+        // 查询数据
+        const searchData = async (Data:T) => {
+            const res =  await api.search(Data);
+            searchResultData.value = res.data.result;
+        };
+
         // 过滤数据
         const filterTableData = computed(() =>
             dataPages.value.filter((item) => {
@@ -84,6 +91,7 @@ export function createCRUDStore<T>(storeName: string, api: any) {
             selectedIds,
             search,
             pageDataSum,
+            searchResultData,
 
             fetchAllData,
             fetchPageData,
@@ -93,6 +101,7 @@ export function createCRUDStore<T>(storeName: string, api: any) {
             deleteSelectedData,
             filterTableData,
             handleSelectionChange,
+            searchData
         };
     });
 }

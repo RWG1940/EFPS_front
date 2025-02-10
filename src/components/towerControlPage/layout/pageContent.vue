@@ -25,8 +25,8 @@
                         <transition name="ba-trans" appear>
                             <el-col :span="3.5" class="process">
                                 <p style="font-size: xx-small;margin: -11px;"><t-icon name="next"></t-icon>下一个进程单准备</p>
-                                <t-progress theme="line" :color="{ from: '#0052D9', to: '#00A870' }" :percentage="60"
-                                    :status="'active'" style="font-size: xx-small;"  />
+                                <t-progress theme="line" :color="{ from: '#0052D9', to: '#00A870' }"
+                                    :percentage="percentage1" :status="'active'" style="font-size: xx-small;" />
                             </el-col>
                         </transition>
                         <transition name="ba-trans" appear>
@@ -45,19 +45,21 @@
                         <el-col :span="12">
                             <transition name="ar-trans" appear>
                                 <div class="arrival-prepare-container">
-                                    <t-loading  size="small" :loading="loadingVisible" text="数据加载中...">
+                                    <t-loading size="small" :loading="loadingVisible" text="数据加载中...">
                                         <el-scrollbar height="250px" style="border-radius: 10px;">
                                             <div v-for="item in filteredArrivalEfps" :key="item.id"
                                                 style="display: flex; align-items: center; flex-direction: column;margin-bottom: 10px;">
                                                 <t-popconfirm theme="default" content="您想要处理该进程单吗"
                                                     :visible="visibleMap[item.id as number]"
                                                     :cancelBtn="{ content: '取消', size: 'small', theme: 'default', onClick: () => { visibleMap[item.id as number] = false } }"
-                                                    :confirmBtn="{ content: '确定', size: 'small', theme: 'primary', onClick: () => handleArrivalEfpsProcessBtn(String(item.id as number)) }">
+                                                    :confirmBtn="{ content: '确定', size: 'small', theme: 'primary', onClick: () => handleEfpsProcessBtn(String(item.id as number)) }">
                                                     <towerEfps :BackgroundColor="prepareBackgroundColor"
                                                         :efpsData="item || {}"
                                                         @click="togglePopconfirm(String(item.id as number))" />
                                                 </t-popconfirm>
                                             </div>
+                                            <t-row v-if="filteredArrivalEfps.length == 0">没有进程单数据😬</t-row>
+                                            <t-row v-if="filteredArrivalEfps.length == 0">NO DATA FOUND</t-row>
                                         </el-scrollbar>
                                     </t-loading>
                                 </div>
@@ -81,13 +83,15 @@
 
                             <transition name="ar-trans" appear>
                                 <div class="arrival-handled-container">
-                                    <t-loading  size="small" :loading="loadingVisible" text="数据加载中...">
+                                    <t-loading size="small" :loading="loadingVisible" text="数据加载中...">
                                         <el-scrollbar height="225px" style="border-radius: 10px;">
                                             <div v-for="item in filteredTransferredArrivalEfps"
                                                 style="width: 100%;margin-bottom: 10px;" max-height="230">
                                                 <towerEfps :BackgroundColor="handledBackgroundColor"
                                                     :efpsData="item || {}" />
                                             </div>
+                                            <t-row v-if="filteredTransferredArrivalEfps.length == 0">没有进程单数据😬</t-row>
+                                            <t-row v-if="filteredTransferredArrivalEfps.length == 0">NO DATA FOUND</t-row>
                                         </el-scrollbar>
                                     </t-loading>
                                 </div>
@@ -123,8 +127,8 @@
 
                             <el-col :span="3.5" class="process">
                                 <p style="font-size: xx-small;margin: -11px;"><t-icon name="next"></t-icon>下一个进程单准备</p>
-                                <t-progress theme="line" :color="{ from: '#0052D9', to: '#00A870' }" :percentage="60"
-                                    :status="'active'" style="font-size: xx-small;" />
+                                <t-progress theme="line" :color="{ from: '#0052D9', to: '#00A870' }"
+                                    :percentage="percentage2" :status="'active'" style="font-size: xx-small;" />
                             </el-col>
                         </transition>
                         <transition name="ba-trans" appear>
@@ -142,19 +146,21 @@
                         <el-col :span="12">
                             <transition name="ar-trans" appear>
                                 <div class="departure-prepare-container">
-                                    <t-loading  size="small" :loading="loadingVisible" text="数据加载中...">
+                                    <t-loading size="small" :loading="loadingVisible" text="数据加载中...">
                                         <el-scrollbar height="250px" style="border-radius: 10px;">
                                             <div v-for="item in filteredDepartureEfps" :key="item.id"
                                                 style="display: flex; align-items: center; flex-direction: column;margin-bottom: 10px;">
                                                 <t-popconfirm theme="default" content="您想要处理该进程单吗"
                                                     :visible="visibleMap[item.id as number]"
                                                     :cancelBtn="{ content: '取消', size: 'small', theme: 'default', onClick: () => { visibleMap[item.id as number] = false } }"
-                                                    :confirmBtn="{ content: '确定', size: 'small', theme: 'primary', onClick: () => handleDepartureEfpsProcessBtn(String(item.id as number)) }">
+                                                    :confirmBtn="{ content: '确定', size: 'small', theme: 'primary', onClick: () => handleEfpsProcessBtn(String(item.id as number)) }">
                                                     <towerEfps :BackgroundColor="prepareBackgroundColor"
                                                         :efpsData="item || {}"
                                                         @click="togglePopconfirm(String(item.id as number))" />
                                                 </t-popconfirm>
                                             </div>
+                                            <t-row v-if="filteredDepartureEfps.length == 0">没有进程单数据😬</t-row>
+                                            <t-row v-if="filteredDepartureEfps.length == 0">NO DATA FOUND</t-row>
                                         </el-scrollbar>
                                     </t-loading>
                                 </div>
@@ -175,13 +181,15 @@
                             </el-row>
                             <transition name="ar-trans" appear>
                                 <div class="departure-handled-container">
-                                    <t-loading  size="small" :loading="loadingVisible" text="数据加载中...">
+                                    <t-loading size="small" :loading="loadingVisible" text="数据加载中...">
                                         <el-scrollbar height="225px" style="border-radius: 10px;">
                                             <div v-for="item in filteredTransferredDepartureEfps"
                                                 style="width: 100%;margin-bottom: 10px;" max-height="230">
                                                 <towerEfps :BackgroundColor="handledBackgroundColor"
                                                     :efps-data="item || {}" />
                                             </div>
+                                            <t-row v-if="filteredTransferredDepartureEfps.length == 0">没有进程单数据😬</t-row>
+                                            <t-row v-if="filteredTransferredDepartureEfps.length == 0">NO DATA FOUND</t-row>
                                         </el-scrollbar>
                                     </t-loading>
                                 </div>
@@ -190,17 +198,22 @@
                     </el-row>
                     <p style="margin-top: 10px;text-decoration: underline blue 10px;font-weight: bold;margin-left: 10px;">
                         <t-icon name="desktop-1"></t-icon>动态
-                        <t-button class="rround" theme="default" shape="circle"><t-icon name='refresh'></t-icon></t-button>
+                        <t-button class="rround" theme="default" shape="circle" @click="refreshTrendsBtn"><t-icon
+                                name='refresh'></t-icon></t-button>
                     </p>
                     <el-row>
-                        <trendsTool />
+                        <t-loading :loading="trendsLoadingVisible" text="动态刷新中...">
+                            <trendsTool />
+                        </t-loading>
                     </el-row>
                     <p style="margin-top: 10px;text-decoration: underline blue 10px;font-weight: bold;margin-left: 10px;">
                         <t-icon name="info-circle"></t-icon>信息
-                        <t-button class="rround" theme="default" shape="circle"><t-icon name='refresh'></t-icon></t-button>
+                        <t-button class="rround" theme="default" shape="circle" @click="refreshMsgsBtn"><t-icon name='refresh'></t-icon></t-button>
                     </p>
                     <el-row>
-                        <msgTool />
+                        <t-loading :loading="msgsLoadingVisible" text="动态刷新中...">
+                            <msgTool />
+                        </t-loading>
                     </el-row>
                     <el-row
                         style="justify-content: center;color:black;font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Powered
@@ -221,17 +234,32 @@
     <towerEfpsDataTable :visible="tableVisible" @update:visible="handleTableVisibleChange" />
 </template>
 <script lang="ts" setup>
-import { ref, reactive,onMounted,onUnmounted } from 'vue'
+import { ref, reactive, onMounted, onUnmounted } from 'vue'
 import towerEfps from '@/components/towerControlPage/towerEfps.vue'
 import rightControlCenter from '@/components/towerControlPage/rightControlCenter.vue'
 import msgTool from '@/components/areaControlPage/msgTool.vue'
 import trendsTool from '@/components/areaControlPage/trendsTool.vue'
 import towerEfpsDataAdd from '../towerEfpsDataAdd.vue'
-import { useTowerEfpsStore, filteredArrivalEfps, filteredDepartureEfps, filteredTransferredArrivalEfps, filteredTransferredDepartureEfps, handleArrivalEfpsProcess, handleDepartureEfpsProcess } from '@/stores/towerEfps-store'
+import { useTowerEfpsStore, filteredArrivalEfps, filteredDepartureEfps, filteredTransferredArrivalEfps, filteredTransferredDepartureEfps, handleEfpsProcess } from '@/stores/towerEfps-store'
 import towerEfpsDataTable from '../towerEfpsDataTable.vue'
-import { connectWebSocket, closeWebSocket } from '@/hooks/webSocket'; 
+import { connectWebSocket, closeWebSocket } from '@/hooks/webSocket';
+import type { Ref, ComputedRef } from 'vue'
+import type { TowerEfpsData } from '@/types/towerEfpsTypes'
+import { MessagePlugin, DialogPlugin } from 'tdesign-vue-next'
+import { aircraftsTrendsStore } from '@/stores/aircraftsTrends-store'
+import { runwayStore } from '@/stores/runway-store'
+import { parkingStandStore } from '@/stores/parkingStand-store'
+import { flightInfoStore } from '@/stores/flightInfo-store'
+import { flightParkingStandStore } from '@/stores/flightParkingStand-store'
+import { flightRunwayStore } from '@/stores/flightRunway-store'
+import { useAirSpaceEventStore } from '@/stores/airSpaceEvent-store'
+import { alertMsgStore } from '@/stores/alertMsg-store'
+import { cooperaMsgStore } from '@/stores/cooperaMsg-store'
+import { useNoticesStore } from '@/stores/notices-store'
+import { usesysMsgStore } from '@/stores/sysMsg-store'
 
-
+const msgsLoadingVisible = ref(false)
+const trendsLoadingVisible = ref(false)
 const visibleMap = reactive<{ [key: string]: boolean }>({});
 const store = useTowerEfpsStore()
 const addVisible = ref(false)
@@ -239,10 +267,54 @@ const prepareBackgroundColor = ref('antiquewhite')
 const handledBackgroundColor = ref('lightgreen')
 const loadingVisible = ref(false)
 const tableVisible = ref(false)
+const percentage1 = ref(0)
+const percentage2 = ref(0)
+const calculatePercentage = (efps: ComputedRef<TowerEfpsData[]>, percentageRef: Ref<number>) => {
+    const now = new Date();
+    const currentTimeInMinutes = now.getHours() * 60 + now.getMinutes() + 725;// 提前10分钟处理
+    const time = efps.value[0].fg1 as string;
+    const targetHour = parseInt(time.slice(0, 2), 10);
+    const targetMinute = parseInt(time.slice(2), 10);
+    const targetTimeInMinutes = targetHour * 60 + targetMinute;
+    let percentage = (currentTimeInMinutes / targetTimeInMinutes) * 100;
+    percentage = Math.min(Math.max(percentage, 0), 100);
+    percentageRef.value = parseInt(percentage.toFixed(1));
+    if (parseInt(percentage.toFixed(1)) == 100) {
+        MessagePlugin.info('💎航班准备完毕，请求处理💎')
+        let countdown = 6; // 倒计时 6 秒
+        const dia = DialogPlugin.confirm({
+            header: '处理确认',
+            body: `航班已就绪，是否确认处理该航班？ 倒计时：${countdown}秒`,
+            confirmBtn: '确认处理',
+            cancelBtn: '取消处理',
+            onConfirm: () => {
+                handleEfpsProcess(String(efps.value[0].id as number));
+                dia.destroy();
+            },
+            onCancel: () => {
+                MessagePlugin.info('取消处理');
+                dia.destroy();
+            },
+        });
+
+        const intervalId = setInterval(() => {
+            countdown--;
+            dia.update({
+                body: `航班已就绪，是否确认处理该航班（呼号：${efps.value[0].a1}，目的地：${efps.value[0].h1}）？${countdown}秒`
+            });
+
+            if (countdown <= 0) {
+                clearInterval(intervalId);
+                dia.destroy();
+                MessagePlugin.warning('未操作，进程单已自动加入处理队列');
+                // 将该进程单加入处理队列
+            }
+        }, 1000);
+    }
+};
 const handleTableVisibleChange = () => {
     tableVisible.value = !tableVisible.value
 }
-
 
 const handleAddVisibleChange = () => {
     addVisible.value = !addVisible.value
@@ -250,14 +322,11 @@ const handleAddVisibleChange = () => {
 const togglePopconfirm = (id: string) => {
     visibleMap[id] = !visibleMap[id];
 };
-const handleArrivalEfpsProcessBtn = (id: string) => {
-    handleArrivalEfpsProcess(id)
+const handleEfpsProcessBtn = (id: string) => {
+    handleEfpsProcess(id)
     visibleMap[id] = false;
 }
-const handleDepartureEfpsProcessBtn = (id: string) => {
-    handleDepartureEfpsProcess(id)
-    visibleMap[id] = false;
-}
+
 const refreshDataBtn = () => {
     loadingVisible.value = true
     store.fetchAllData()
@@ -265,9 +334,44 @@ const refreshDataBtn = () => {
         loadingVisible.value = false
     }, 500)
 }
+const refreshTrendsBtn = () => {
+    trendsLoadingVisible.value = true
+    aircraftsTrendsStore.fetchAllData()
+    runwayStore.fetchAllData()
+    parkingStandStore.fetchAllData()
+    flightInfoStore.fetchAllData()
+    flightParkingStandStore.fetchAllData()
+    flightRunwayStore.fetchAllData()
+    useAirSpaceEventStore().getAirSpaceEventPage()
+    setTimeout(() => {
+        trendsLoadingVisible.value = false
+    }, 800)
+}
+const refreshMsgsBtn = () => {
+    msgsLoadingVisible.value = true
+    alertMsgStore.fetchAllData()
+    cooperaMsgStore.fetchAllData()
+    useNoticesStore().fetchAllData()
+    usesysMsgStore().fetchAllData()
+    setTimeout(() => {
+        msgsLoadingVisible.value = false
+    }, 500)
+}
 onMounted(() => {
-    refreshDataBtn()
+    loadingVisible.value = true
+    store.fetchAllData().then(() => {
+        calculatePercentage(filteredArrivalEfps, percentage1);
+        calculatePercentage(filteredDepartureEfps, percentage2);
+    })
+    setTimeout(() => {
+        loadingVisible.value = false
+    }, 500)
     connectWebSocket()
+    setInterval(() => {
+        // 触发重新计算percentage
+        calculatePercentage(filteredArrivalEfps, percentage1);
+        calculatePercentage(filteredDepartureEfps, percentage2);
+    }, 60000);
 })
 onUnmounted(() => {
     closeWebSocket()
@@ -439,4 +543,5 @@ onUnmounted(() => {
     background-color: #ffffff00;
     margin: 0;
     padding: 0;
-}</style>
+}
+</style>
