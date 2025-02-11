@@ -36,16 +36,16 @@
         <t-card style="height: 233px;">
           <p class="pp">🗼塔台</p>
 
-          <t-row>
+          <t-row class="efpsInfo">
             ⚪剩余：进港-{{ aa.length }}，出港-{{ ad.length }}
           </t-row>
-          <t-row>
+          <t-row class="efpsInfo">
             ⚪已处理：进港---{{ ata.length }}，出港--{{ atd.length }}
           </t-row>
-          <t-row>
+          <t-row class="efpsInfo">
             ⚪处理队列：{{ ap.length }}
           </t-row>
-          <t-row>
+          <t-row class="efpsInfo">
             ⚪处理中：{{ anp.length }}
           </t-row>
         </t-card>
@@ -54,16 +54,16 @@
 
         <t-card style="height: 233px;">
           <p class="pp">🌲区域</p>
-          <t-row>
+          <t-row class="efpsInfo">
             ⚪剩余：进港-{{ ta.length }}，出港-{{ td.length }}
           </t-row>
-          <t-row>
+          <t-row class="efpsInfo">
             ⚪已处理：进港---{{ tta.length }}，出港--{{ ttd.length }}
           </t-row>
-          <t-row>
+          <t-row class="efpsInfo">
             ⚪处理队列：{{ tp.length }}
           </t-row>
-          <t-row>
+          <t-row class="efpsInfo">
             ⚪ 处理中：{{ tnp.length }}
           </t-row>
         </t-card>
@@ -72,16 +72,16 @@
 
         <t-card style="height: 233px;">
           <p class="pp">🎈地面</p>
-          <t-row>
+          <t-row class="efpsInfo">
             ⚪剩余：进港-{{ ra.length }}，出港-{{ rd.length }}
           </t-row>
-          <t-row>
+          <t-row class="efpsInfo">
             ⚪已处理：进港---{{ rta.length }}，出港--{{ rtd.length }}
           </t-row>
-          <t-row>
+          <t-row class="efpsInfo">
             ⚪处理队列：{{ rp.length }}
           </t-row>
-          <t-row>
+          <t-row class="efpsInfo">
             ⚪ 处理中：{{ rnp.length }}
           </t-row>
         </t-card>
@@ -174,6 +174,29 @@ onMounted(
 .pp {
   margin: 0;
   font-weight: bold;
+
+}
+
+.efpsInfo {
+  background-color: aliceblue;
+  border-radius: 10px;
+  padding: 5px;
+  margin-bottom: 5px;
+  font-family:monospace;
+  transition-duration: 0.1s;
+
+}
+.efpsInfo:hover {
+  background-color: rgb(90, 90, 90);
+  transition-duration: 0.1s;
+  color: aliceblue;
+}
+.t-card {
+  transition-duration: 0.5s;
+}
+.t-card:hover {
+  transition-duration: 0.5s;
+  box-shadow: 5px 5px 10px rgba(0, 110, 255, 0.5);
 }
 </style>
   

@@ -252,7 +252,6 @@ import { useAirSpaceEventStore } from '@/stores/airSpaceEvent-store'
 import { runwayStore } from '@/stores/runway-store'
 import { flightInfoStore } from '@/stores/flightInfo-store'
 import areaEfpsDataTable from '../areaEfpsDataTable.vue'
-import { connectWebSocket, closeWebSocket } from '@/hooks/webSocket';
 import type { Ref, ComputedRef } from 'vue'
 import type { AreaEfpsData } from '@/types/areaEfpsDataTypes'
 import { MessagePlugin, DialogPlugin } from 'tdesign-vue-next'
@@ -368,7 +367,6 @@ onMounted(() => {
         calculatePercentage(filteredArrivalEfps, percentage1);
         calculatePercentage(filteredDepartureEfps, percentage2);
     })
-    connectWebSocket()
     setTimeout(() => {
         loadingVisible.value = false;
     }, 500);
@@ -381,7 +379,7 @@ onMounted(() => {
 
 })
 onUnmounted(() => {
-    closeWebSocket()
+
 })
 </script>
 <style lang="scss" scoped>

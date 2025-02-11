@@ -40,7 +40,7 @@ const socketState = reactive({
 });
 
 const messageQueue = ref<string[]>([]); // 消息队列，防止 WebSocket 断开时丢失消息
-
+export const groupMessage = ref<{ content: string; timestamp: string;sender:string,type:number }[]>([]);
 // 建立 WebSocket 连接
 export const connectWebSocket = () => {
   if (socketState.connection) {
@@ -122,7 +122,14 @@ const handleMessage = (data: string) => {
       }
     }
     if (mes.type === 2) {
-      
+      console.log('收到群聊消息：', mes)
+      groupMessage.value.push({
+        content: mes.message,
+        timestamp: mes.timestamp,
+        sender: mes.sender,
+        type: mes.type
+      });
+      console.table(groupMessage.value);
     }
     if (mes.type === 3) {
       

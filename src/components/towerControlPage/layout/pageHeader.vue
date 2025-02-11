@@ -22,6 +22,14 @@
             <template #operations>
                 <t-button theme="default" shape="square" size="small"
                     style="margin-right: 20px;background-color: rgba(255, 255, 255, 0.11);border: none;width: 100px;color: white;"
+                    @click="handleChatVisibleChange">
+                    <template #icon>
+                        <t-icon name="chat" color="white" />
+                    </template>
+                    chat
+                </t-button>
+                <t-button theme="default" shape="square" size="small"
+                    style="margin-right: 20px;background-color: rgba(255, 255, 255, 0.11);border: none;width: 100px;color: white;"
                     @click="()=>{$router.push('/')}">
                     <template #icon>
                         <t-icon name="home" color="white" />
@@ -49,19 +57,25 @@
                 </t-popconfirm>
             </template>
         </t-head-menu>
+        <chatpanel :visible="chatVisible" @update:visible="handleChatVisibleChange" />
+
     </div>
 </template>
 
 <script lang="ts" setup>
 import { ref, onMounted, onUnmounted } from 'vue';
 import { useUserStore } from '@/stores/user-store';
+import chatpanel from '@/views/ChatPanel.vue';
 
+const chatVisible = ref(false);
 const userStore = useUserStore();
 const visible = ref(false);
 const currentDateTime = ref('');
 const currentTimezone = ref('Asia/Shanghai');
 const currentTimezoneLabel = ref('北京时间');
-
+const handleChatVisibleChange = () => {
+    chatVisible.value = !chatVisible.value;
+};
 const timezones = [
     { zone: 'Asia/Shanghai', label: '北京时间' },
     { zone: 'America/New_York', label: '纽约时间' },
