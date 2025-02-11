@@ -7,7 +7,9 @@
             <t-row v-if="noticesDataPublished.length == 0">没有通知数据😬</t-row>
             <t-row v-if="noticesDataPublished.length == 0">NO DATA FOUND</t-row>
         </el-scrollbar>
-
+        <t-col style="background-color: rgba(174, 185, 195, 0.416);padding: 5px;border-radius: 5px;">
+            共{{ noticesDataPublished.length }}条数据
+        </t-col>
     </div>
 </template>
 <script setup lang="ts">

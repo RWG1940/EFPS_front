@@ -13,6 +13,11 @@ import { flightInfoStore } from './flightInfo-store';
 import { cooperaMsgStore } from '@/stores/cooperaMsg-store';
 import { parkingStandStore } from './parkingStand-store';
 import { runwayStore } from './runway-store';
+import type { FlightInfo } from '@/types/flightInfoTypes';
+import type { FlightParkingStandData } from '@/types/flightParkingStandTypes';
+import type { ParkingStandData } from '@/types/parkingStandTypes';
+import type { RunwayData } from '@/types/runwayTypes';
+import type { FlightRunwayData } from '@/types/flightRunwayTypes';
 
 
 export const useTowerEfpsStore = createCRUDStore('towerEfps', towerEfpsApi);
@@ -258,6 +263,9 @@ export const transferEfps = () => {
             content: `塔台管制席已移交航班给放行地面合并席`,
             theme: 'success',
             status: 0,
+            createtime: formatDate(new Date()),
+            updatetime: formatDate(new Date()),
+            author: '塔台席'
         });
         return
     }
@@ -277,26 +285,30 @@ export const transferEfps = () => {
         // 释放跑道、停机位资源
         // 1.先通过flightInfo查询到航班id
         flightInfoStore.searchData({ flightNumber: nowProcessingData.value[0]?.a1 }).then(() => {
-            if(flightInfoStore.searchResultData.length == 0){
+            if (flightInfoStore.searchResultData.length == 0) {
                 MessagePlugin.error('未找到该航班')
-            }else{
+            } else {
                 var flight = flightInfoStore.searchResultData[0] as any
                 var flightId = flight.id as number
                 // 2.通过id去删除关联表的数据
-                flightParkingStandStore.deleteData([ flightId ]).then(() => {
+                flightParkingStandStore.deleteData([flightId]).then(() => {
                     MessagePlugin.success('释放停机位资源成功')
                 })
-                flightRunwayStore.deleteData([ flightId ]).then(() => {
+                flightRunwayStore.deleteData([flightId]).then(() => {
                     MessagePlugin.success('释放跑道资源成功')
                 })
             }
-            })
-            cooperaMsgStore.addData({
-                header: `航班：${nowProcessingData.value[0].a1}移交成功`,
-                content: `塔台管制席已移交航班给区域管制席`,
-                theme: 'success',
-                status: 0,
-            });
+        })
+        cooperaMsgStore.addData({
+            header: `航班：${nowProcessingData.value[0].a1}移交成功`,
+            content: `塔台管制席已移交航班给区域管制席`,
+            theme: 'success',
+            status: 0,
+            createtime: formatDate(new Date()),
+            updatetime: formatDate(new Date()),
+            author: '塔台席'
+
+        });
         return
     }
     MessagePlugin.error('未找到正在处理的进程单')
@@ -340,46 +352,111 @@ export const saveStopway = () => {
         return
     }
     flightParkingStandStore.searchData({ parkingStandId: selectedStopway.value }).then(() => {
-        if (flightParkingStandStore.searchResultData.length == 0) {// 如果停机位没有航班使用
-            flightParkingStandStore.addData({
-                flightId: nowProcessingData.value[0]?.id,
-                parkingStandId: selectedStopway.value
-            })
-            towerEfpsStore.updateData({
-                id: nowProcessingData.value[0]?.id,
-                e4: selectedStopway.value
-            })
-            parkingStandStore.updateData({
-                id: selectedStopway.value,
-                status: 2
-            })
-        } else {
-            MessagePlugin.warning('停机坪已被占用!')
-        }
+        // 遍历航班信息表所有航班信息的航班号，与当前处理进程单的a1进行匹配，获取航班id
+        var flightId = ref(0)
+        flightInfoStore.searchData({ flightNumber: nowProcessingData.value[0]?.a1 }).then(() => {
+            if (flightInfoStore.searchResultData.length == 0) {
+                MessagePlugin.error('未找到该航班')
+                return
+            }
+            var flight = flightInfoStore.searchResultData[0] as FlightInfo
+            flightId.value = flight.id as number
+            if (flightParkingStandStore.searchResultData.length == 0) {// 如果停机位没有航班使用
+                // 如果当前航班已有停机位则释放
+                flightParkingStandStore.searchData({ flightId: flightId.value }).then(() => {
+                    var fps = flightParkingStandStore.searchResultData[0] as FlightParkingStandData
+                    if (flightParkingStandStore.searchResultData.length == 0) {
+                        return
+                    }
+                    parkingStandStore.updateData({
+                        id: fps.parkingStandId,
+                        status: 0
+                    })
+                    flightParkingStandStore.deleteData([fps.id as number]).then(() => {
+                        MessagePlugin.success('已释放上个停机位资源')
+                    })
+                })
+                // 添加停机位关联信息
+                flightParkingStandStore.addData({
+                    flightId: flightId.value,
+                    parkingStandId: selectedStopway.value
+                })
+                parkingStandStore.updateData({
+                    id: selectedStopway.value,
+                    status: 1
+                })
+                // 获取对应停机位id的停机位编号
+                console.log(selectedStopway.value)
+                parkingStandStore.searchData({ id: selectedStopway.value }).then(() => {
+                    var pss = parkingStandStore.searchResultData[0] as ParkingStandData
+                    // 更新进程单信息
+                    towerEfpsStore.updateData({
+                        id: nowProcessingData.value[0]?.id,
+                        e4: pss.code
+                    })
+                })
+
+
+            } else {
+                MessagePlugin.warning('停机坪已被占用!')
+            }
+        })
     })
 }
 export const saveRunway = () => {
     if (selectedRunway.value == '') {
-        MessagePlugin.warning('请选择跑道号')
+        MessagePlugin.warning('请选择跑道')
         return
     }
     flightRunwayStore.searchData({ runwayId: selectedRunway.value }).then(() => {
-        if (flightRunwayStore.searchResultData.length == 0) {
-            flightRunwayStore.addData({
-                flightId: nowProcessingData.value[0]?.id,
-                runwayId: selectedRunway.value
-            })
-            towerEfpsStore.updateData({
-                id: nowProcessingData.value[0]?.id,
-                de34: selectedRunway.value
-            })
-            runwayStore.updateData({
-                code: selectedRunway.value,
-                status: 2
-            })
-        } else {
-            MessagePlugin.warning('跑道已被占用!')
-        }
+        // 遍历航班信息表所有航班信息的航班号，与当前处理进程单的a1进行匹配，获取航班id
+        var flightId = ref(0)
+        flightInfoStore.searchData({ flightNumber: nowProcessingData.value[0]?.a1 }).then(() => {
+            if (flightInfoStore.searchResultData.length == 0) {
+                MessagePlugin.error('未找到该航班')
+                return
+            }
+            var flight = flightInfoStore.searchResultData[0] as FlightInfo
+            flightId.value = flight.id as number
+            if (flightRunwayStore.searchResultData.length == 0) {// 如果跑道没有航班使用
+                // 如果当前航班已有跑道则释放
+                flightRunwayStore.searchData({ flightId: flightId.value }).then(() => {
+                    var frs = flightRunwayStore.searchResultData[0] as FlightRunwayData
+                    if (flightRunwayStore.searchResultData.length == 0) {
+                        return
+                    }
+                    runwayStore.updateData({
+                        id: frs.runwayId,
+                        status: 0
+                    })
+                    flightRunwayStore.deleteData([frs.id as number]).then(() => {
+                        MessagePlugin.success('已释放上个跑道资源')
+                    })
+                })
+                // 添加跑道关联信息
+                flightRunwayStore.addData({
+                    flightId: flightId.value,
+                    runwayId: selectedRunway.value
+                })
+                runwayStore.updateData({
+                    id: selectedStopway.value,
+                    status: 1
+                })
+                // 获取对应跑道id的跑道编号
+                runwayStore.searchData({ id: selectedRunway.value }).then(() => {
+                    var rss = runwayStore.searchResultData[0] as RunwayData
+                    // 更新进程单信息
+                    towerEfpsStore.updateData({
+                        id: nowProcessingData.value[0]?.id,
+                        de34: rss.code
+                    })
+                })
+
+
+            } else {
+                MessagePlugin.warning('跑道已被占用!')
+            }
+        })
     })
 }
 export const clearStopwayWithRunway = () => {

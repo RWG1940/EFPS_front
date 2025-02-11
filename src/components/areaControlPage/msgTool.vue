@@ -47,7 +47,7 @@ import cooperaMsg from '../towerControlPage/msgTool/cooperaMsg.vue';
 .left-msg {
     margin-left: 10px;
     width: 480px;
-    height: 250px;
+    height: 275px;
     background-color: rgba(255, 255, 255, 0.5);
     backdrop-filter: blur(15px);
     border-radius: 15px;
@@ -60,7 +60,7 @@ import cooperaMsg from '../towerControlPage/msgTool/cooperaMsg.vue';
 }
 .right-msg {
     width: 480px;
-    height: 250px;
+    height: 275px;
     background-color: rgba(255, 255, 255, 0.5);
     backdrop-filter: blur(15px);
     border-radius: 15px;

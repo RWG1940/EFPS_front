@@ -79,7 +79,7 @@
                 <t-button shape="round" @click="transferVisible = true">移交</t-button>
                 <t-dialog v-model:visible="transferVisible" header='确认移交？' :on-confirm="handleTransfer" theme="info">
                     <t-row>将会移交至&ensp;<el-tag :type="nowProcessingData[0]?.type == 1 ? 'warning' : 'danger'"
-                            effect="dark">{{ nowProcessingData[0]?.type == 1 ? '塔台席' : '暂未对接下一步的接口' }}</el-tag></t-row>
+                            effect="dark">{{ nowProcessingData[0]?.type == 1 ? '塔台席' : '完成升空' }}</el-tag></t-row>
                     该操作不可逆，请确认移交进程单的信息：
                     <el-scrollbar hight="50px">
                         <areaEfps BackgroundColor="lightskyblue" :efps-data="nowProcessingData[0] || {}" />

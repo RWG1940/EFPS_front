@@ -10,12 +10,16 @@
                 <el-table-column label="目的机场" prop="arrivalAirport" width="100" show-overflow-tooltip />
                 <el-table-column label="计划起飞时间" prop="scheduledDepartureTime" width="140" show-overflow-tooltip sortable />
                 <el-table-column label="计划到达时间" prop="scheduledArrivalTime" width="140" show-overflow-tooltip sortable />
+                <el-table-column label="状态" prop="status" width="100" show-overflow-tooltip>
+                    <template #default="scope">
+                        <el-tag>{{ scope.row.status == 0 ?'计划中':scope.row.status == 1?'已转单':scope.row.status == 2?'延误':'取消' }}</el-tag>
+                    </template>
+                </el-table-column>
                 <el-table-column label="实际起飞时间" prop="actualDepartureTime" width="140" show-overflow-tooltip sortable />
                 <el-table-column label="实际到达时间" prop="actualArrivalTime" width="140" show-overflow-tooltip sortable />
                 <el-table-column label="机型" prop="aircraftType" width="100" show-overflow-tooltip />
                 <el-table-column label="停机位" prop="stand" width="100" show-overflow-tooltip />
                 <el-table-column label="登机口" prop="gate" width="100" show-overflow-tooltip />
-                <el-table-column label="状态" prop="status" width="100" show-overflow-tooltip />
                 <el-table-column label="备注" prop="remarks" width="100" show-overflow-tooltip />
                 <el-table-column label="操作" width="150" fixed="right">
                     <template #default="scope">

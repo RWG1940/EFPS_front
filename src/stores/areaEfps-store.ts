@@ -12,6 +12,12 @@ import { cooperaMsgStore } from '@/stores/cooperaMsg-store';
 import { runwayStore } from './runway-store';
 import { alertMsgStore } from './alertMsg-store';
 import { parkingStandStore } from './parkingStand-store';
+import type { FlightInfoData } from '@/types/flightInfoTyes';
+import { flightInfoStore } from './flightInfo-store';
+import { flightRunwayStore } from './flightRunway-store';
+import { flightParkingStandStore } from './flightParkingStand-store';
+import type { FlightRunwayData } from '@/types/flightRunwayTypes';
+import type { FlightParkingStandData } from '@/types/flightParkingStandTypes';
 
 export const useAreaEfpsStore = createCRUDStore('areaEfps', areaEfpsApi);
 export const areaEfpsStore = useAreaEfpsStore()
@@ -271,8 +277,12 @@ export const transferEfps = () => {
             content: `区域管制席已移交航班给塔台席`,
             theme: 'success',
             status: 0,
+            createtime: formatDate(new Date()),
+            updatetime: formatDate(new Date()),
+            author: '区域席'
+
         });
-        
+
         // 创建一个值，如果在runwayStore.data中没有找到status值为1的那么这个值为假
         const isRunwayStatus1 = computed(() => {
             return runwayStore.data.some((runway: any) => runway.status == 1);
@@ -283,6 +293,8 @@ export const transferEfps = () => {
                 content: '塔台席获取不到可用的跑道',
                 author: 'sys',
                 status: 0,
+                createtime: formatDate(new Date()),
+                updatetime: formatDate(new Date()),
             });
         }
         const isStopStatus1 = computed(() => {
@@ -294,22 +306,79 @@ export const transferEfps = () => {
                 content: '塔台席获取不到可用的停机位',
                 author: 'sys',
                 status: 0,
+                createtime: formatDate(new Date()),
+                updatetime: formatDate(new Date()),
+
             });
         }
 
-        
-        
+
+
         return
     }
     // 出港进程单
     if (nowProcessingData.value[0]?.type == 0) {
-        MessagePlugin.error('已升空')
+        // 塔台将进程单调整为已移交
+        areaEfpsStore.updateData({
+            id: nowProcessingData.value[0]?.id,
+            status: 3
+        })
+        MessagePlugin.success('已升空')
         cooperaMsgStore.addData({
             header: `航班：${nowProcessingData.value[0].a1}顺利升空`,
             content: `区域管制席已确认航班升空正常`,
             theme: 'success',
             status: 0,
+            createtime: formatDate(new Date()),
+            updatetime: formatDate(new Date()),
+            author: '区域席'
         });
+        // 释放跑道以及停机位资源
+        // 先查询出该进程单a1所对应的flightInfo表中的Id
+        flightInfoStore.searchData({ flightNumber: nowProcessingData.value[0]?.a1 }).then(() => {
+            if (flightInfoStore.searchResultData.length == 0) {
+                MessagePlugin.error('未找到该航班')
+            } else {
+                var flight = flightInfoStore.searchResultData[0] as FlightInfoData
+                var flightId = flight.id as number
+                // 释放跑道资源
+                // 通过id查得其占用的跑道以及停机位id
+                flightRunwayStore.searchData({ flightId: flightId }).then(() => {
+                    if (flightRunwayStore.searchResultData.length == 0) {
+                        MessagePlugin.error('未找到该航班占用跑道')
+                    } else {
+                        var fr = flightRunwayStore.searchResultData[0] as FlightRunwayData
+                        var runwayId = fr.runwayId as number
+                        runwayStore.updateData({
+                            id: runwayId,
+                            status: 0
+                        }).then(() => {
+                            // 通过id去删除关联表的数据
+                            flightRunwayStore.deleteData([fr.id as number])
+                        })
+
+                    }
+                })
+                flightParkingStandStore.searchData({ flightId: flightId }).then(() => {
+                    if (flightParkingStandStore.searchResultData.length == 0) {
+                        MessagePlugin.error('未找到该航班占用停机位')
+                    } else {
+                        var fp = flightParkingStandStore.searchResultData[0] as FlightParkingStandData
+                        var parkingStandId = fp.parkingStandId as number
+                        parkingStandStore.updateData({
+                            id: parkingStandId,
+                            status: 0
+                        }).then(() => {
+                            flightParkingStandStore.deleteData([fp.id as number])
+                        })
+
+                    }
+                })
+
+
+
+            }
+        })
         return
     }
     MessagePlugin.error('未找到正在处理的进程单')

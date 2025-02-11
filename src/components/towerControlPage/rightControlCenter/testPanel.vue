@@ -15,7 +15,7 @@
                 <p>跑道状态：{{ runwayVisible ? '正常💚' : '异常🍅' }}</p>
             </t-row>
             <t-row>
-                <p>空域状态：{{ areaVisible ? '正常💚' : '异常🍅' }}</p>
+                <p>空域状态：{{ areaVisible ? '正常💚' : '正常💚' }}</p>
             </t-row>
             <t-row :gutter="5">
                 <t-col><t-button @click="handleTestBtn">点击测试</t-button></t-col>
@@ -38,13 +38,15 @@ import { flightInfoStore } from '@/stores/flightInfo-store';
 import { runwayStore } from '@/stores/runway-store';
 import { parkingStandStore } from '@/stores/parkingStand-store';
 import { MessagePlugin } from 'tdesign-vue-next';
+import type { RunwayData } from '@/types/runwayTypes';
+import type { ParkingStandData } from '@/types/parkingStandTypes';
 
 
 const flightVisible = ref(false)
 const stopwayVisible = ref(false)
 const runwayVisible = ref(false)
 const areaVisible = ref(false);
-const prepareBackgroundColor = ref('lightskyblue')
+const prepareBackgroundColor = ref('lightgrey')
 const store = useTowerEfpsStore();
 const props = defineProps<{
     visible: boolean;
@@ -56,6 +58,11 @@ const handleTestVisibleChange = () => {
     emit('update:visible');
 };
 const cancelButton = () => {
+    prepareBackgroundColor.value = 'lightgrey'
+    flightVisible.value = false
+    stopwayVisible.value = false
+    runwayVisible.value = false
+    areaVisible.value = false
     emit('update:visible');
 };
 const handleTestBtn = () => {
@@ -72,8 +79,8 @@ const handleTestBtn = () => {
             
         }    
     })
-    runwayStore.fetchAllData().then(() => {
-       const stopway = runwayStore.data.find((item: any) => item.code === nowProcessingData.value[0].de34) as any
+    parkingStandStore.fetchAllData().then(() => {
+       const stopway = parkingStandStore.data.find((item: any) => item.code == nowProcessingData.value[0].e4) as ParkingStandData
         if (stopway.status == 1) {
             prepareBackgroundColor.value = 'lightskyblue'
             stopwayVisible.value = true
@@ -83,8 +90,9 @@ const handleTestBtn = () => {
             MessagePlugin.warning(`停机位状态:${ stopway.status }`)
         }
     })
-    parkingStandStore.fetchAllData().then(() => {
-        const runway = parkingStandStore.data.find((item: any) => item.flightNumber === nowProcessingData.value[0].e4) as any
+    runwayStore.fetchAllData().then(() => {
+        const runway = runwayStore.data.find((item: any) => item.code == nowProcessingData.value[0].de34) as RunwayData
+        console.log('跑道状态'+ runway)
         if (runway.status == 1) {
             prepareBackgroundColor.value = 'lightskyblue'
             runwayVisible.value = true
@@ -104,8 +112,6 @@ const handleTestBtn = () => {
 
 </script>
 <style scoped>
-.k {
-    color: paleturquoise
-}
+
 </style>
   

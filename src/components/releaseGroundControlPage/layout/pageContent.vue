@@ -285,7 +285,10 @@ const percentage2 = ref(0)
 
 const calculatePercentage = (efps: ComputedRef<ReleaseGroundEfpsData[]>, percentageRef: Ref<number>) => {
     const now = new Date();
-    const currentTimeInMinutes = now.getHours() * 60 + now.getMinutes() + 725;// 提前10分钟处理
+    const currentTimeInMinutes = now.getHours() * 60 + now.getMinutes() + 10;// 提前10分钟处理
+    if (efps.value.length == 0) {
+        return;
+    }
     const time = efps.value[0].fg1 as string;
     const targetHour = parseInt(time.slice(0, 2), 10);
     const targetMinute = parseInt(time.slice(2), 10);
@@ -402,6 +405,7 @@ onMounted(() => {
     store.fetchAllData().then(() => {
         calculatePercentage(filteredArrivalEfps, percentage1);
         calculatePercentage(filteredDepartureEfps, percentage2);
+        console.log('数据加载完成'+percentage2.value)
     })
     setTimeout(() => {
         loadingVisible.value = false

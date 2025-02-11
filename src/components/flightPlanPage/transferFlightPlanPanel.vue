@@ -22,7 +22,7 @@
                     <t-row>
                         <t-col :span="6">航班号：{{ flightInfoData.flightNumber }} </t-col>
                         <t-col :span="6">机型：{{ flightInfoData.aircraftType }} </t-col>
-                        
+
                     </t-row>
                     <t-row>
                         <t-col :span="6">出发机场：{{ flightInfoData.departureAirport }} </t-col>
@@ -57,7 +57,7 @@
 import userEdit from '../userManage/userEdit.vue';
 import { ref, onMounted } from 'vue'
 import { MessagePlugin } from 'tdesign-vue-next';
-import { flightPlanStore, flightPlanTransferData,efpsData,flightInfoData } from '@/stores/flightPlan-store'
+import { flightPlanStore, flightPlanTransferData, efpsData, flightInfoData } from '@/stores/flightPlan-store'
 import areaEfps from '../areaControlPage/areaEfps.vue';
 import releaseGroundEfps from '../releaseGroundControlPage/releaseGroundEfps.vue';
 import { areaEfpsStore } from '@/stores/areaEfps-store';
@@ -65,9 +65,10 @@ import { releaseGroundEfpsStore } from '@/stores/releaseGroundEfps-store';
 import { flightInfoStore } from '@/stores/flightInfo-store';
 import { flightParkingStandStore } from '@/stores/flightParkingStand-store';
 import { parkingStandStore } from '@/stores/parkingStand-store';
+import { AIRPORT_CODE, AIRPORT_NAME } from '@/config/config'
+import type { FlightInfo } from '@/types/flightInfoTypes';
 
-
-const airport = ref(import.meta.env.AIRPORT_CODE)
+const airport = ref(AIRPORT_CODE)
 const props = defineProps<{
     visible: boolean;
 }>();
@@ -84,10 +85,16 @@ const cancelButton = () => {
 const transferButton = () => {
     // 添加进程单
     if (flightPlanTransferData.value.arrivalAirport == airport.value) {
-        efpsData.value.status = 1 // 进港
-        areaEfpsStore.addData(efpsData)
+        efpsData.value.status = 1 // 待处理
+        efpsData.value.type = 1
+        areaEfpsStore.addData(efpsData.value)
+        // 添加航班信息
+        flightInfoStore.addData(flightInfoData.value)
     } else {
-        efpsData.value.status = 0 // 出港
+        efpsData.value.status = 1
+        // 出港
+        efpsData.value.type = 0
+        releaseGroundEfpsStore.addData(efpsData.value)
         // 添加航班停机位关联表
         // 根据停机位编码找出停机位id
         parkingStandStore.data.forEach((parkingStand: any) => {
@@ -95,19 +102,42 @@ const transferButton = () => {
                 efpsData.value.e4 = parkingStand.id
             }
         })
-        flightParkingStandStore.addData({
-            parkingStandId: efpsData.value.e4,
-            flightId: flightInfoData.value.flightNumber
+        if(efpsData.value.e4 == null){
+            return
+        }
+        
+        // 1.添加航班信息 2.根据航班信息获取航班id 3.根据航班id添加航班停机位关联表 4.设置停机位占用
+        const thisFlightInfo = ref<FlightInfo[]>([])
+        flightInfoStore.addData(flightInfoData.value).then(() => {
+            flightInfoStore.searchData({
+                flightNumber: flightInfoData.value.flightNumber
+            }).then(() => {
+                thisFlightInfo.value = flightInfoStore.searchResultData as FlightInfo[]
+                flightParkingStandStore.addData({
+                    parkingStandId: efpsData.value.e4,
+                    flightId: thisFlightInfo.value[0].id
+                })
+                // 将停机位设置为被占用
+                parkingStandStore.updateData({
+                    id: efpsData.value.e4,
+                    status: 1
+                })
+            })
         })
-        releaseGroundEfpsStore.addData(efpsData)
+
+
     }
-    // 添加航班信息
-    flightInfoStore.addData(flightInfoData)
+    // 将该航空计划状态转为进行中
+    flightPlanStore.updateData({
+        id: flightPlanTransferData.value.id,
+        status: 1
+    });
+
     handleTransferVisibleChange();
 };
-
+onMounted(() => {
+    parkingStandStore.fetchAllData()
+});
 
 </script>
-<style scoped>
-
-</style>
+<style scoped></style>

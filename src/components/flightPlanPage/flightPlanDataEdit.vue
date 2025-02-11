@@ -35,10 +35,7 @@
                         <t-input v-model="flightPlanEditFormData.gate" placeholder="请输入登机口" />
                     </t-form-item>
                     <t-form-item label="状态" name="status">
-                        <t-select v-model="flightPlanEditFormData.status" placeholder="请选择状态">
-                            <t-option value="已计划">已计划</t-option>
-                            <t-option value="进行中">进行中</t-option>
-                            <t-option value="已完成">已完成</t-option>
+                        <t-select v-model="flightPlanEditFormData.status" placeholder="请选择状态" :options="FlightPlan_STATUS">
                         </t-select>
                     </t-form-item>
                     <t-form-item label="备注" name="remarks">
@@ -60,7 +57,7 @@ import { ref } from 'vue'
 import type { FormInstanceFunctions, FormProps } from 'tdesign-vue-next';
 import { MessagePlugin } from 'tdesign-vue-next';
 import { flightPlanEditFormData,flightPlanStore,useFlightPlanStore } from '@/stores/flightPlan-store'
-import { FlightPlanEDIT_FORM_RULES } from '@/types/flightPlanTypes'
+import { FlightPlanEDIT_FORM_RULES,FlightPlan_STATUS } from '@/types/flightPlanTypes'
 
 const store = useFlightPlanStore();
 const form = ref<FormInstanceFunctions>();

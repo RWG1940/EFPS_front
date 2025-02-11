@@ -28,8 +28,8 @@
                             航空公司：{{ flightInfo(item.id!).airline }}
                         </el-tag>
                     </el-row>
-                    <el-tag v-if="!hasPlane(item.id!)" round :type="item.status == 2 ? 'danger' : 'success'" effect="dark">{{
-                        item.status == 2 ? '停用' : '空闲' }}</el-tag>
+                    <el-tag v-if="!hasPlane(item.id!)" round :type="item.status == 2 ? 'danger' : item.status == 1?'warning': 'success'" effect="dark">{{
+                        item.status == 2 ? '停用' :item.status == 1?'被占用' :'空闲' }}</el-tag>
                 </div>
 
             </div>

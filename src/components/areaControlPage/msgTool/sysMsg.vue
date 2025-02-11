@@ -4,6 +4,9 @@
         <el-alert v-for="(message, index) in sysMsgData" :key="index" :title="message.header" :type="message.theme"
             :description="message.content" show-icon style="width: 460px;margin-bottom: 5px;" :max-line="2"/>
         </el-scrollbar>
+        <t-col style="background-color: rgba(174, 185, 195, 0.416);padding: 5px;border-radius: 5px;">
+            共{{ sysMsgData.length }}条数据
+        </t-col>
     </div>
 </template>
 <script lang="ts" setup>
@@ -19,8 +22,9 @@ onMounted(() => {
     status: 1,
     author: '系统提示',
     theme: 'success',
-})
+}).then(() => {
     store.fetchAllData()
+})
 })
 </script>
 <style scoped>

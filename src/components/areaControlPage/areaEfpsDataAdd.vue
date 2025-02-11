@@ -248,22 +248,22 @@ const areaEfpsAddSubmit: FormProps['onSubmit'] = async ({ validateResult, firstE
   if (validateResult === true) {
     areaEfpsAddFormData.value.d1 = d1Lhalf.value + d1Rhalf.value;
     if(b2Rhalf.value == '1'){
-      areaEfpsAddFormData.value.b2 = b2Lhalf.value
+      areaEfpsAddFormData.value.b21 = b2Lhalf.value
     }
     if(b2Rhalf.value == '2'){
-      areaEfpsAddFormData.value.b2 = b2Lhalf.value + '↑'
+      areaEfpsAddFormData.value.b21 = b2Lhalf.value + '↑'
     }
     if(b2Rhalf.value == '3'){
-      areaEfpsAddFormData.value.b2 = b2Lhalf.value + '↓'
+      areaEfpsAddFormData.value.b21 = b2Lhalf.value + '↓'
     }
     if(b2Rhalf.value == '4'){
-      areaEfpsAddFormData.value.b2 = 'H'+b2Lhalf.value 
+      areaEfpsAddFormData.value.b21 = 'H'+b2Lhalf.value 
     }
     if(b2Rhalf.value == '5'){
-      areaEfpsAddFormData.value.b2 = 'H'+b2Lhalf.value+'↑'
+      areaEfpsAddFormData.value.b21 = 'H'+b2Lhalf.value+'↑'
     }
     if(b2Rhalf.value == '6'){
-      areaEfpsAddFormData.value.b2 = 'H'+b2Lhalf.value+'↓'
+      areaEfpsAddFormData.value.b21 = 'H'+b2Lhalf.value+'↓'
     }
     await store.addData(areaEfpsAddFormData.value).then(() => {
       form.value?.reset();

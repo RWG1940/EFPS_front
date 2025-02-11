@@ -26,7 +26,7 @@
       <p style="font-weight: bolder;margin: 0;border-bottom: 5px solid blue;">职员和部门</p>
     </t-row>
     <t-row :gutter="5">
-      <t-col :span="4">
+      <t-col :span="5">
         <t-card>
           <empDeptView />
         </t-card>

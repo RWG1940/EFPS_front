@@ -40,3 +40,11 @@ export const FlightPlanEDIT_FORM_RULES = {
         { required: true, message: '请输入机型', trigger: 'blur' },
     ]
 }
+export const FlightPlan_STATUS = [
+    { label: '计划', value: 0 },
+    { label: '已转单', value: 1 },
+    { label: '延误', value: 2 },
+    { label: '取消', value: 3 },
+
+
+]
