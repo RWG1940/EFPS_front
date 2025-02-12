@@ -102,30 +102,26 @@ const transferButton = () => {
                 efpsData.value.e4 = parkingStand.id
             }
         })
-        if(efpsData.value.e4 == null){
-            return
-        }
-        
         // 1.添加航班信息 2.根据航班信息获取航班id 3.根据航班id添加航班停机位关联表 4.设置停机位占用
         const thisFlightInfo = ref<FlightInfo[]>([])
         flightInfoStore.addData(flightInfoData.value).then(() => {
-            flightInfoStore.searchData({
-                flightNumber: flightInfoData.value.flightNumber
-            }).then(() => {
-                thisFlightInfo.value = flightInfoStore.searchResultData as FlightInfo[]
-                flightParkingStandStore.addData({
-                    parkingStandId: efpsData.value.e4,
-                    flightId: thisFlightInfo.value[0].id
+            if (efpsData.value.e4 != null) {
+                flightInfoStore.searchData({
+                    flightNumber: flightInfoData.value.flightNumber
+                }).then(() => {
+                    thisFlightInfo.value = flightInfoStore.searchResultData as FlightInfo[]
+                    flightParkingStandStore.addData({
+                        parkingStandId: efpsData.value.e4,
+                        flightId: thisFlightInfo.value[0].id
+                    })
+                    // 将停机位设置为被占用
+                    parkingStandStore.updateData({
+                        id: efpsData.value.e4,
+                        status: 1
+                    })
                 })
-                // 将停机位设置为被占用
-                parkingStandStore.updateData({
-                    id: efpsData.value.e4,
-                    status: 1
-                })
-            })
+            }
         })
-
-
     }
     // 将该航空计划状态转为进行中
     flightPlanStore.updateData({

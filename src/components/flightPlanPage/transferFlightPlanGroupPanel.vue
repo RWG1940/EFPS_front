@@ -115,28 +115,25 @@ const transferButton = () => {
                     currentEfpsData.e4 = parkingStand.id;  // 更新为停机位id
                 }
             });
-            if (currentEfpsData.e4 == null) {
-                return
-            }
             // 添加航班信息
             flightInfoStore.addData(currentFlightInfoData).then(() => {
                 flightInfoStore.searchData({
                     flightNumber: currentFlightInfoData.flightNumber
                 }).then(() => {
-                    const flightInfoData = flightInfoStore.searchResultData as FlightInfo[];
-                    flightParkingStandStore.addData({
-                        parkingStandId: currentEfpsData.e4,
-                        flightId: flightInfoData[0].id
-                    });
-                    // 将停机位设置为被占用
-                    parkingStandStore.updateData({
-                        id: currentEfpsData.e4,
-                        status: 1
-                    })
+                    if (currentEfpsData.e4 != null) {
+                        const flightInfoData = flightInfoStore.searchResultData as FlightInfo[];
+                        flightParkingStandStore.addData({
+                            parkingStandId: currentEfpsData.e4,
+                            flightId: flightInfoData[0].id
+                        });
+                        // 将停机位设置为被占用
+                        parkingStandStore.updateData({
+                            id: currentEfpsData.e4,
+                            status: 1
+                        })
+                    }
                 })
             })
-
-            
         }
         // 将该航空计划状态转为进行中
         flightPlanStore.updateData({

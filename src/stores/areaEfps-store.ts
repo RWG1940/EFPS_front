@@ -285,13 +285,14 @@ export const transferEfps = () => {
 
         // 创建一个值，如果在runwayStore.data中没有找到status值为1的那么这个值为假
         const isRunwayStatus1 = computed(() => {
-            return runwayStore.data.some((runway: any) => runway.status == 1);
+            return runwayStore.data.some((runway: any) => runway.status == 0);
         });
         if (!isRunwayStatus1.value) {
             alertMsgStore.addData({
                 header: '没有可用的跑道，请等待',
                 content: '塔台席获取不到可用的跑道',
                 author: 'sys',
+                theme: 'warning',
                 status: 0,
                 createtime: formatDate(new Date()),
                 updatetime: formatDate(new Date()),
