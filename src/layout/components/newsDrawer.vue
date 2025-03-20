@@ -24,7 +24,7 @@
         
         <el-scrollbar v-if="sysMsgStore.data.length > 0" height="300px" style="border-radius: 5px;">
           <t-alert close v-for="(message, index) in sysMsgData" :key="index" :title="message.header"
-            :message="message.content+'---🔔时间：'+message.createtime" :theme="message.theme" class="notice-item">
+            :message="message.content" :theme="message.theme" class="notice-item">
           </t-alert>
             
         </el-scrollbar>

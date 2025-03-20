@@ -13,5 +13,8 @@ export const alertMsgStore = useAlertMsgStore();
 export const addFormData = ref<AlertMsgData>({});
 export const editFormData = ref<AlertMsgData>({});
 export const alertMsgData = computed(() => {
-    return alertMsgStore.data.filter((alertMsg: any) => alertMsg.status == 0 ) as AlertMsgData[];
+    return alertMsgStore.data.filter((alertMsg: any) => alertMsg.status == 0 )
+    .sort ((a: any, b: any) => {
+        return new Date(b.createtime).getTime() - new Date(a.createtime).getTime();
+    })as AlertMsgData[];
 });

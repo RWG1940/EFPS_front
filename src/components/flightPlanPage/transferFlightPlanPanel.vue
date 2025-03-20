@@ -66,7 +66,7 @@ import { flightInfoStore } from '@/stores/flightInfo-store';
 import { flightParkingStandStore } from '@/stores/flightParkingStand-store';
 import { parkingStandStore } from '@/stores/parkingStand-store';
 import { AIRPORT_CODE, AIRPORT_NAME } from '@/config/config'
-import type { FlightInfo } from '@/types/flightInfoTypes';
+import type { FlightInfoData } from '@/types/flightInfoTypes';
 
 const airport = ref(AIRPORT_CODE)
 const props = defineProps<{
@@ -103,13 +103,13 @@ const transferButton = () => {
             }
         })
         // 1.添加航班信息 2.根据航班信息获取航班id 3.根据航班id添加航班停机位关联表 4.设置停机位占用
-        const thisFlightInfo = ref<FlightInfo[]>([])
+        const thisFlightInfo = ref<FlightInfoData[]>([])
         flightInfoStore.addData(flightInfoData.value).then(() => {
             if (efpsData.value.e4 != null) {
                 flightInfoStore.searchData({
                     flightNumber: flightInfoData.value.flightNumber
                 }).then(() => {
-                    thisFlightInfo.value = flightInfoStore.searchResultData as FlightInfo[]
+                    thisFlightInfo.value = flightInfoStore.searchResultData as FlightInfoData[]
                     flightParkingStandStore.addData({
                         parkingStandId: efpsData.value.e4,
                         flightId: thisFlightInfo.value[0].id

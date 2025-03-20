@@ -75,7 +75,7 @@ import { flightInfoStore } from '@/stores/flightInfo-store';
 import { flightParkingStandStore } from '@/stores/flightParkingStand-store';
 import { parkingStandStore } from '@/stores/parkingStand-store';
 import { AIRPORT_CODE, AIRPORT_NAME } from '@/config/config'
-import type { FlightInfo } from '@/types/flightInfoTypes';
+import type { FlightInfoData } from '@/types/flightInfoTypes';
 
 const airport = ref(AIRPORT_CODE)
 const props = defineProps<{
@@ -95,7 +95,7 @@ const transferButton = () => {
 
     flightPlanTransferDataGroup.value.forEach((flightPlan, index) => {
         const currentEfpsData = efpsDataGroup.value[index]; // 获取对应的 efpsData
-        const currentFlightInfoData = flightInfoDataGroup.value[index] as FlightInfo; // 获取对应的 flightInfoData
+        const currentFlightInfoData = flightInfoDataGroup.value[index] as FlightInfoData; // 获取对应的 flightInfoData
 
         // 根据 arrivalAirport 判断是进港还是出港
         if (flightPlan.arrivalAirport == airport.value) {
@@ -121,7 +121,7 @@ const transferButton = () => {
                     flightNumber: currentFlightInfoData.flightNumber
                 }).then(() => {
                     if (currentEfpsData.e4 != null) {
-                        const flightInfoData = flightInfoStore.searchResultData as FlightInfo[];
+                        const flightInfoData = flightInfoStore.searchResultData as FlightInfoData[];
                         flightParkingStandStore.addData({
                             parkingStandId: currentEfpsData.e4,
                             flightId: flightInfoData[0].id

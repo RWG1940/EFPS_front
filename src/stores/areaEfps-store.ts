@@ -12,7 +12,7 @@ import { cooperaMsgStore } from '@/stores/cooperaMsg-store';
 import { runwayStore } from './runway-store';
 import { alertMsgStore } from './alertMsg-store';
 import { parkingStandStore } from './parkingStand-store';
-import type { FlightInfoData } from '@/types/flightInfoTyes';
+import type { FlightInfoData } from '@/types/flightInfoTypes';
 import { flightInfoStore } from './flightInfo-store';
 import { flightRunwayStore } from './flightRunway-store';
 import { flightParkingStandStore } from './flightParkingStand-store';
@@ -415,6 +415,29 @@ export const handleEfpsProcess = (id: string) => {
         };
         areaEfpsStore.updateData(areaEfps);
     }
+    var flightId = ref(0)
+    flightInfoStore.searchData({ flightNumber: nowProcessingData.value[0]?.a1 }).then(() => {
+        if (flightInfoStore.searchResultData.length == 0) {
+            MessagePlugin.error('未找到该航班')
+        } else {
+            var flight = flightInfoStore.searchResultData[0] as FlightInfoData
+            flightId.value = flight.id as number
+            // 如果是出港进程单，则将航班状态改为起飞
+            if (nowProcessingData.value[0]?.type == 1) {
+                flightInfoStore.updateData({
+                    id: flightId.value,
+                    flightStatus: 1
+                });
+            }
+            // 如果是入港进程单，则将航班状态改为降落
+            if (nowProcessingData.value[0]?.type == 2) {
+                flightInfoStore.updateData({
+                    id: flightId.value,
+                    flightStatus: 2
+                });
+            }
+        }
+    })
 }
 export const withdrawProcessingEfps = () => {
     const processingEfps = nowProcessingData.value[0];

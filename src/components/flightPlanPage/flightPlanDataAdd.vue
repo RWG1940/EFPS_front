@@ -17,16 +17,16 @@
                         <t-input v-model="flightPlanAddFormData.arrivalAirport" placeholder="请输入目的机场" />
                     </t-form-item> 
                     <t-form-item label="计划起飞时间" name="scheduledDepartureTime">
-                        <t-date-picker enable-time-picker allow-input clearable format="YYYY-MM-DD hh:mm:ss" v-model="flightPlanAddFormData.scheduledDepartureTime" placeholder="请选择计划起飞时间" />
+                        <t-date-picker enable-time-picker allow-input clearable v-model="flightPlanAddFormData.scheduledDepartureTime" placeholder="请选择计划起飞时间" />
                     </t-form-item>
                     <t-form-item label="计划到达时间" name="scheduledArrivalTime">
-                        <t-date-picker enable-time-picker allow-input clearable format="YYYY-MM-DD hh:mm:ss" v-model="flightPlanAddFormData.scheduledArrivalTime" placeholder="请选择计划到达时间" />
+                        <t-date-picker enable-time-picker allow-input clearable v-model="flightPlanAddFormData.scheduledArrivalTime" placeholder="请选择计划到达时间" />
                     </t-form-item>
                     <t-form-item label="实际起飞时间" name="actualDepartureTime">
-                        <t-date-picker enable-time-picker allow-input clearable format="YYYY-MM-DD hh:mm:ss" v-model="flightPlanAddFormData.actualDepartureTime" placeholder="请选择实际起飞时间" />
+                        <t-date-picker enable-time-picker allow-input clearable v-model="flightPlanAddFormData.actualDepartureTime" placeholder="请选择实际起飞时间" />
                     </t-form-item>
                     <t-form-item label="实际到达时间" name="actualArrivalTime">
-                        <t-date-picker enable-time-picker allow-input clearable format="YYYY-MM-DD hh:mm:ss" v-model="flightPlanAddFormData.actualArrivalTime" placeholder="请选择实际到达时间" />
+                        <t-date-picker enable-time-picker allow-input clearable v-model="flightPlanAddFormData.actualArrivalTime" placeholder="请选择实际到达时间" />
                     </t-form-item>
                     <t-form-item label="停机位" name="stand">
                         <t-input v-model="flightPlanAddFormData.stand" placeholder="请输入停机位" />

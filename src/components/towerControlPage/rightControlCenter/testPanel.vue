@@ -19,7 +19,7 @@
             </t-row>
             <t-row :gutter="5">
                 <t-col><t-button @click="handleTestBtn">点击测试</t-button></t-col>
-                <t-col><t-button>发布延误</t-button></t-col>
+                <t-col><t-button @click="delayEfps">发布延误</t-button></t-col>
                 <!--<t-col><t-button>及时通讯</t-button></t-col> -->
             </t-row>
         </template>
@@ -31,7 +31,7 @@
   
 <script lang="ts" setup>
 import userEdit from '@/components/userManage/userEdit.vue'
-import { useTowerEfpsStore, nowProcessingData } from "@/stores/towerEfps-store";
+import { useTowerEfpsStore, nowProcessingData,delayEfps } from "@/stores/towerEfps-store";
 import { ref, reactive, computed, onMounted } from 'vue'
 import towerEfps from '../towerEfps.vue';
 import { flightInfoStore } from '@/stores/flightInfo-store';
@@ -72,7 +72,6 @@ const handleTestBtn = () => {
         if (flight.flightStatus == 3 || flight.flightStatus == 4) {
             prepareBackgroundColor.value = 'red' 
             flightVisible.value = false 
-            MessagePlugin.warning(`航班状态:${ flight.flightStatus }`)       
         } else {
             prepareBackgroundColor.value = 'lightskyblue'
             flightVisible.value = true

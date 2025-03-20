@@ -13,7 +13,7 @@ import { flightInfoStore } from './flightInfo-store';
 import { cooperaMsgStore } from '@/stores/cooperaMsg-store';
 import { parkingStandStore } from './parkingStand-store';
 import { runwayStore } from './runway-store';
-import type { FlightInfo } from '@/types/flightInfoTypes';
+import type { FlightInfoData } from '@/types/flightInfoTypes';
 import type { FlightParkingStandData } from '@/types/flightParkingStandTypes';
 import type { ParkingStandData } from '@/types/parkingStandTypes';
 import type { RunwayData } from '@/types/runwayTypes';
@@ -282,7 +282,7 @@ export const transferEfps = () => {
             id: nowProcessingData.value[0]?.id,
             status: 3
         })
-        // 释放跑道、停机位资源
+        /*// 释放跑道、停机位资源
         // 1.先通过flightInfo查询到航班id
         flightInfoStore.searchData({ flightNumber: nowProcessingData.value[0]?.a1 }).then(() => {
             if (flightInfoStore.searchResultData.length == 0) {
@@ -298,7 +298,7 @@ export const transferEfps = () => {
                     MessagePlugin.success('释放跑道资源成功')
                 })
             }
-        })
+        })*/
         cooperaMsgStore.addData({
             header: `航班：${nowProcessingData.value[0].a1}移交成功`,
             content: `塔台管制席已移交航班给区域管制席`,
@@ -359,7 +359,7 @@ export const saveStopway = () => {
                 MessagePlugin.error('未找到该航班')
                 return
             }
-            var flight = flightInfoStore.searchResultData[0] as FlightInfo
+            var flight = flightInfoStore.searchResultData[0] as FlightInfoData
             flightId.value = flight.id as number
             if (flightParkingStandStore.searchResultData.length == 0) {// 如果停机位没有航班使用
                 // 如果当前航班已有停机位则释放
@@ -416,7 +416,7 @@ export const saveRunway = () => {
                 MessagePlugin.error('未找到该航班')
                 return
             }
-            var flight = flightInfoStore.searchResultData[0] as FlightInfo
+            var flight = flightInfoStore.searchResultData[0] as FlightInfoData
             flightId.value = flight.id as number
             if (flightRunwayStore.searchResultData.length == 0) {// 如果跑道没有航班使用
                 // 如果当前航班已有跑道则释放
@@ -439,7 +439,7 @@ export const saveRunway = () => {
                     runwayId: selectedRunway.value
                 })
                 runwayStore.updateData({
-                    id: selectedStopway.value,
+                    id: selectedRunway.value,
                     status: 1
                 })
                 // 获取对应跑道id的跑道编号
@@ -460,12 +460,70 @@ export const saveRunway = () => {
     })
 }
 export const clearStopwayWithRunway = () => {
+    // 先判断它是否占用停机位和跑道资源
+    if (nowProcessingData.value[0]?.e4 == '' && nowProcessingData.value[0]?.de34 == '') {
+        MessagePlugin.warning('当前航班未占用资源!')
+        return
+    }
+    // 修改进程单信息
     towerEfpsStore.updateData({
         id: nowProcessingData.value[0]?.id,
         e4: '',
         de34: ''
     })
+    // 1 先找到航班信息对应的航班id
+    var flightId = ref(0)
+    flightInfoStore.searchData({ flightNumber: nowProcessingData.value[0]?.a1 }).then(() => {
+        if (flightInfoStore.searchResultData.length == 0) {
+            MessagePlugin.error('未找到该航班')
+            return
+        }
+        var flight = flightInfoStore.searchResultData[0] as FlightInfoData
+        flightId.value = flight.id as number
+
+        // 2 执行释放资源操作
+        // 2.1 先判断是否占用停机位资源
+        if (nowProcessingData.value[0]?.e4 != '') {
+            // 2.2 根据航班id找出航班停机位关联表数据id并删除
+            flightParkingStandStore.searchData({ flightId: flightId.value }).then(() => {
+                var fps = flightParkingStandStore.searchResultData[0] as FlightParkingStandData
+                if (flightParkingStandStore.searchResultData.length == 0) {
+                    MessagePlugin.warning('未找到关联id!')
+                    return
+                }
+                flightParkingStandStore.deleteData([fps.id as number]).then(() => {
+                    MessagePlugin.success('已释放停机位资源')
+                })
+                // 2.3 更改停机位状态
+                parkingStandStore.updateData({
+                    id: fps.parkingStandId,
+                    status: 0
+                })
+
+            })
+        }
+        // 2.4 判断是否占用跑道资源
+        if (nowProcessingData.value[0]?.de34 != '') {
+            flightRunwayStore.searchData({ flightId: flightId.value }).then(() => {
+                var fr = flightRunwayStore.searchResultData[0] as FlightRunwayData
+                if (flightRunwayStore.searchResultData.length == 0) {
+                    MessagePlugin.warning('未找到关联id!')
+                    return
+                }
+                // 2.5 删除跑道关联表数据
+                flightRunwayStore.deleteData([fr.id as number]).then(() => {
+                    MessagePlugin.success('已释放跑道资源')
+                })
+                // 2.6 更改跑道状态
+                runwayStore.updateData({
+                    id: fr.runwayId,
+                    status: 0
+                })
+            })
+        }
+    })
 }
+
 export const saveExit = () => {
     if (nowProcessingData.value[0]?.de31 == 'P/B') {
         towerEfpsStore.updateData({
@@ -503,6 +561,25 @@ export const saveTaxi = () => {
     towerEfpsStore.updateData({
         id: nowProcessingData.value[0]?.id,
         de33: 'R/W'
+    })
+}
+export const delayEfps = () => {
+    // 通过进程单获取flightinfo的id
+    // flightinfostore更新航班信息
+    var flightId = ref(0)
+    flightInfoStore.searchData({ flightNumber: nowProcessingData.value[0]?.a1 }).then(() => {
+        if (flightInfoStore.searchResultData.length == 0) {
+            MessagePlugin.error('未找到该航班')
+        } else {
+            var flight = flightInfoStore.searchResultData[0] as FlightInfoData
+            flightId.value = flight.id as number
+            flightInfoStore.updateData({
+                id: flightId.value,
+                flightStatus: 3
+            }).then(() => {
+                MessagePlugin.success('航班状态修改成功')
+            })
+        }
     })
 }
 
