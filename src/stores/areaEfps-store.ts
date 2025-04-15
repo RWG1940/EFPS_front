@@ -460,13 +460,9 @@ export const withdrawSelectedAreaEfps = async (id: string) => {
 }
 
 export const lastestProcessingData = () => {
+    
     const lastestProcessingEfps = processingData.value[0];
     if (lastestProcessingEfps != undefined) {
-        const areaEfps = {
-            id: lastestProcessingEfps.id,
-            status: 6,
-        };
-        areaEfpsStore.updateData(areaEfps);
-        MessagePlugin.info("处理队列中的进程单已自动进入处理状态");
+        MessagePlugin.info("处理队列中仍有待的进程单");
     }
 }

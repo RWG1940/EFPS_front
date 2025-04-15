@@ -369,7 +369,6 @@ onMounted(() => {
     setTimeout(() => {
         loadingVisible.value = false
     }, 500)
-    connectWebSocket()
     setInterval(() => {
         // 触发重新计算percentage
         calculatePercentage(filteredArrivalEfps, percentage1);

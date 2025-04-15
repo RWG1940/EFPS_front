@@ -112,7 +112,7 @@ export const handleEfpsProcess = (id: string) => {
     } else {
         const towerEfps = {
             id: id,
-            status: 6,
+            status: 6, 
         };
         towerEfpsStore.updateData(towerEfps);
     }
@@ -120,14 +120,10 @@ export const handleEfpsProcess = (id: string) => {
 
 
 export const lastestProcessingData = () => {
+    
     const lastestProcessingEfps = processingData.value[0];
     if (lastestProcessingEfps != undefined) {
-        const towerEfps = {
-            id: lastestProcessingEfps.id,
-            status: 6,
-        };
-        towerEfpsStore.updateData(towerEfps);
-        MessagePlugin.info("处理队列中的进程单已自动进入处理状态");
+        MessagePlugin.info("处理队列中仍有待的进程单");
     }
 }
 
@@ -158,9 +154,10 @@ export const withdrawProcessingEfps = async () => {
         MessagePlugin.error("未找到正在处理的进程单");
     }
 }
-export const handleProcessingEfpsFirst = (id: string) => {
-    withdrawProcessingEfps()
-    handleEfpsProcess(id)
+export const handleProcessingEfpsFirst = async(id: string) => {
+    await withdrawProcessingEfps().then(()=>{
+            handleEfpsProcess(id)
+    })    
 };
 export const recycleProcessingTowerEfps = async () => {
     const processingEfps = processingData.value[0];

@@ -119,14 +119,10 @@ export const handleEfpsProcess = (id: string) => {
 
 
 export const lastestProcessingData = () => {
+    
     const lastestProcessingEfps = processingData.value[0];
     if (lastestProcessingEfps != undefined) {
-        const releaseGroundEfps = {
-            id: lastestProcessingEfps.id,
-            status: 6,
-        };
-        releaseGroundEfpsStore.updateData(releaseGroundEfps);
-        MessagePlugin.info("处理队列中的进程单已自动进入处理状态");
+        MessagePlugin.info("处理队列中仍有待的进程单");
     }
 }
 
